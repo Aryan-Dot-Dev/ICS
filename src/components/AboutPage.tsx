@@ -3,12 +3,14 @@ import { navigateTo, navigateToDelayed } from "../lib/router";
 import { SpotlightCard } from "./ui/SpotlightCard";
 import ClickSpark from "./ui/ClickSpark";
 import { AnimatedCounter } from "./ui/Counter";
+import { useLanguage } from "../lib/i18n";
 
 export function AboutPage() {
   const [, startTransition] = useTransition();
+  const { t } = useLanguage();
 
   const stats = [
-    { value: "₹12B+", label: "Capital Secured" },
+    { value: "₹12B+", label: t("metrics.capitalSecured") },
     { value: "450+", label: "Institutions Served" },
     { value: "98.4%", label: "Compliance Rating" },
     { value: "15yr", label: "Market Presence" }
@@ -86,7 +88,7 @@ export function AboutPage() {
       {/* Hero Section */}
       <section className="px-6 md:px-20 pt-32 pb-12 max-w-7xl mx-auto text-left md:pt-40 md:pb-16">
         <h1 className="font-sans text-4xl md:text-6xl font-extrabold tracking-tight text-black max-w-4xl mb-12 leading-[1.1]">
-          Empowering Indian businesses with funding intelligence.
+          {t("about.title")}
         </h1>
         <div className="w-full h-px bg-zinc-200" />
       </section>
@@ -118,20 +120,20 @@ export function AboutPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-left">
             <span className="font-sans text-xs font-bold tracking-[0.2em] uppercase text-zinc-400 mb-4 block">
-              The Objective
+              {t("about.objective")}
             </span>
             <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-black mb-8 tracking-tight">
-              Democratizing Access to Institutional Capital
+              {t("about.objTitle")}
             </h2>
             <p className="font-sans text-base text-zinc-500 max-w-xl mb-8 leading-relaxed">
-              We believe that rigorous intelligence and absolute transparency are the foundations of Indian economic growth. Our mission is to bridge the gap between ambitious enterprises and the complex global funding landscape through proprietary analytical models and institutional-grade advisory.
+              {t("about.objDesc")}
             </p>
             <ClickSpark sparkColor="#000" sparkRadius={24} sparkCount={8} duration={350}>
               <button
                 onClick={() => startTransition(() => navigateToDelayed("blog", 350))}
                 className="border border-black text-black px-8 py-3.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-50 transition-colors active:scale-95 duration-100 cursor-pointer"
               >
-                Read Whitepapers
+                {t("action.readWhitepapers")}
               </button>
             </ClickSpark>
           </div>
@@ -169,10 +171,10 @@ export function AboutPage() {
       <section className="px-6 md:px-20 py-24 max-w-7xl mx-auto">
         <div className="mb-16 text-left">
           <span className="font-sans text-xs font-bold tracking-[0.2em] uppercase text-zinc-400 mb-4 block">
-            Institutional Framework
+            {t("about.principlesBadge")}
           </span>
           <h2 className="font-sans text-3xl font-extrabold text-black tracking-tight">
-            Our Governing Principles
+            {t("about.principlesTitle")}
           </h2>
         </div>
 
@@ -195,10 +197,10 @@ export function AboutPage() {
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
           <div className="lg:w-1/3 text-left">
             <h2 className="font-sans text-3xl font-extrabold text-black mb-6 tracking-tight">
-              The Institutional Evolution
+              {t("about.timelineTitle")}
             </h2>
             <p className="font-sans text-sm text-zinc-500 leading-relaxed max-w-xs">
-              Tracking fifteen years of regulatory shifts and funding milestones across state & central ministries.
+              {t("about.timelineDesc")}
             </p>
           </div>
 
@@ -227,7 +229,7 @@ export function AboutPage() {
       <section className="px-6 md:px-20 py-24 max-w-7xl mx-auto">
         <div className="mb-16 text-center">
           <h2 className="font-sans text-3xl font-extrabold text-black tracking-tight">
-            Board of Directors
+            {t("about.boardTitle")}
           </h2>
         </div>
 
@@ -261,10 +263,10 @@ export function AboutPage() {
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8">
           <div className="text-center lg:text-left">
             <h2 className="font-sans text-2xl md:text-3xl font-extrabold mb-3 tracking-tight text-white">
-              Inquire about institutional partnership.
+              {t("about.partnershipTitle")}
             </h2>
             <p className="font-sans text-sm text-zinc-400">
-              Our evaluation desk is prepared to analyze your capital requirements.
+              {t("about.partnershipDesc")}
             </p>
           </div>
           <ClickSpark sparkColor="#000" sparkRadius={24} sparkCount={8} duration={350}>
@@ -272,7 +274,7 @@ export function AboutPage() {
               onClick={() => startTransition(() => navigateToDelayed("contact", 350))}
               className="bg-white text-black px-10 py-4.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-100 transition-colors active:scale-95 duration-100 shrink-0 cursor-pointer"
             >
-              Initiate Inquiry
+              {t("action.contact")}
             </button>
           </ClickSpark>
         </div>

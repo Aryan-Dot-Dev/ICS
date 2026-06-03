@@ -38,7 +38,7 @@ export function ChatbotWidget() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
     const userMsg: Message = {
@@ -52,12 +52,41 @@ export function ChatbotWidget() {
     setInputValue("");
     setIsTyping(true);
 
-    // Simulate AI thinking and replying
-    setTimeout(() => {
-      const botResponse = generateBotResponse(text);
+    try {
+      const response = await fetch("/api/chat-restricted", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ query: text.trim() })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      const botMsg: Message = {
+        id: `bot_${Math.random().toString(36).substring(2, 9)}`,
+        sender: "bot",
+        text: data.answer,
+        timestamp: new Date(),
+        isActionable: true
+      };
+
       setIsTyping(false);
-      setMessages((prev) => [...prev, botResponse]);
-    }, 1200);
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (error) {
+      console.warn("[INFOU CHATBOT] API call failed, falling back to local policy database.", error);
+      
+      // Graceful offline mock engine fallback
+      setTimeout(() => {
+        const botResponse = generateBotResponse(text);
+        setIsTyping(false);
+        setMessages((prev) => [...prev, botResponse]);
+      }, 800);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -74,57 +103,11 @@ export function ChatbotWidget() {
   };
 
   const generateBotResponse = (input: string): Message => {
-    const cleanInput = input.toLowerCase();
-    const id = `bot_${Math.random().toString(36).substring(2, 9)}`;
-    const timestamp = new Date();
-
-    if (cleanInput.includes("pli") || cleanInput.includes("manufacture") || cleanInput.includes("production")) {
-      return {
-        id,
-        sender: "bot",
-        text: "The Production Linked Incentive (PLI) scheme offers 4% to 6% incremental sales cashbacks on target segments. Infou has mapped PLI criteria across 14 primary manufacturing verticals. Would you like to launch our eligibility assessment form to package your applications?",
-        timestamp,
-        isActionable: true
-      };
-    }
-
-    if (cleanInput.includes("msme") || cleanInput.includes("grant") || cleanInput.includes("subsidy")) {
-      return {
-        id,
-        sender: "bot",
-        text: "MSMEs qualify for central initiatives like CLCSS (Credit Linked Capital Subsidy up to ₹15 Lakhs) and state-level infrastructure subsidies ranging from 15% to 25% of fixed asset capital. I recommend compiling your corporate parameters in our diagnostic form to pinpoint your specific allocation.",
-        timestamp,
-        isActionable: true
-      };
-    }
-
-    if (cleanInput.includes("tax") || cleanInput.includes("relief") || cleanInput.includes("exemption")) {
-      return {
-        id,
-        sender: "bot",
-        text: "Under Section 80-IAC, eligible Indian start-ups receive 100% tax exemption for 3 consecutive assessment blocks. Infou handles regulatory mapping for Startup India and DPIIT approvals. Fill out our assessment to verify if your corporation fits the eligibility schema.",
-        timestamp,
-        isActionable: true
-      };
-    }
-
-    if (cleanInput.includes("state") || cleanInput.includes("policy") || cleanInput.includes("audit")) {
-      return {
-        id,
-        sender: "bot",
-        text: "Sovereign policy diagnostic audits evaluate your corporate expansion layout against state-specific IT policies, capital grants, and power tariffs. Let's start a Free Eligibility Assessment to generate a serialized PDF diagnostics folder.",
-        timestamp,
-        isActionable: true
-      };
-    }
-
-    // Default response
     return {
-      id,
+      id: `bot_${Math.random().toString(36).substring(2, 9)}`,
       sender: "bot",
-      text: "Fascinating parameters. Infou's real-time geospatial incentive database evaluates 130+ central and state policies. To unlock active capital allocations, we highly recommend initializing our structured Free Assessment diagnostic.",
-      timestamp,
-      isActionable: true
+      text: "Our advisory network is currently offline. Please try again shortly or connect with our strategy desk directly.",
+      timestamp: new Date()
     };
   };
 

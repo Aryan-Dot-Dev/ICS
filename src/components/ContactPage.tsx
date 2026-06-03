@@ -43,12 +43,9 @@ export function ContactPage() {
       {/* Hero Section */}
       <section className="px-6 md:px-20 pt-32 pb-12 max-w-7xl mx-auto text-left md:pt-40 md:pb-16">
         <div className="max-w-4xl">
-          <h1 className="font-sans text-4xl md:text-6xl font-extrabold text-black tracking-tight mb-8 leading-[1.1] max-w-2xl">
+          <h1 className="font-sans text-4xl md:text-6xl font-extrabold text-black tracking-tight leading-[1.1] max-w-2xl">
             Speak with funding advisors today
           </h1>
-          <p className="font-sans text-base text-zinc-500 max-w-xl leading-relaxed">
-            Our analysts are ready to discuss institutional funding opportunities, compliance frameworks, and strategic advisory for your next phase of growth.
-          </p>
         </div>
       </section>
 
@@ -93,18 +90,10 @@ export function ContactPage() {
                 Nariman Point, Mumbai, 400021
               </p>
             </div>
-
-            <div className="aspect-[4/3] w-full border border-zinc-200 rounded-2xl grayscale overflow-hidden">
-              <img
-                alt="Architectural detail"
-                className="w-full h-full object-cover brightness-95"
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"
-              />
-            </div>
           </div>
 
           {/* Right Column: Callback Request Form */}
-          <div className="lg:col-span-7 bg-white border border-zinc-200 rounded-2xl p-8 md:p-12 text-left">
+          <div className="lg:col-span-7 bg-white border border-zinc-200 rounded-2xl p-8 md:p-12 text-left h-fit">
             <div className="mb-10">
               <h2 className="font-sans text-2xl font-bold text-black mb-4">
                 Request a Callback
@@ -199,7 +188,7 @@ export function ContactPage() {
                 <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400} className="w-full" style={{ display: "block", width: "100%" }}>
                   <Button
                     type="submit"
-                    className="w-full bg-black text-white hover:bg-zinc-800 transition-colors h-14 text-xs font-bold tracking-widest uppercase rounded-lg select-none active:scale-[0.99] duration-100 cursor-pointer"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/95 transition-colors h-14 text-xs font-bold tracking-widest uppercase rounded-lg select-none active:scale-[0.99] duration-100 cursor-pointer"
                   >
                     Send Request
                   </Button>

@@ -5,6 +5,7 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import ClickSpark from "./ui/ClickSpark";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { navigateTo } from "../lib/router";
 
 interface AssessmentModalProps {
   isOpen: boolean;
@@ -29,6 +30,12 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
   const [generatedPayload, setGeneratedPayload] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
 
+  // New API-specific recommendation states
+  const [recommendations, setRecommendations] = useState<any[] | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [showPayload, setShowPayload] = useState(false);
+  const [requestPayload, setRequestPayload] = useState<string | null>(null);
+
   // Reset form when modal opens/closes
   useEffect(() => {
     if (isOpen) {
@@ -44,6 +51,10 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
       setIsSuccess(false);
       setGeneratedPayload(null);
       setIsCopied(false);
+      setRecommendations(null);
+      setApiError(null);
+      setShowPayload(false);
+      setRequestPayload(null);
     }
   }, [isOpen]);
 
@@ -87,19 +98,55 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
+    setApiError(null);
 
-    // Simulate API payload packaging
-    setTimeout(() => {
-      const payload = {
-        timestamp: new Date().toISOString(),
-        source: source,
-        formId: `audit_${Math.random().toString(36).substring(2, 11)}`,
-        data: {
+    const payload = {
+      timestamp: new Date().toISOString(),
+      source: source,
+      formId: `audit_${Math.random().toString(36).substring(2, 11)}`,
+      data: {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        businessName: formData.businessName.trim(),
+        businessType: formData.businessType,
+        businessDescription: formData.businessDescription.trim()
+      }
+    };
+
+    const reqJson = JSON.stringify(payload, null, 2);
+    setRequestPayload(reqJson);
+    console.log("[INFOU API RECOMMEND INITIATED]", payload);
+
+    try {
+      const response = await fetch("/api/recommend-schemes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: reqJson
+      });
+
+      if (!response.ok) {
+        let errorMsg = `HTTP Error ${response.status}`;
+        try {
+          const errData = await response.json();
+          if (errData && errData.detail) {
+            errorMsg = errData.detail;
+          }
+        } catch (_) {}
+        throw new Error(errorMsg);
+      }
+
+      const resData = await response.json();
+      const sessionPayload = {
+        recommendations: resData.recommendations || [],
+        originalFormData: {
           name: formData.name.trim(),
           email: formData.email.trim(),
           phone: formData.phone.trim(),
@@ -108,24 +155,26 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
           businessDescription: formData.businessDescription.trim()
         }
       };
-
-      console.log("[INFOU API PAYLOAD PREPARED]", payload);
-      setGeneratedPayload(JSON.stringify(payload, null, 2));
-      setIsSubmitting(false);
-      setIsSuccess(true);
+      sessionStorage.setItem("infou_assessment_results", JSON.stringify(sessionPayload));
 
       if (onSubmitSuccess) {
         onSubmitSuccess(payload);
       }
-    }, 800);
+
+      onClose();
+      navigateTo("assessment");
+    } catch (error: any) {
+      console.error("[INFOU API RECOMMEND FAILED]", error);
+      setApiError(error.message || "Unable to establish connection to the local funding advisory database.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const copyToClipboard = () => {
-    if (generatedPayload) {
-      navigator.clipboard.writeText(generatedPayload);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    }
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
@@ -159,7 +208,85 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
           className="overflow-y-auto overflow-x-hidden px-6 md:px-8 pt-6 md:pt-8 pb-12 md:pb-16 flex-grow"
           style={{ scrollbarGutter: "stable" }}
         >
-          {!isSuccess ? (
+          {apiError ? (
+            <div className="py-4 space-y-6 animate-in fade-in-0 duration-200 text-left">
+              {/* Error Header */}
+              <div className="flex flex-col items-center justify-center text-center">
+                <div className="w-10 h-10 bg-red-50 text-red-600 border border-red-100 flex items-center justify-center rounded-full mb-3 shadow-xs">
+                  <X size={20} strokeWidth={2} />
+                </div>
+                <h3 className="font-sans text-base font-bold text-black uppercase tracking-wider">
+                  Advisory Database Offline
+                </h3>
+                <p className="text-zinc-500 font-sans text-xs max-w-sm mt-1 leading-relaxed">
+                  The local recommendations service returned the following diagnostic warning:
+                </p>
+                <div className="bg-red-50/50 border border-red-200 text-red-800 rounded-xl px-4 py-3 text-xs leading-relaxed max-w-md mt-3 font-sans w-full">
+                  {apiError}
+                </div>
+              </div>
+
+              {/* Show structured request data so developer can review */}
+              <div className="space-y-3">
+                <p className="text-[10px] font-extrabold tracking-widest text-zinc-400 uppercase text-center">
+                  Packaged Request Schema (Ready to wire)
+                </p>
+
+                {requestPayload && (
+                  <div className="relative group text-left max-w-lg mx-auto">
+                    <div className="absolute right-3 top-3 z-25">
+                      <button
+                        onClick={() => copyToClipboard(requestPayload)}
+                        className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all flex items-center gap-1 text-[10px] font-mono cursor-pointer"
+                      >
+                        {isCopied ? (
+                          <>
+                            <Check size={12} className="text-emerald-400" />
+                            <span className="text-emerald-400">COPIED</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={12} />
+                            <span>COPY REQUEST JSON</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="w-full text-[10px] font-mono tracking-widest text-zinc-600 bg-zinc-950 px-4 py-2 border-t border-x border-zinc-850 rounded-t-xl select-none">
+                      API REQUEST SCHEME SPEC v1.0
+                    </div>
+                    <pre className="bg-zinc-950 text-zinc-300 p-4 rounded-b-xl text-[10px] overflow-x-auto font-mono border border-zinc-850 max-h-40 overflow-y-auto w-full">
+                      <code>{requestPayload}</code>
+                    </pre>
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <ClickSpark sparkColor="#000" sparkRadius={20} sparkCount={6} duration={350}>
+                  <button
+                    onClick={() => {
+                      setApiError(null);
+                      setIsSuccess(false);
+                    }}
+                    className="border border-zinc-200 text-black px-8 py-3.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-50 transition-colors active:scale-95 duration-100 cursor-pointer w-full sm:w-auto"
+                  >
+                    Back to Form
+                  </button>
+                </ClickSpark>
+                
+                <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400}>
+                  <button
+                    onClick={onClose}
+                    className="bg-black text-white px-8 py-3.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-800 transition-colors active:scale-95 duration-100 cursor-pointer w-full sm:w-auto text-center"
+                  >
+                    Dismiss Warning
+                  </button>
+                </ClickSpark>
+              </div>
+            </div>
+          ) : !isSuccess ? (
             <form onSubmit={handleSubmit} className="space-y-5">
               <p className="text-zinc-500 font-sans text-xs leading-relaxed">
                 Provide your corporate parameters below to compile the eligibility schema required for state and central institutional funding channels.
@@ -325,60 +452,130 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
               </ClickSpark>
             </form>
           ) : (
-            <div className="text-center py-4 space-y-5 animate-in fade-in-0 duration-200">
-              <div className="flex flex-col items-center justify-center">
-                <div className="w-12 h-12 bg-zinc-100 text-black border border-zinc-200 flex items-center justify-center rounded-full mb-3">
-                  <CheckCircle size={24} strokeWidth={1.5} />
+            <div className="py-2 space-y-6 animate-in fade-in-0 duration-200 text-left">
+              {/* Header Info */}
+              <div className="flex flex-col items-center justify-center text-center">
+                <div className="w-10 h-10 bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center rounded-full mb-3 shadow-xs">
+                  <CheckCircle size={20} strokeWidth={2} />
                 </div>
-                <h3 className="font-sans text-base font-bold text-black uppercase tracking-wider">
-                  Diagnostic Form Serialized
+                <h3 className="font-sans text-base font-extrabold text-black uppercase tracking-wider">
+                  Scheme Recommendations Mapped
                 </h3>
                 <p className="text-zinc-500 font-sans text-xs max-w-sm mt-1 leading-relaxed">
-                  Your assessment parameters have been successfully validated and packaged. Below is the ready-to-wire API JSON payload.
+                  The advisory engine processed your business profile against 130+ central & state policies.
                 </p>
               </div>
 
-              {/* JSON codeblock display */}
-              <div className="relative group text-left max-w-lg mx-auto">
-                <div className="absolute right-3 top-3 z-25 flex items-center gap-1.5">
-                  <button
-                    onClick={copyToClipboard}
-                    className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all flex items-center gap-1 text-[10px] font-mono cursor-pointer"
-                    title="Copy to clipboard"
-                  >
-                    {isCopied ? (
-                      <>
-                        <Check size={12} className="text-emerald-400" />
-                        <span className="text-emerald-400">COPIED</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={12} />
-                        <span>COPY JSON</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-                
-                <div className="w-full text-[10px] font-mono tracking-widest text-zinc-600 bg-zinc-950 px-4 py-2 border-t border-x border-zinc-850 rounded-t-xl select-none flex justify-between items-center">
-                  <span>API PAYLOAD SPEC v1.0</span>
-                  <span className="text-emerald-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
-                    READY
-                  </span>
-                </div>
-                <pre className="bg-zinc-950 text-zinc-300 p-4 rounded-b-xl text-xs overflow-x-auto font-mono border border-zinc-850 max-h-60 overflow-y-auto selection:bg-zinc-800 selection:text-white">
-                  <code>{generatedPayload}</code>
-                </pre>
+              {/* Recommendations List */}
+              <div className="space-y-4 max-h-[280px] overflow-y-auto pr-1">
+                {recommendations && recommendations.length > 0 ? (
+                  recommendations.map((rec: any, idx: number) => (
+                    <div key={idx} className="bg-zinc-50 border border-zinc-200 p-4 rounded-xl space-y-3 shadow-xs hover:border-black transition-colors duration-200">
+                      {/* Ministry and confidence level */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-150 pb-2">
+                        <span className="text-[9px] font-extrabold tracking-widest text-zinc-400 uppercase max-w-[70%] truncate" title={rec.ministry}>
+                          {rec.ministry || "Ministry of Commerce & Industry"}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded-sm uppercase tracking-wider ${
+                            rec.confidence === "high" ? "bg-emerald-950 text-emerald-400 border border-emerald-900" :
+                            rec.confidence === "medium" ? "bg-amber-950 text-amber-400 border border-amber-900" :
+                            "bg-zinc-900 text-zinc-400 border border-zinc-800"
+                          }`}>
+                            {rec.confidence} Match
+                          </span>
+                          {rec.relevanceScore && (
+                            <span className="text-[9px] font-bold text-zinc-500">
+                              {(rec.relevanceScore * 100).toFixed(0)}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Scheme Name */}
+                      <h4 className="font-sans text-sm font-extrabold text-black tracking-tight">
+                        {rec.schemeName}
+                      </h4>
+
+                      {/* Scheme Description */}
+                      <p className="font-sans text-xs text-zinc-500 leading-relaxed">
+                        {rec.schemeDescription}
+                      </p>
+
+                      {/* Matched Signals */}
+                      {rec.matchedSignals && rec.matchedSignals.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {rec.matchedSignals.map((sig: string, sigIdx: number) => (
+                            <span key={sigIdx} className="text-[9px] font-semibold text-zinc-600 bg-zinc-200/60 px-2 py-0.5 rounded-md">
+                              {sig}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Recommended Next Step */}
+                      {rec.recommendedNextStep && (
+                        <div className="border-l-2 border-black bg-zinc-100/50 p-2.5 rounded-r-lg text-[11px] text-zinc-600 font-sans italic mt-1 leading-relaxed">
+                          {rec.recommendedNextStep}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 border border-dashed border-zinc-200 rounded-xl text-zinc-400 text-xs font-sans">
+                    No matching schemes were found for your business profile at this time.
+                  </div>
+                )}
               </div>
 
-              <div className="pt-2">
+              {/* Developer Toggle */}
+              <div className="pt-2 border-t border-zinc-150">
+                <button
+                  type="button"
+                  onClick={() => setShowPayload(!showPayload)}
+                  className="w-full text-center text-[10px] font-bold tracking-widest text-zinc-400 hover:text-black transition-colors uppercase cursor-pointer"
+                >
+                  {showPayload ? "Hide Technical Payload" : "View Technical JSON Response"}
+                </button>
+
+                {showPayload && generatedPayload && (
+                  <div className="relative group text-left mt-3 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                    <div className="absolute right-3 top-3 z-25">
+                      <button
+                        onClick={() => copyToClipboard(generatedPayload)}
+                        className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all flex items-center gap-1 text-[10px] font-mono cursor-pointer"
+                      >
+                        {isCopied ? (
+                          <>
+                            <Check size={12} className="text-emerald-400" />
+                            <span className="text-emerald-400">COPIED</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={12} />
+                            <span>COPY Response</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="w-full text-[10px] font-mono tracking-widest text-zinc-600 bg-zinc-950 px-4 py-2 border-t border-x border-zinc-850 rounded-t-xl select-none">
+                      API RESPONSE PAYLOAD
+                    </div>
+                    <pre className="bg-zinc-950 text-zinc-300 p-4 rounded-b-xl text-[10px] overflow-x-auto font-mono border border-zinc-850 max-h-40 overflow-y-auto w-full">
+                      <code>{generatedPayload}</code>
+                    </pre>
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-2 flex justify-center">
                 <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400}>
                   <button
                     onClick={onClose}
-                    className="bg-black text-white px-8 py-3 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-800 transition-colors active:scale-95 duration-100 cursor-pointer"
+                    className="bg-black text-white px-10 py-3.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-800 transition-colors active:scale-95 duration-100 cursor-pointer"
                   >
-                    Close System View
+                    Close Diagnostic View
                   </button>
                 </ClickSpark>
               </div>

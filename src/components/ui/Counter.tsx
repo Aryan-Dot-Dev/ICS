@@ -41,22 +41,37 @@ interface DigitProps {
   value: number;
   height: number;
   digitStyle?: React.CSSProperties;
+  hoverTrigger?: number;
 }
 
-function Digit({ place, value, height, digitStyle }: DigitProps) {
+function Digit({ place, value, height, digitStyle, hoverTrigger }: DigitProps) {
   const isDecimal = place === '.';
   const valueRoundedToPlace = isDecimal ? 0 : getValueRoundedToPlace(value, place as number);
-  const animatedValue = useSpring(valueRoundedToPlace, {
-    stiffness: 120,
-    damping: 18,
+  const animatedValue = useSpring(0, {
+    stiffness: 90,
+    damping: 15,
     mass: 0.8
   });
 
   useEffect(() => {
     if (!isDecimal) {
-      animatedValue.set(valueRoundedToPlace);
+      const timer = setTimeout(() => {
+        animatedValue.set(valueRoundedToPlace);
+      }, 80);
+      return () => clearTimeout(timer);
     }
   }, [animatedValue, valueRoundedToPlace, isDecimal]);
+
+  // Seamless hover animation (spins down to 0 and back up without layout jumps)
+  useEffect(() => {
+    if (hoverTrigger && hoverTrigger > 0 && !isDecimal) {
+      animatedValue.set(0);
+      const timer = setTimeout(() => {
+        animatedValue.set(valueRoundedToPlace);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [hoverTrigger, animatedValue, valueRoundedToPlace, isDecimal]);
 
   if (isDecimal) {
     return (
@@ -93,6 +108,7 @@ export interface CounterProps {
   gradientTo?: string;
   topGradientStyle?: React.CSSProperties;
   bottomGradientStyle?: React.CSSProperties;
+  hoverTrigger?: number;
 }
 
 export function Counter({
@@ -113,6 +129,7 @@ export function Counter({
   gradientTo = 'transparent',
   topGradientStyle,
   bottomGradientStyle,
+  hoverTrigger,
 }: CounterProps) {
   const height = fontSize + padding;
 
@@ -154,7 +171,14 @@ export function Counter({
     <span className="counter-container" style={containerStyle}>
       <span className="counter-counter" style={{ ...defaultCounterStyle, ...counterStyle }}>
         {defaultPlaces.map((place, idx) => (
-          <Digit key={`${place}-${idx}`} place={place} value={value} height={height} digitStyle={digitStyle} />
+          <Digit 
+            key={`${place}-${idx}`} 
+            place={place} 
+            value={value} 
+            height={height} 
+            digitStyle={digitStyle} 
+            hoverTrigger={hoverTrigger}
+          />
         ))}
       </span>
       <span className="gradient-container">
@@ -177,6 +201,7 @@ interface AnimatedCounterProps {
   className?: string;
   gradientFrom?: string;
   gradientTo?: string;
+  hoverTrigger?: number;
 }
 
 export function AnimatedCounter({
@@ -188,6 +213,7 @@ export function AnimatedCounter({
   className = '',
   gradientFrom = 'transparent',
   gradientTo = 'transparent',
+  hoverTrigger,
 }: AnimatedCounterProps) {
   const parsed = useMemo(() => {
     const str = String(value).trim();
@@ -235,6 +261,7 @@ export function AnimatedCounter({
         borderRadius={0}
         horizontalPadding={0}
         gap={size * 0.03}
+        hoverTrigger={hoverTrigger}
       />
       {parsed.suffix ? (
         <span style={{ fontSize: size }} className="select-none ml-[0.05em]">

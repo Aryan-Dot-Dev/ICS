@@ -1,16 +1,53 @@
 import React, { useState, useTransition, useEffect } from "react";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X, Phone, Book, Sunset, Trees, Zap } from "lucide-react";
 import { RoutePath, navigateTo, navigateToDelayed } from "../lib/router";
 import ClickSpark from "./ui/ClickSpark";
+import { useLanguage } from "../lib/i18n";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "./ui/navigation-menu";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+
+const languages = [
+  { code: "en", name: "EN" },
+  { code: "hi", name: "हिन्दी" },
+  { code: "bn", name: "বাংলা" },
+  { code: "te", name: "తెలుగు" },
+  { code: "mr", name: "मराठी" },
+  { code: "ta", name: "தமிழ்" },
+  { code: "gu", name: "ગુજરાતી" },
+  { code: "kn", name: "ಕನ್ನಡ" },
+  { code: "ml", name: "മലയാളം" },
+  { code: "pa", name: "ਪੰਜਾਬੀ" },
+  { code: "ur", name: "اردو" }
+];
 
 interface NavbarProps {
   currentRoute: RoutePath;
 }
 
 export function Navbar({ currentRoute }: NavbarProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [, startTransition] = useTransition();
+  const { t, language, setLanguage } = useLanguage();
 
   // Detect scroll state to trigger capsule style
   useEffect(() => {
@@ -22,21 +59,37 @@ export function Navbar({ currentRoute }: NavbarProps) {
   }, []);
 
   const handleNavClick = (route: RoutePath) => {
-    setIsMobileMenuOpen(false);
+    setIsSheetOpen(false);
     startTransition(() => {
       navigateToDelayed(route, 300);
     });
   };
 
-  const navLinks: { label: string; route: RoutePath }[] = [
-    { label: "Services", route: "services" },
-    { label: "About", route: "about" },
-    { label: "Blog", route: "blog" },
-    { label: "Contact", route: "contact" },
+  const menuItems = [
+    {
+      title: t("nav.about"),
+      route: "about" as RoutePath,
+    },
+    {
+      title: t("nav.services"),
+      route: "services" as RoutePath,
+    },
+    {
+      title: t("nav.blogs"),
+      route: "blog" as RoutePath,
+    },
+    {
+      title: t("nav.contact"),
+      route: "contact" as RoutePath,
+    },
   ];
 
   // Dynamically calculate border radius to look perfect as a floating capsule
-  const headerRadius = isMobileMenuOpen ? "rounded-2xl" : "rounded-full";
+  const headerRadius = isSheetOpen ? "rounded-2xl" : "rounded-full";
+
+  const triggerColorClass = "bg-transparent text-zinc-650 hover:text-primary hover:bg-secondary/50 data-[state=open]:bg-secondary/50 focus:bg-transparent data-[active]:bg-secondary/50 cursor-pointer";
+
+  const linkColorClass = "text-zinc-650 hover:text-primary hover:bg-secondary/50";
 
   return (
     <header
@@ -47,112 +100,255 @@ export function Navbar({ currentRoute }: NavbarProps) {
       <div
         className={`w-full pointer-events-auto transition-all duration-500 ease-in-out ${
           isScrolled
-            ? `w-[90%] max-w-6xl ${headerRadius} border border-zinc-200/80 bg-white/80 backdrop-blur-md shadow-lg shadow-zinc-200/25 py-2 md:py-3 px-6 md:px-12`
-            : "w-full max-w-full rounded-none border border-transparent bg-transparent py-4 md:py-5 px-6 md:px-20"
+            ? `w-[90%] max-w-6xl ${headerRadius} border border-primary/25 bg-secondary/90 text-zinc-900 shadow-xl shadow-zinc-950/5 py-2 md:py-3 px-6 md:px-12 backdrop-blur-md`
+            : "w-full max-w-full rounded-none border border-transparent bg-transparent py-4 md:py-5 px-6 md:px-20 text-zinc-900"
         }`}
       >
-      <nav className="flex justify-between items-center w-full max-w-7xl mx-auto">
-        {/* Brand Logo */}
-        <ClickSpark sparkColor="#000" sparkRadius={20} sparkCount={8} duration={300}>
-          <div 
-            onClick={() => handleNavClick("landing")}
-            className="font-sans text-xl md:text-2xl font-extrabold tracking-tighter text-black cursor-pointer select-none hover:opacity-80 transition-opacity uppercase"
-          >
-            Infou Consultancy
-          </div>
-        </ClickSpark>
-
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map(({ label, route }) => {
-            const isActive = currentRoute === route;
-            return (
-              <ClickSpark key={route} sparkColor="#000" sparkRadius={18} sparkCount={6} duration={300}>
-                <button
-                  onClick={() => handleNavClick(route)}
-                  className={`font-sans text-sm tracking-wide uppercase transition-all duration-200 cursor-pointer pb-0.5 border-b-2 ${
-                    isActive
-                      ? "text-black border-black font-semibold"
-                      : "text-zinc-500 border-transparent hover:text-black hover:border-zinc-300"
-                  }`}
-                >
-                  {label}
-                </button>
-              </ClickSpark>
-            );
-          })}
-        </div>
-
-        {/* Action Items */}
-        <div className="hidden md:flex items-center gap-6">
-          <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400}>
-            <a
-              href="tel:+18005550199"
-              className="bg-black text-white px-6 py-2.5 text-xs font-bold tracking-widest uppercase rounded-full hover:bg-zinc-800 transition-all active:scale-95 duration-100 flex items-center gap-2"
+        <nav className="flex justify-between items-center w-full max-w-7xl mx-auto">
+          {/* Brand Logo */}
+          <ClickSpark sparkColor="#FF5A36" sparkRadius={20} sparkCount={8} duration={300}>
+            <div 
+              onClick={() => handleNavClick("landing")}
+              className="font-sans text-xl md:text-2xl font-extrabold tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity uppercase text-primary"
             >
-              <Phone size={12} />
-              +1 (800) 555-0199
-            </a>
-          </ClickSpark>
-        </div>
-
-        {/* Mobile Menu Toggle Button */}
-        <div className="md:hidden flex items-center gap-4">
-          <ClickSpark sparkColor="#000" sparkRadius={20} sparkCount={8} duration={350}>
-            <a
-              href="tel:+18005550199"
-              className="p-2 border border-zinc-200 rounded-full hover:bg-zinc-50 text-black transition-colors flex items-center justify-center"
-              title="Call Us"
-            >
-              <Phone size={16} />
-            </a>
-          </ClickSpark>
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-black hover:bg-zinc-100 rounded-full transition-colors focus:outline-none cursor-pointer"
-            aria-label="Toggle Menu"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Drawer menu */}
-      {isMobileMenuOpen && (
-        <div className={`md:hidden border-t border-zinc-100 bg-white/95 backdrop-blur-md animate-in slide-in-from-top-4 duration-200 mt-2 ${isScrolled ? "rounded-b-2xl pb-4" : ""}`}>
-          <div className="flex flex-col px-6 py-6 gap-5">
-            {navLinks.map(({ label, route }) => {
-              const isActive = currentRoute === route;
-              return (
-                <ClickSpark key={route} sparkColor="#000" sparkRadius={18} sparkCount={6} duration={300} className="w-full" style={{ display: "block", width: "100%" }}>
-                  <button
-                    key={route}
-                    onClick={() => handleNavClick(route)}
-                    className={`text-left font-sans text-base tracking-wide uppercase transition-all pb-1 border-b w-full ${
-                      isActive
-                        ? "text-black border-black font-bold"
-                        : "text-zinc-500 border-zinc-100 hover:text-black"
-                    }`}
-                  >
-                    {label}
-                  </button>
-                </ClickSpark>
-              );
-            })}
-            <div className="h-px bg-zinc-100 my-1" />
-            <div className="flex flex-col gap-3">
-              <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400} className="w-full" style={{ display: "block", width: "100%" }}>
-                <a
-                  href="tel:+18005550199"
-                  className="bg-black text-white text-center py-3.5 text-xs font-bold tracking-widest uppercase rounded-full hover:bg-zinc-800 transition-all active:scale-95 duration-100 flex items-center justify-center gap-2"
-                >
-                  <Phone size={14} />
-                  +1 (800) 555-0199
-                </a>
-              </ClickSpark>
+              {t("nav.brand")}
             </div>
+          </ClickSpark>
+
+          {/* Desktop Navigation Menu */}
+          <div className="hidden md:flex items-center gap-2">
+            <NavigationMenu>
+              <NavigationMenuList>
+                {menuItems.map((item) => {
+                  if (item.items) {
+                    return (
+                      <NavigationMenuItem key={item.title}>
+                        <NavigationMenuTrigger className={triggerColorClass}>
+                          {item.title}
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <ul className="w-80 p-3 flex flex-col gap-1">
+                            {item.items.map((subItem) => (
+                              <li key={subItem.title}>
+                                <NavigationMenuLink asChild>
+                                  <button
+                                    onClick={() => handleNavClick(subItem.route)}
+                                    className="flex select-none gap-4 rounded-md p-3 text-left w-full leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                                  >
+                                    {subItem.icon}
+                                    <div className="flex flex-col gap-1 text-left">
+                                      <div className="text-sm font-semibold leading-none">
+                                        {subItem.title}
+                                      </div>
+                                      {subItem.description && (
+                                        <p className="text-xs leading-normal text-muted-foreground">
+                                          {subItem.description}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </button>
+                                </NavigationMenuLink>
+                              </li>
+                            ))}
+                          </ul>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    );
+                  }
+
+                  const isActive = currentRoute === item.route;
+                  return (
+                    <NavigationMenuItem key={item.title}>
+                      <NavigationMenuLink asChild>
+                        <button
+                          onClick={() => handleNavClick(item.route!)}
+                          className={`group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${linkColorClass} ${
+                            isActive
+                              ? "text-primary font-semibold bg-secondary/60"
+                              : ""
+                          }`}
+                        >
+                          {item.title}
+                        </button>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  );
+                })}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
-        </div>
-      )}
+
+          {/* Action Items */}
+          <div className="hidden md:flex items-center gap-4">
+            {/* Language Selection Dropdown */}
+            <div className="relative">
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                translate="no"
+                className="appearance-none notranslate pl-4 pr-9 py-2 text-[10px] font-extrabold tracking-widest uppercase rounded-full border border-zinc-200 hover:bg-zinc-50 text-zinc-900 bg-transparent bg-no-repeat bg-[right_12px_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2523000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')]"
+                style={{ backgroundSize: "8px auto" }}
+              >
+                {languages.map((lang) => (
+                  <option key={lang.code} value={lang.code} className="text-black bg-white">
+                    {lang.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <ClickSpark sparkColor="#FF5A36" sparkRadius={18} sparkCount={6} duration={350}>
+              <a
+                href="tel:+18005550199"
+                className="px-5 py-2 text-xs font-bold tracking-widest uppercase rounded-full border border-zinc-200 hover:bg-zinc-50 text-zinc-900 bg-transparent flex items-center gap-2"
+              >
+                <Phone size={12} />
+                +1 (800) 555-0199
+              </a>
+            </ClickSpark>
+
+            <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400}>
+              <button
+                onClick={() => {
+                  window.dispatchEvent(
+                    new CustomEvent("open-assessment", { detail: { source: "manual_click" } })
+                  );
+                }}
+                className="px-5 py-2 text-xs font-bold tracking-widest uppercase rounded-full transition-all active:scale-95 duration-100 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/95"
+              >
+                {t("action.freeAudit")}
+              </button>
+            </ClickSpark>
+          </div>
+
+          {/* Mobile Navigation Trigger & Drawer */}
+          <div className="md:hidden flex items-center gap-3">
+            {/* Language Selection Mobile Dropdown */}
+            <div className="relative">
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                translate="no"
+                className="appearance-none notranslate pl-3 pr-7 py-1.5 text-[9px] font-extrabold tracking-wider uppercase rounded-full border border-zinc-200 hover:bg-zinc-50 text-zinc-900 bg-transparent bg-no-repeat bg-[right_10px_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2523000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')]"
+                style={{ backgroundSize: "7px auto" }}
+              >
+                {languages.map((lang) => (
+                  <option key={lang.code} value={lang.code} className="text-black bg-white">
+                    {lang.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <ClickSpark sparkColor="#FF5A36" sparkRadius={20} sparkCount={8} duration={350}>
+              <a
+                href="tel:+18005550199"
+                className="p-2 border border-zinc-200 hover:bg-zinc-50 text-zinc-900 rounded-full transition-colors flex items-center justify-center"
+                title="Call Us"
+              >
+                <Phone size={16} />
+              </a>
+            </ClickSpark>
+
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <button
+                  className="p-2 rounded-full transition-colors focus:outline-none cursor-pointer text-zinc-900 hover:bg-zinc-100"
+                  aria-label="Toggle Menu"
+                >
+                  <Menu size={24} />
+                </button>
+              </SheetTrigger>
+              <SheetContent className="overflow-y-auto bg-background border-zinc-200 text-zinc-900">
+                <SheetHeader>
+                  <SheetTitle className="text-left">
+                    <a
+                      onClick={() => {
+                        setIsSheetOpen(false);
+                        handleNavClick("landing");
+                      }}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <span className="text-lg font-extrabold tracking-tighter text-primary uppercase">
+                        {t("nav.brand")}
+                      </span>
+                    </a>
+                  </SheetTitle>
+                </SheetHeader>
+                
+                <div className="my-6 flex flex-col gap-6">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="flex w-full flex-col gap-4 text-zinc-800"
+                  >
+                    {menuItems.map((item) => {
+                      if (item.items) {
+                        return (
+                          <AccordionItem key={item.title} value={item.title} className="border-b-0">
+                            <AccordionTrigger className="py-0 font-semibold hover:no-underline text-zinc-700 hover:text-primary">
+                              {item.title}
+                            </AccordionTrigger>
+                            <AccordionContent className="mt-2 flex flex-col gap-1">
+                              {item.items.map((subItem) => (
+                                <a
+                                  key={subItem.title}
+                                  className="flex select-none gap-4 rounded-md p-3 leading-none outline-none transition-colors hover:bg-secondary/40 text-zinc-650 hover:text-primary cursor-pointer"
+                                  onClick={() => handleNavClick(subItem.route)}
+                                >
+                                  {subItem.icon}
+                                  <div className="text-left">
+                                    <div className="text-sm font-semibold">{subItem.title}</div>
+                                    <p className="text-xs text-zinc-500 mt-1">{subItem.description}</p>
+                                  </div>
+                                </a>
+                              ))}
+                            </AccordionContent>
+                          </AccordionItem>
+                        );
+                      }
+                      return (
+                        <a
+                          key={item.title}
+                          onClick={() => handleNavClick(item.route!)}
+                          className="font-semibold text-zinc-700 hover:text-primary cursor-pointer"
+                        >
+                          {item.title}
+                        </a>
+                      );
+                    })}
+                  </Accordion>
+
+                  <div className="border-t border-zinc-200 py-4 flex flex-col gap-3">
+                    <ClickSpark sparkColor="#FF5A36" sparkRadius={20} sparkCount={8} duration={400} className="w-full">
+                      <a
+                        href="tel:+18005550199"
+                        className="border border-zinc-200 text-zinc-900 text-center py-3.5 text-xs font-bold tracking-widest uppercase rounded-full hover:bg-zinc-50 transition-all active:scale-95 duration-100 flex items-center justify-center gap-2 cursor-pointer w-full"
+                      >
+                        <Phone size={12} />
+                        +1 (800) 555-0199
+                      </a>
+                    </ClickSpark>
+                    
+                    <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400} className="w-full">
+                      <button
+                        onClick={() => {
+                          setIsSheetOpen(false);
+                          window.dispatchEvent(
+                            new CustomEvent("open-assessment", { detail: { source: "manual_click" } })
+                          );
+                        }}
+                        className="bg-primary text-primary-foreground text-center py-3.5 text-xs font-bold tracking-widest uppercase rounded-full hover:bg-primary/95 transition-all active:scale-95 duration-100 flex items-center justify-center gap-2 cursor-pointer w-full"
+                      >
+                        {t("action.freeAudit")}
+                      </button>
+                    </ClickSpark>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </nav>
       </div>
     </header>
   );

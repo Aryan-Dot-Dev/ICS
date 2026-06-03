@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export type RoutePath = "landing" | "services" | "about" | "blog" | "contact";
+export type RoutePath = "landing" | "services" | "about" | "blog" | "contact" | "assessment";
 
 /**
  * Custom React hook to subscribe to browser hash routing changes (popstate / hashchange).
@@ -35,7 +35,7 @@ export function useHashLocation(): RoutePath {
 }
 
 function isValidRoute(hash: string): hash is RoutePath {
-  return ["landing", "services", "about", "blog", "contact"].includes(hash);
+  return ["landing", "services", "about", "blog", "contact", "assessment"].includes(hash);
 }
 
 export function navigateTo(path: RoutePath) {

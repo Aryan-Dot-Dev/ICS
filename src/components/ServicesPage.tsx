@@ -3,9 +3,11 @@ import { Search, BarChart3, FileText, Compass, ClipboardCheck, Send, Check } fro
 import { navigateTo, navigateToDelayed } from "../lib/router";
 import { SpotlightCard } from "./ui/SpotlightCard";
 import ClickSpark from "./ui/ClickSpark";
+import { useLanguage } from "../lib/i18n";
 
 export function ServicesPage() {
   const [, startTransition] = useTransition();
+  const { t } = useLanguage();
 
   const services = [
     {
@@ -52,10 +54,10 @@ export function ServicesPage() {
       <section className="px-6 md:px-20 pt-32 pb-16 md:pt-40 md:pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-7xl mx-auto">
         <div className="lg:col-span-7 text-left">
           <h1 className="font-sans text-4xl md:text-6xl font-extrabold text-black mb-8 leading-[1.1] max-w-2xl">
-            Comprehensive funding support for every business stage.
+            {t("services.title")}
           </h1>
           <p className="font-sans text-base text-zinc-500 max-w-xl mb-12 leading-relaxed">
-            Our institutional rigor ensures precision in navigating complex fiscal landscapes. We provide a sanctuary of clarity for enterprises seeking authoritative funding strategies.
+            {t("services.desc")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400}>
@@ -63,7 +65,7 @@ export function ServicesPage() {
                 onClick={() => startTransition(() => navigateToDelayed("contact", 400))}
                 className="bg-black text-white px-8 py-4 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-800 transition-colors active:scale-95 duration-100 cursor-pointer"
               >
-                Inquire Now
+                {t("action.contact")}
               </button>
             </ClickSpark>
             <ClickSpark sparkColor="#000" sparkRadius={24} sparkCount={8} duration={350}>
@@ -74,7 +76,7 @@ export function ServicesPage() {
                 }}
                 className="border border-black text-black px-8 py-4 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-50 transition-colors active:scale-95 duration-100 cursor-pointer"
               >
-                View Methodology
+                {t("action.services")}
               </button>
             </ClickSpark>
           </div>
@@ -94,7 +96,7 @@ export function ServicesPage() {
         <div className="max-w-7xl mx-auto">
           <div className="mb-16 text-left">
             <h2 className="font-sans text-3xl font-extrabold text-black tracking-tight">
-              Strategic Solutions
+              {t("services.badge")}
             </h2>
             <div className="h-1 w-20 bg-black mt-4" />
           </div>
@@ -136,17 +138,17 @@ export function ServicesPage() {
       {/* CTA Section */}
       <section className="px-6 md:px-20 py-24 flex flex-col items-center text-center max-w-7xl mx-auto">
         <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-black mb-6 tracking-tight">
-          Ready to find your funding?
+          {t("services.ctaTitle")}
         </h2>
         <p className="font-sans text-base text-zinc-500 max-w-2xl mb-10 leading-relaxed">
-          Connect with our advisory board to initiate a preliminary audit of your funding potential. Let our institutional expertise guide your next phase of growth.
+          {t("services.ctaDesc")}
         </p>
         <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400}>
           <button
             onClick={() => startTransition(() => navigateToDelayed("contact", 400))}
             className="bg-black text-white px-10 py-4.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-800 transition-colors active:scale-95 duration-100 cursor-pointer"
           >
-            Initiate Consultation
+            {t("services.ctaBtn")}
           </button>
         </ClickSpark>
 

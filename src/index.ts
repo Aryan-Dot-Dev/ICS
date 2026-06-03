@@ -27,6 +27,44 @@ const server = serve({
         message: `Hello, ${name}!`,
       });
     },
+
+    "/api/chat-restricted": {
+      async POST(req) {
+        try {
+          const body = await req.json();
+          const response = await fetch("http://127.0.0.1:8000/chat-restricted", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+          });
+          const data = await response.json();
+          return Response.json(data, { status: response.status });
+        } catch (error: any) {
+          return Response.json({ detail: error.message || "Failed to contact backend." }, { status: 502 });
+        }
+      }
+    },
+
+    "/api/recommend-schemes": {
+      async POST(req) {
+        try {
+          const body = await req.json();
+          const response = await fetch("http://127.0.0.1:8000/recommend-schemes", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+          });
+          const data = await response.json();
+          return Response.json(data, { status: response.status });
+        } catch (error: any) {
+          return Response.json({ detail: error.message || "Failed to contact backend." }, { status: 502 });
+        }
+      }
+    },
   },
 
   development: process.env.NODE_ENV !== "production" && {

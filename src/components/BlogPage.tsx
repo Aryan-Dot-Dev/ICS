@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import ClickSpark from "./ui/ClickSpark";
+import { useLanguage } from "../lib/i18n";
 
 export function BlogPage() {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const { t } = useLanguage();
 
   const categories = ["ALL", "POLICY", "GUIDES", "ANALYSIS", "CASE STUDIES"];
 
@@ -13,7 +15,7 @@ export function BlogPage() {
     {
       id: 1,
       category: "ANALYSIS",
-      readTime: "12 MIN READ",
+      readTime: `12 ${t("blog.readTime")}`,
       title: "The Shift in Institutional Allocation Strategies for 2025",
       excerpt: "An in-depth examination of how global consultancy firms are restructuring their private equity portfolios in response to emerging regulatory frameworks across the European Union and North America.",
       image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80",
@@ -22,7 +24,7 @@ export function BlogPage() {
     {
       id: 2,
       category: "GUIDES",
-      readTime: "6 MIN READ",
+      readTime: `6 ${t("blog.readTime")}`,
       title: "Navigating Compliance in Cross-Border Funding",
       excerpt: "A practical step-by-step guide for institutional leaders on maintaining transparency while managing diverse global investment portfolios.",
       image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
@@ -31,7 +33,7 @@ export function BlogPage() {
     {
       id: 3,
       category: "POLICY",
-      readTime: "8 MIN READ",
+      readTime: `8 ${t("blog.readTime")}`,
       title: "New Fiscal Reforms and Their Impact on Growth",
       excerpt: "Evaluating the legislative changes proposed in the latest treasury summit and what they mean for medium-term capital availability.",
       image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
@@ -40,7 +42,7 @@ export function BlogPage() {
     {
       id: 4,
       category: "CASE STUDIES",
-      readTime: "15 MIN READ",
+      readTime: `15 ${t("blog.readTime")}`,
       title: "Scaling the Institutional Advisory Board",
       excerpt: "How a Tier-1 financial group successfully restructured its internal advisory workflows to increase operational efficiency by 40%.",
       image: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=800&q=80",
@@ -74,11 +76,11 @@ export function BlogPage() {
       <section className="px-6 md:px-20 pt-32 pb-16 md:pt-40 md:pb-24 flex flex-col md:flex-row gap-12 md:gap-16 items-end max-w-7xl mx-auto text-left">
         <div className="flex-1">
           <h1 className="font-sans text-4xl md:text-6xl font-extrabold tracking-tight text-black max-w-3xl leading-[1.1]">
-            Insights and updates for your funding journey
+            {t("blog.title")}
           </h1>
         </div>
         <div className="w-full md:w-1/3 text-zinc-500 font-sans text-base leading-relaxed">
-          Expert analysis on institutional compliance, market trends, and strategic advisory for the next generation of capital management.
+          {t("blog.desc")}
         </div>
       </section>
 
