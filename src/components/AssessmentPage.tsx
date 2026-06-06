@@ -5,7 +5,6 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import ClickSpark from "./ui/ClickSpark";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import illustration from "../notion_illustration.png";
 import { gsap } from "gsap";
 const Grainient = React.lazy(() => import("./ui/Grainient"));
 
@@ -348,7 +347,7 @@ export function AssessmentPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-black text-white py-3 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-800 transition-all duration-100 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full bg-primary text-white py-3 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-primary/90 transition-all duration-100 cursor-pointer flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <>
@@ -518,7 +517,7 @@ export function AssessmentPage() {
                           <span className="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-75 pointer-events-none group-hover/tooltip:animate-none" />
                           <Phone size={11} strokeWidth={2.5} />
                         </a>
-                        
+
                         {/* Tooltip Content */}
                         <div className="absolute bottom-full right-0 mb-2 px-2.5 py-1.5 bg-zinc-900 text-white text-[10px] font-bold tracking-wide uppercase rounded-lg shadow-md whitespace-nowrap opacity-0 scale-95 pointer-events-none group-hover/tooltip:opacity-100 group-hover/tooltip:scale-100 transition-all duration-200 ease-out z-30 font-sans border border-zinc-800 flex items-center gap-1.5">
                           <Phone size={10} className="text-primary" />
@@ -617,9 +616,8 @@ export function AssessmentPage() {
                   >
                     <SelectTrigger
                       id="businessType"
-                      className={`w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs text-black outline-none h-10 cursor-pointer ${
-                        errors.businessType ? "border-red-500" : ""
-                      }`}
+                      className={`w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs text-black outline-none h-10 cursor-pointer ${errors.businessType ? "border-red-500" : ""
+                        }`}
                     >
                       <SelectValue placeholder="Select business sector" />
                     </SelectTrigger>
@@ -647,9 +645,8 @@ export function AssessmentPage() {
                     rows={4}
                     value={formData.businessDescription}
                     onChange={handleInputChange}
-                    className={`text-xs rounded-lg border-zinc-200 focus-visible:ring-black/20 min-h-[100px] resize-none ${
-                      errors.businessDescription ? "border-red-500" : ""
-                    }`}
+                    className={`text-xs rounded-lg border-zinc-200 focus-visible:ring-black/20 min-h-[100px] resize-none ${errors.businessDescription ? "border-red-500" : ""
+                      }`}
                   />
                   {errors.businessDescription && (
                     <span className="text-[9px] font-semibold text-red-500 block">{errors.businessDescription}</span>
@@ -669,7 +666,7 @@ export function AssessmentPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-black text-white px-8 py-2.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
+                  className="bg-primary text-white px-8 py-2.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-primary/90 transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
                 >
                   {isSubmitting ? (
                     <>

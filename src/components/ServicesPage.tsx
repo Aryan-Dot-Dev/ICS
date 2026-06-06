@@ -292,7 +292,7 @@ export function ServicesPage() {
             <h2 className="font-sans text-2xl md:text-3xl font-extrabold text-black tracking-tight">
               Services Provided
             </h2>
-            <div className="h-1 w-12 bg-black mt-3" />
+            <div className="h-1 w-12 bg-primary mt-3" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -308,12 +308,12 @@ export function ServicesPage() {
                       key={idx}
                       onClick={() => setSelectedIdx(idx)}
                       className={`w-full p-4 rounded-xl border text-left transition-all duration-200 flex items-center gap-4 cursor-pointer hover:shadow-xs group ${isActive
-                        ? "bg-white border-black shadow-sm"
+                        ? "bg-white border-primary shadow-sm"
                         : "bg-white/50 border-zinc-200 hover:bg-white hover:border-zinc-350"
                         }`}
                     >
                       <div
-                        className={`p-2 rounded-lg transition-colors flex items-center justify-center ${isActive ? "bg-black text-white" : "bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200"
+                        className={`p-2 rounded-lg transition-colors flex items-center justify-center ${isActive ? "bg-primary text-white" : "bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200"
                           }`}
                       >
                         <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
@@ -344,11 +344,11 @@ export function ServicesPage() {
                       key={idx}
                       onClick={() => setSelectedIdx(idx)}
                       className={`px-4 py-3 rounded-xl border text-left transition-all duration-200 flex items-center gap-2.5 shrink-0 cursor-pointer ${isActive
-                        ? "bg-white border-black shadow-xs"
+                        ? "bg-white border-primary shadow-xs"
                         : "bg-white/60 border-zinc-200"
                         }`}
                     >
-                      <Icon size={14} className={isActive ? "text-black" : "text-zinc-500"} />
+                      <Icon size={14} className={isActive ? "text-primary" : "text-zinc-500"} />
                       <span className={`font-sans text-xs font-extrabold tracking-wide ${isActive ? "text-black" : "text-zinc-650"}`}>
                         {svc.title}
                       </span>
@@ -363,7 +363,7 @@ export function ServicesPage() {
               <div className="space-y-6">
                 {/* Panel Header */}
                 <div className="flex items-start gap-4 border-b border-zinc-100 pb-5">
-                  <div className="p-3 bg-black text-white rounded-xl flex items-center justify-center shadow-sm">
+                  <div className="p-3 bg-primary text-white rounded-xl flex items-center justify-center shadow-sm">
                     <ActiveIcon size={24} strokeWidth={2.5} />
                   </div>
                   <div>
@@ -401,7 +401,7 @@ export function ServicesPage() {
                 <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={6} duration={350}>
                   <button
                     onClick={openModal}
-                    className="bg-black hover:bg-zinc-800 text-white px-8 py-3 text-xs font-bold tracking-widest uppercase rounded-lg transition-colors cursor-pointer flex items-center gap-2 shadow-xs"
+                    className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-xs font-bold tracking-widest uppercase rounded-lg transition-colors cursor-pointer flex items-center gap-2 shadow-xs"
                   >
                     <span>Verify My Eligibility</span>
                     <ArrowRight size={12} />
@@ -532,7 +532,7 @@ export function ServicesPage() {
             <h2 className="font-sans text-2xl font-extrabold text-black tracking-tight">
               Frequently Asked Compliance Questions
             </h2>
-            <div className="h-1 w-12 bg-black mt-3" />
+            <div className="h-1 w-12 bg-primary mt-3" />
           </div>
 
           <div className="bg-white border border-zinc-200 rounded-2xl p-4 divide-y divide-zinc-150">

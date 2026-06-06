@@ -15,7 +15,6 @@ import { TextType } from "./ui/TextType";
 import { useLanguage } from "../lib/i18n";
 import illustration1 from "../illustration_1.png";
 import illustration3 from "../illustration_3.png";
-import { SpotlightCard } from "./ui/SpotlightCard";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
@@ -161,7 +160,7 @@ const getStateImage = (stateName: string): string => {
     "Nagaland": "https://plus.unsplash.com/premium_photo-1661957883806-4f6d9ffff913?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "Kerala": "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1000&q=80",
     "Punjab": "https://images.unsplash.com/photo-1514222134-b57cbb8ce073?auto=format&fit=crop&w=1000&q=80",
-    "Assam": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80",
+    "Assam": "https://images.unsplash.com/photo-1602020277972-fd160de66021?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "Tripura": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
     "Dadara & Nagar Havelli": "https://images.unsplash.com/photo-1567097592889-d5dc1590cd5c?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "Goa": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80",
@@ -173,7 +172,7 @@ const getStateImage = (stateName: string): string => {
     "Mizoram": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1000&q=80",
     "Rajasthan": "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1000&q=80",
     "Sikkim": "https://images.unsplash.com/photo-1573398643956-2b9e6ade3456?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "Uttarakhand": "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=80",
+    "Uttarakhand": "https://images.unsplash.com/photo-1608942025318-1191eeade556?q=80&w=1155&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "Jharkhand": "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=1000&q=80",
     "NCT of Delhi": "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1000&q=80",
     "Telangana": "https://images.unsplash.com/photo-1621909321963-2276c9660298?q=80&w=1217&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -191,9 +190,9 @@ const MetricItem = React.memo(({ label, value }: MetricItemProps) => {
   return (
     <div
       onMouseEnter={() => setHoverCount((p) => p + 1)}
-      className="flex flex-col text-left cursor-pointer group animate-fade-in"
+      className="flex flex-col items-center text-center cursor-pointer group animate-fade-in w-full"
     >
-      <span className="font-sans text-4xl md:text-5xl font-extrabold text-black mb-1 flex items-center h-[36px] md:h-[48px]">
+      <span className="font-sans text-4xl md:text-5xl font-extrabold text-black mb-1 flex items-center justify-center h-[36px] md:h-[48px] w-full">
         <AnimatedCounter hoverTrigger={hoverCount} value={value} fontSize={36} mdFontSize={48} fontWeight={800} textColor="black" />
       </span>
       <span className="font-sans text-[10px] tracking-widest text-zinc-400 group-hover:text-black transition-colors font-bold uppercase select-none">
@@ -271,6 +270,24 @@ export function LandingPage() {
   const [activeRegion, setActiveRegion] = useState("Maharashtra");
   const [hoveredState, setHoveredState] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  // Auto-switch active states periodically (every 4 seconds) if the user is not hovering over the map
+  useEffect(() => {
+    if (hoveredState !== null) return;
+
+    const stateNames = indiaStatesData.features.map((f: any) => f.properties.name);
+    if (stateNames.length === 0) return;
+
+    const interval = setInterval(() => {
+      setActiveRegion((prev) => {
+        const currentIndex = stateNames.indexOf(prev);
+        const nextIndex = (currentIndex + 1) % stateNames.length;
+        return stateNames[nextIndex];
+      });
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [hoveredState]);
 
   const [contactData, setContactData] = useState({
     name: "",
@@ -385,8 +402,10 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* Center Column: Hero Text, Description, Buttons */}
             <div className="col-span-2 lg:col-span-6 order-1 lg:order-2 text-center flex flex-col items-center justify-center">
+              <span className="font-sans text-base sm:text-lg font-extrabold tracking-[0.25em] uppercase text-primary mb-4 block select-none">
+                Introducing
+              </span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-zinc-900 leading-[1.1] text-center">
                 AI Search Engine for {" "}
                 <span className="inline-block min-w-[200px] sm:min-w-[320px] text-center text-primary notranslate">
@@ -501,9 +520,9 @@ export function LandingPage() {
       {/* Metrics Row */}
       <section className="border-y border-zinc-200/80 bg-secondary/35">
         <div className="max-w-7xl mx-auto px-6 md:px-20 py-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
             <MetricItem label={t("metrics.activeSchemes")} value="950" />
-            <MetricItem label={t("metrics.statesMapped")} value="28+7" />
+            <MetricItem label={t("metrics.statesMapped")} value="28 + 7" />
             <MetricItem label={t("metrics.capitalOptimized")} value="₹19400 Crs" />
             <MetricItem label={t("metrics.accuracy")} value="97%" />
           </div>
@@ -944,7 +963,7 @@ export function LandingPage() {
                   <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400} className="w-full" style={{ display: "block", width: "100%" }}>
                     <Button
                       type="submit"
-                      className="w-full bg-black text-white hover:bg-zinc-800 transition-colors h-11 text-xs font-bold tracking-widest uppercase rounded-lg select-none active:scale-[0.99] duration-105 cursor-pointer flex items-center justify-center"
+                      className="w-full bg-primary text-white hover:bg-primary/90 transition-colors h-11 text-xs font-bold tracking-widest uppercase rounded-lg select-none active:scale-[0.99] duration-105 cursor-pointer flex items-center justify-center"
                     >
                       Send Request
                     </Button>

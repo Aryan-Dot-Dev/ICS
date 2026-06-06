@@ -36,18 +36,55 @@ const POLICY_ANSWERS: Record<string, { text: string; isActionable: boolean; type
   }
 };
 
+const WELCOME_MESSAGE: Message = {
+  id: "welcome",
+  sender: "bot",
+  text: "Welcome to Infou Consultancy. I am your automated policy assistant. Type a query to check your government subsidy eligibility.",
+  timestamp: new Date()
+};
+
+const SESSION_KEY = "infou_chat_history";
+
+const loadMessages = (): Message[] => {
+  try {
+    const stored = sessionStorage.getItem(SESSION_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored) as Message[];
+      return parsed.map((m) => ({ ...m, timestamp: new Date(m.timestamp) }));
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return [WELCOME_MESSAGE];
+};
+
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      sender: "bot",
-      text: "Welcome to Infou Consultancy. I am your automated policy assistant. Type a query to check your government subsidy eligibility.",
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>(loadMessages);
   const [inputValue, setInputValue] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Persist messages to sessionStorage whenever they change
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(messages));
+    } catch {
+      // ignore quota errors
+    }
+  }, [messages]);
+
+  // Close chat when clicking outside the widget
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
 
   // Scroll to bottom on new message
   useEffect(() => {
@@ -118,7 +155,7 @@ export function ChatbotWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 font-sans text-left">
+    <div ref={containerRef} className="fixed bottom-6 right-6 z-40 font-sans text-left">
       {/* Chat Window Panel */}
       {isOpen && (
         <div className="absolute bottom-16 right-0 w-[340px] sm:w-[380px] h-[480px] bg-white border border-zinc-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50 animate-in slide-in-from-bottom-5 duration-200 origin-bottom-right">
@@ -148,18 +185,18 @@ export function ChatbotWidget() {
                   <div
                     className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed shadow-xs ${
                       isBot
-                        ? "bg-white border border-zinc-200 text-zinc-800 rounded-tl-none"
-                        : "bg-black text-white rounded-tr-none"
+                        ? "bg-[#FFF7F0] border border-orange-100 text-zinc-800 rounded-tl-none"
+                        : "bg-[#C45000] text-white rounded-tr-none"
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{msg.text}</p>
                     
                     {/* Action Link Shortcut inside bot reply */}
                     {isBot && msg.isActionable && (
-                      <div className="mt-3 pt-2.5 border-t border-zinc-100 flex justify-end">
+                      <div className="mt-3 pt-2.5 border-t border-orange-100/70 flex justify-end">
                         <button
                           onClick={() => triggerAction(msg.type)}
-                          className="text-[10px] font-bold text-black hover:text-zinc-600 transition-colors uppercase tracking-wider flex items-center gap-1 cursor-pointer"
+                          className="text-[10px] font-bold text-orange-600 hover:text-orange-800 transition-colors uppercase tracking-wider flex items-center gap-1 cursor-pointer"
                         >
                           {msg.type === "contact" ? "Go to Contact" : "Launch Free Form"}
                           <ArrowRight size={10} />
@@ -194,7 +231,7 @@ export function ChatbotWidget() {
             <ClickSpark sparkColor="#fff" sparkRadius={15} sparkCount={6} duration={350}>
               <button
                 type="submit"
-                className="w-9 h-9 bg-black text-white hover:bg-zinc-800 rounded-lg flex items-center justify-center transition-colors active:scale-95 duration-100 shrink-0 cursor-pointer"
+                className="w-9 h-9 bg-primary text-white hover:bg-primary/90 rounded-lg flex items-center justify-center transition-colors active:scale-95 duration-100 shrink-0 cursor-pointer"
                 title="Send Message"
               >
                 <Send size={12} />
@@ -216,7 +253,7 @@ export function ChatbotWidget() {
         <ClickSpark sparkColor="#fff" sparkRadius={24} sparkCount={8} duration={400}>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-14 h-14 bg-black hover:bg-zinc-800 text-white rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-zinc-800 relative group"
+            className="w-14 h-14 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-primary relative group"
             title="Consult AI Policy Advisor"
           >
             {isOpen ? (

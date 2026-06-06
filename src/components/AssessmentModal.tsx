@@ -322,7 +322,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                 <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400}>
                   <button
                     onClick={onClose}
-                    className="bg-black text-white px-8 py-3.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-800 transition-colors active:scale-95 duration-100 cursor-pointer w-full sm:w-auto text-center"
+                    className="bg-primary text-white px-8 py-3.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-primary/90 transition-colors active:scale-95 duration-100 cursor-pointer w-full sm:w-auto text-center"
                   >
                     Dismiss Warning
                   </button>
@@ -687,7 +687,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                 <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400}>
                   <button
                     onClick={onClose}
-                    className="bg-black text-white px-10 py-3.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-800 transition-colors active:scale-95 duration-100 cursor-pointer"
+                    className="bg-primary text-white px-10 py-3.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-primary/90 transition-colors active:scale-95 duration-100 cursor-pointer"
                   >
                     Close Diagnostic View
                   </button>

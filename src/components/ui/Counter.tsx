@@ -216,13 +216,17 @@ export function AnimatedCounter({
   hoverTrigger,
 }: AnimatedCounterProps) {
   const parsed = useMemo(() => {
-    const str = String(value).trim();
+    const str = String(value);
     const regex = /^([^\d\.]*)(\d+(?:\.\d+)?)(.*)$/;
     const match = str.match(regex);
     if (match) {
       const [, prefix = '', numStr = '0', suffix = ''] = match;
       const num = parseFloat(numStr);
-      return { prefix, num, suffix };
+      return { 
+        prefix: prefix.replace(/ /g, '\u00A0'), 
+        num, 
+        suffix: suffix.replace(/ /g, '\u00A0') 
+      };
     }
     return { prefix: '', num: parseFloat(str) || 0, suffix: '' };
   }, [value]);
