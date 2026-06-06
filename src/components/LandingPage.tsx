@@ -238,6 +238,34 @@ const WhyChooseCard = React.memo(({ icon, value, title, description }: WhyChoose
 });
 WhyChooseCard.displayName = "WhyChooseCard";
 
+const StarIcon = ({ filled, half }: { filled?: boolean; half?: boolean }) => {
+  if (filled) {
+    return (
+      <svg className="text-amber-500 fill-amber-500" style={{ width: "18px", height: "18px" }} viewBox="0 0 20 20" fill="currentColor">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+      </svg>
+    );
+  }
+  if (half) {
+    return (
+      <svg className="text-amber-500" style={{ width: "18px", height: "18px" }} viewBox="0 0 20 20" fill="currentColor">
+        <defs>
+          <linearGradient id="halfGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="50%" stopColor="currentColor" />
+            <stop offset="50%" stopColor="#E4E4E7" />
+          </linearGradient>
+        </defs>
+        <path fill="url(#halfGrad)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="text-zinc-200 fill-zinc-200" style={{ width: "18px", height: "18px" }} viewBox="0 0 20 20" fill="currentColor">
+      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+    </svg>
+  );
+};
+
 export function LandingPage() {
   const { t, language } = useLanguage();
   const [activeRegion, setActiveRegion] = useState("Maharashtra");
@@ -360,7 +388,7 @@ export function LandingPage() {
             {/* Center Column: Hero Text, Description, Buttons */}
             <div className="col-span-2 lg:col-span-6 order-1 lg:order-2 text-center flex flex-col items-center justify-center">
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-zinc-900 leading-[1.1] text-center">
-                Government Funding Strategy for Indian{" "}
+                AI Search Engine for {" "}
                 <span className="inline-block min-w-[200px] sm:min-w-[320px] text-center text-primary notranslate">
                   <TextType
                     text={["Businesses", "Startups", "MSMEs"]}
@@ -377,6 +405,34 @@ export function LandingPage() {
               <p className="mt-6 text-lg text-zinc-650 leading-relaxed text-center max-w-xl mx-auto">
                 {t("hero.desc")}
               </p>
+
+              {/* Social Proof Rating Widget */}
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 select-none animate-in fade-in slide-in-from-bottom-3 duration-500">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-sans text-base md:text-lg font-bold text-zinc-900 leading-none">4.6</span>
+                  <div className="flex items-center -space-x-0.5">
+                    <StarIcon filled />
+                    <StarIcon filled />
+                    <StarIcon filled />
+                    <StarIcon filled />
+                    <StarIcon half />
+                  </div>
+                </div>
+
+                <div className="w-[1px] h-4 bg-zinc-200 hidden sm:block" />
+
+                <div className="flex items-center gap-3">
+                  <div className="flex -space-x-2">
+                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder 1" />
+                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder 2" />
+                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder 3" />
+                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder 4" />
+                  </div>
+                  <span className="font-sans text-xs md:text-sm text-zinc-500 font-medium leading-none">
+                    Based on trusted businesses
+                  </span>
+                </div>
+              </div>
 
               <AnimatedGroup
                 variants={{
@@ -446,10 +502,10 @@ export function LandingPage() {
       <section className="border-y border-zinc-200/80 bg-secondary/35">
         <div className="max-w-7xl mx-auto px-6 md:px-20 py-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <MetricItem label={t("metrics.activeSchemes")} value="130+" />
-            <MetricItem label={t("metrics.statesMapped")} value="28" />
-            <MetricItem label={t("metrics.capitalOptimized")} value="₹42B" />
-            <MetricItem label={t("metrics.complianceError")} value="0%" />
+            <MetricItem label={t("metrics.activeSchemes")} value="950" />
+            <MetricItem label={t("metrics.statesMapped")} value="28+7" />
+            <MetricItem label={t("metrics.capitalOptimized")} value="₹19400 Crs" />
+            <MetricItem label={t("metrics.accuracy")} value="97%" />
           </div>
         </div>
       </section>
@@ -484,7 +540,7 @@ export function LandingPage() {
             <div className="grid grid-cols-2 gap-6 w-full max-w-sm mt-6 p-5 bg-white/[0.08] backdrop-blur-md border border-white/15 rounded-2xl">
               <div className="flex flex-col gap-1">
                 <span className="text-[9px] font-mono tracking-widest text-white/50 uppercase select-none">
-                  CAPITAL ALLOCATED
+                  State Budget
                 </span>
                 <span className="text-2xl font-sans font-extrabold text-white">
                   {getStateData(activeRegion).funds}
@@ -492,7 +548,7 @@ export function LandingPage() {
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-[9px] font-mono tracking-widest text-white/50 uppercase select-none">
-                  INCUBATION HUBS
+                  INCUBATION NUMBER
                 </span>
                 <span className="text-2xl font-sans font-extrabold text-white">
                   {getStateData(activeRegion).centers}
@@ -504,14 +560,6 @@ export function LandingPage() {
                 </span>
                 <span className="text-2xl font-sans font-extrabold text-emerald-400">
                   {getStateData(activeRegion).success}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-[9px] font-mono tracking-widest text-white/50 uppercase select-none">
-                  STARTUPS SUPPORTED
-                </span>
-                <span className="text-2xl font-sans font-extrabold text-white">
-                  {getStateData(activeRegion).startups}
                 </span>
               </div>
             </div>
@@ -767,9 +815,6 @@ export function LandingPage() {
       <section id="contact-section" className="px-6 md:px-20 py-24 bg-zinc-50 border-t border-zinc-200 scroll-mt-20">
         <div className="max-w-7xl mx-auto">
           <div className="mb-16 text-center">
-            <span className="font-sans text-xs font-bold tracking-[0.2em] uppercase text-zinc-455 mb-4 block">
-              Get In Touch
-            </span>
             <h2 className="font-sans text-3xl md:text-4xl lg:text-5xl font-extrabold text-black tracking-tight">
               Speak with funding advisors today
             </h2>
@@ -799,19 +844,6 @@ export function LandingPage() {
                 </div>
                 <p className="font-sans text-base font-extrabold text-black mt-4 underline decoration-1 underline-offset-4 tracking-wide">
                   funding@infouconsultancy.com
-                </p>
-              </div>
-
-              {/* Office */}
-              <div className="bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col justify-between min-h-[160px] hover:border-black transition-colors duration-300 group cursor-pointer text-left">
-                <div>
-                  <MapPin size={28} strokeWidth={1.5} className="text-black mb-4" />
-                  <h3 className="font-sans text-base font-bold text-black mb-1">Visit Office</h3>
-                  <p className="font-sans text-xs text-zinc-400">Headquarters for scheduled advisory board meetings.</p>
-                </div>
-                <p className="font-sans text-xs text-zinc-550 mt-4 leading-relaxed">
-                  72nd Floor, Global Finance Center<br />
-                  Nariman Point, Mumbai, 400021
                 </p>
               </div>
             </div>

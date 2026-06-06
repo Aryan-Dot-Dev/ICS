@@ -32,6 +32,7 @@ export const translations = {
     "metrics.capitalSecured": "Capital Secured",
     "metrics.capitalOptimized": "Capital Optimized",
     "metrics.complianceError": "Compliance Error",
+    "metrics.accuracy": "Accuracy",
 
     // India Map Section
     "map.hudActive": "Active Territory",
@@ -52,7 +53,7 @@ export const translations = {
 
     // How ICS Works
     "process.badge": "Our Process",
-    "process.title": "How ICS Works",
+    "process.title": "How ICS Works?",
     "process.desc": "Our structured engagement model is engineered for rapid execution, absolute clarity, and zero friction.",
     "process.step1.title": "Discovery Call",
     "process.step1.duration": "30 min · free",

@@ -77,19 +77,6 @@ export function ContactPage() {
                 funding@infouconsultancy.com
               </p>
             </div>
-
-            {/* Office */}
-            <div className="bg-white border border-zinc-200 rounded-2xl p-8 flex flex-col justify-between min-h-[200px] hover:border-black transition-colors duration-300 group cursor-pointer text-left">
-              <div>
-                <MapPin size={32} strokeWidth={1.5} className="text-black mb-6" />
-                <h3 className="font-sans text-lg font-bold text-black mb-2">Visit Office</h3>
-                <p className="font-sans text-xs text-zinc-400">Headquarters for scheduled advisory board meetings.</p>
-              </div>
-              <p className="font-sans text-sm text-zinc-500 mt-6 leading-relaxed">
-                72nd Floor, Global Finance Center<br />
-                Nariman Point, Mumbai, 400021
-              </p>
-            </div>
           </div>
 
           {/* Right Column: Callback Request Form */}

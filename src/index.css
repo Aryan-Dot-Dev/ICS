@@ -68,6 +68,16 @@
     0%, 100% { transform: translateY(0) rotate(0deg); }
     50% { transform: translateY(-10px) rotate(2deg); }
   }
+
+  --animate-spin: spin 1s linear infinite;
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 @layer base {
@@ -115,14 +125,7 @@ body::before {
   }
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* Custom spin keyframes declared inside @theme */
 
 @media (prefers-reduced-motion) {
   *,

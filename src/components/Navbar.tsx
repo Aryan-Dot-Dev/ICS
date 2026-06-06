@@ -1,5 +1,5 @@
 import React, { useState, useTransition, useEffect } from "react";
-import { Menu, X, Phone, Book, Sunset, Trees, Zap, Award, Landmark, TrendingUp } from "lucide-react";
+import { Menu, X, Phone, Book, Sunset, Trees, Zap, Award, Landmark, TrendingUp, Sparkle } from "lucide-react";
 import { RoutePath, navigateTo, navigateToDelayed } from "../lib/router";
 import ClickSpark from "./ui/ClickSpark";
 import { useLanguage } from "../lib/i18n";
@@ -95,29 +95,41 @@ export function Navbar({ currentRoute }: NavbarProps) {
       route: "services" as RoutePath,
       items: [
         {
-          title: "Grants",
-          description: "Government Schemes",
-          icon: <Award className="w-5 h-5" />,
+          title: "Government Grants",
+          // description: "Government Grants",
+          icon: <Award className="w-4 h-4" />,
           route: "services" as RoutePath,
         },
         {
-          title: "Loans",
-          description: "Bank Financing",
-          icon: <Landmark className="w-5 h-5" />,
+          title: "Startup Schemes",
+          // description: "Startup Scheme",
+          icon: <Sparkle className="w-4 h-4" />,
           route: "services" as RoutePath,
         },
         {
-          title: "NBFC",
-          description: "Alternative Funding",
-          icon: <TrendingUp className="w-5 h-5" />,
+          title: "Bank Financing",
+          // description: "Bank Financing",
+          icon: <Landmark className="w-4 h-4" />,
           route: "services" as RoutePath,
         },
+        {
+          title: "Incubation Connect",
+          // description: "Incubation Connect",
+          icon: <TrendingUp className="w-4 h-4" />,
+          route: "services" as RoutePath,
+        },
+        {
+          title: "Investor Connect",
+          // description: "Investor Connect",
+          icon: <TrendingUp className="w-4 h-4" />,
+          route: "services" as RoutePath,
+        }
       ],
     },
-    {
+    /* {
       title: t("nav.blogs"),
       route: "blog" as RoutePath,
-    },
+    }, */
     {
       title: t("nav.contact"),
       route: "landing" as RoutePath,
@@ -172,20 +184,15 @@ export function Navbar({ currentRoute }: NavbarProps) {
                                 <NavigationMenuLink asChild>
                                   <button
                                     onClick={() => handleNavClick(subItem.route)}
-                                    className="group flex select-none items-start gap-4 rounded-xl p-3 text-left w-full border border-transparent hover:border-primary/10 hover:bg-primary/[0.03] transition-all duration-300 cursor-pointer"
+                                    className="group flex select-none items-center gap-4 rounded-xl p-3 text-left w-full border border-transparent hover:border-primary/10 hover:bg-primary/[0.03] transition-all duration-300 cursor-pointer"
                                   >
-                                    <div className="p-2.5 bg-bronze/10 text-bronze group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 rounded-xl flex items-center justify-center shrink-0">
+                                    <div className="p-2 bg-bronze/10 text-bronze group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 rounded-lg flex items-center justify-center shrink-0">
                                       {subItem.icon}
                                     </div>
                                     <div className="flex flex-col text-left">
                                       <div className="text-sm font-extrabold text-black group-hover:text-primary transition-colors duration-300">
                                         {subItem.title}
                                       </div>
-                                      {subItem.description && (
-                                        <p className="text-xs text-zinc-400 group-hover:text-zinc-500 font-medium transition-colors duration-300 mt-1">
-                                          {subItem.description}
-                                        </p>
-                                      )}
                                     </div>
                                   </button>
                                 </NavigationMenuLink>
@@ -320,21 +327,16 @@ export function Navbar({ currentRoute }: NavbarProps) {
                               {item.items.map((subItem) => (
                                 <button
                                   key={subItem.title}
-                                  className="group flex select-none items-start gap-4 rounded-xl p-3 text-left w-full border border-transparent hover:border-primary/10 hover:bg-primary/[0.03] transition-all duration-300 cursor-pointer"
+                                  className="group flex select-none items-center gap-4 rounded-xl p-3 text-left w-full border border-transparent hover:border-primary/10 hover:bg-primary/[0.03] transition-all duration-300 cursor-pointer"
                                   onClick={() => handleNavClick(subItem.route)}
                                 >
-                                  <div className="p-2.5 bg-bronze/10 text-bronze group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 rounded-xl flex items-center justify-center shrink-0">
+                                  <div className="p-2 bg-bronze/10 text-bronze group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 rounded-lg flex items-center justify-center shrink-0">
                                     {subItem.icon}
                                   </div>
                                   <div className="flex flex-col text-left">
                                     <div className="text-sm font-extrabold text-zinc-800 group-hover:text-primary transition-colors duration-300">
                                       {subItem.title}
                                     </div>
-                                    {subItem.description && (
-                                      <p className="text-xs text-zinc-400 group-hover:text-zinc-500 font-medium transition-colors duration-300 mt-1">
-                                        {subItem.description}
-                                      </p>
-                                    )}
                                   </div>
                                 </button>
                               ))}

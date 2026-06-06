@@ -52,6 +52,13 @@ export function App() {
         return () => clearTimeout(timer);
     }, [hasSubmitted, isAssessmentOpen, route]);
 
+    // Redirect from hidden blog page to landing page
+    useEffect(() => {
+        if (route === "blog") {
+            navigateTo("landing");
+        }
+    }, [route]);
+
     const handleAssessmentSubmit = (payload: any) => {
         setHasSubmitted(true);
         sessionStorage.setItem("infou_assessment_submitted", "true");
@@ -62,8 +69,8 @@ export function App() {
         switch (route) {
             case "services":
                 return <ServicesPage />;
-            case "blog":
-                return <BlogPage />;
+            // case "blog":
+            //     return <BlogPage />;
             case "assessment":
                 return <AssessmentPage />;
             case "landing":

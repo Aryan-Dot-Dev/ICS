@@ -128,14 +128,14 @@ export function AboutPage() {
             <p className="font-sans text-base text-zinc-500 max-w-xl mb-8 leading-relaxed">
               {t("about.objDesc")}
             </p>
-            <ClickSpark sparkColor="#000" sparkRadius={24} sparkCount={8} duration={350}>
+            {/* <ClickSpark sparkColor="#000" sparkRadius={24} sparkCount={8} duration={350}>
               <button
                 onClick={() => startTransition(() => navigateToDelayed("blog", 350))}
                 className="border border-black text-black px-8 py-3.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-50 transition-colors active:scale-95 duration-100 cursor-pointer"
               >
                 {t("action.readWhitepapers")}
               </button>
-            </ClickSpark>
+            </ClickSpark> */}
           </div>
 
           <div className="flex justify-center lg:justify-end">

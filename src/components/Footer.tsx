@@ -101,7 +101,7 @@ export function Footer({ onNavigate }: FooterProps) {
                   Sovereign Schemes
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a 
                   href="#/blog" 
                   onClick={(e) => handleLinkClick(e, "blog")}
@@ -109,7 +109,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 >
                   Research Papers
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 

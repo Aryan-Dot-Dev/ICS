@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, CheckCircle, Copy, Check } from "lucide-react";
+import { X, CheckCircle, Copy, Check, Phone } from "lucide-react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
@@ -61,6 +61,18 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
       setRequestPayload(null);
       setCurrentStepIndex(1);
     }
+  }, [isOpen]);
+
+  // Prevent background scrolling when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -223,37 +235,23 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in-0 duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs transition-opacity animate-in fade-in-0 duration-200">
       {/* Click outside to close (disabled for form integrity, close button is explicit) */}
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="relative w-full max-w-xl bg-white border border-zinc-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[600px] max-h-[90vh] z-10 animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-xl z-10 animate-in zoom-in-95 duration-200">
         
-        {/* Header Banner */}
-        <div className="border-b border-zinc-150 px-6 py-5 flex items-center justify-between bg-zinc-50">
-          <div>
-            <span className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase block mb-1">
-              Sovereign Diagnostics
-            </span>
-            <h2 className="font-sans text-lg font-extrabold text-black">
-              {isSuccess ? "Assessment Payload Ready" : "Start Free Assessment"}
-            </h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg border border-zinc-200 text-zinc-400 hover:text-black hover:bg-zinc-100 transition-colors"
-            title="Close"
-          >
-            <X size={16} />
-          </button>
-        </div>
-
-        {/* Content Area */}
-        <div 
-          className="overflow-y-auto overflow-x-hidden px-6 md:px-8 pt-6 md:pt-8 pb-12 md:pb-16 flex-grow"
-          style={{ scrollbarGutter: "stable" }}
+        {/* Premium white circular Close Button positioned floating above on mobile and diagonally at the corner on desktop */}
+        <button
+          onClick={onClose}
+          className="absolute -top-10 right-2 sm:-top-4 sm:-right-4 z-50 w-9 h-9 rounded-full bg-white border border-zinc-200 text-zinc-500 hover:text-zinc-900 flex items-center justify-center transition-all duration-300 ease-out shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.15)] hover:scale-110 hover:rotate-90 active:scale-95 cursor-pointer"
+          title="Close"
         >
-          {apiError ? (
+          <X size={16} strokeWidth={2.5} />
+        </button>
+
+        {apiError ? (
+          <div className="step-circle-container p-6 md:p-8 pt-16 bg-white border border-zinc-200 rounded-2xl shadow-xl overflow-y-auto max-h-[90vh] text-left">
             <div className="py-4 space-y-6 animate-in fade-in-0 duration-200 text-left">
               {/* Error Header */}
               <div className="flex flex-col items-center justify-center text-center">
@@ -331,8 +329,9 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                 </ClickSpark>
               </div>
             </div>
+          </div>
           ) : isSubmitting ? (
-            <div className="flex flex-col items-center justify-center py-20 space-y-6 animate-in fade-in-0 duration-200 text-center">
+            <div className="step-circle-container p-6 md:p-8 pt-16 pb-16 flex flex-col items-center justify-center min-h-[350px] bg-white border border-zinc-200 rounded-2xl shadow-xl text-center">
               <span className="w-10 h-10 border-4 border-zinc-200 border-t-primary rounded-full animate-spin" />
               <div className="space-y-1">
                 <h3 className="font-sans text-base font-extrabold text-[#1c1d1a] uppercase tracking-wider">
@@ -530,7 +529,8 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
               </Step>
             </Stepper>
           ) : (
-            <div className="py-2 space-y-6 animate-in fade-in-0 duration-200 text-left">
+            <div className="step-circle-container p-6 md:p-8 pt-16 bg-white border border-zinc-200 rounded-2xl shadow-xl overflow-y-auto max-h-[90vh] text-left">
+              <div className="py-2 space-y-6 animate-in fade-in-0 duration-200">
               {/* Header Info */}
               <div className="flex flex-col items-center justify-center text-center">
                 <div className="w-10 h-10 bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center rounded-full mb-3 shadow-xs">
@@ -571,8 +571,24 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                       </div>
 
                       {/* Scheme Name */}
-                      <h4 className="font-sans text-sm font-extrabold text-black tracking-tight">
-                        {rec.schemeName}
+                      <h4 className="font-sans text-sm font-extrabold text-black tracking-tight flex items-center justify-between gap-2">
+                        <span>{rec.schemeName}</span>
+                        <div className="relative group/tooltip shrink-0">
+                          <a
+                            href="tel:+18005550199"
+                            className="w-5 h-5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 border border-primary/20"
+                          >
+                            <Phone size={8} strokeWidth={2.5} />
+                          </a>
+                          
+                          {/* Tooltip Content */}
+                          <div className="absolute bottom-full right-0 mb-1.5 px-2 py-1 bg-zinc-900 text-white text-[9px] font-bold tracking-wide uppercase rounded-md shadow-md whitespace-nowrap opacity-0 scale-95 pointer-events-none group-hover/tooltip:opacity-100 group-hover/tooltip:scale-100 transition-all duration-200 ease-out z-30 font-sans border border-zinc-800 flex items-center gap-1">
+                            <Phone size={8} className="text-primary" />
+                            <span>Call to get more details</span>
+                            {/* Tooltip arrow */}
+                            <div className="absolute top-full right-2 w-1.5 h-1.5 bg-zinc-900 rotate-45 border-r border-b border-zinc-800" />
+                          </div>
+                        </div>
                       </h4>
 
                       {/* Scheme Description */}
@@ -678,8 +694,8 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                 </ClickSpark>
               </div>
             </div>
+          </div>
           )}
-        </div>
       </div>
     </div>
   );
