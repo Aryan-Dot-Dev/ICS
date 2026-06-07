@@ -122,18 +122,13 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
   // Step validation helpers to dynamically control the "Continue" stepper button
   const isStep1Valid = () => {
     const emailRegex = /\S+@\S+\.\S+/;
+    const phoneRegex = /^[+0-9\s-]{8,20}$/;
     return (
       formData.name.trim() !== "" &&
       !errors.name &&
       formData.email.trim() !== "" &&
       emailRegex.test(formData.email) &&
-      !errors.email
-    );
-  };
-
-  const isStep2Valid = () => {
-    const phoneRegex = /^[+0-9\s-]{8,20}$/;
-    return (
+      !errors.email &&
       formData.phone.trim() !== "" &&
       phoneRegex.test(formData.phone) &&
       !errors.phone &&
@@ -142,11 +137,11 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
     );
   };
 
-  const isStep3Valid = () => {
+  const isStep2Valid = () => {
     return formData.businessType !== "" && !errors.businessType;
   };
 
-  const isStep4Valid = () => {
+  const isStep3Valid = () => {
     return formData.businessDescription.trim() !== "" && !errors.businessDescription;
   };
 
@@ -154,7 +149,6 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
     if (currentStepIndex === 1) return isStep1Valid();
     if (currentStepIndex === 2) return isStep2Valid();
     if (currentStepIndex === 3) return isStep3Valid();
-    if (currentStepIndex === 4) return isStep4Valid();
     return true;
   };
 
@@ -358,92 +352,85 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
               <Step>
                 <div className="space-y-4 text-left">
                   <h3 className="font-sans text-sm font-extrabold text-black uppercase tracking-wider mb-2">
-                    Representative Identity
+                    Corporate & Representative Profile
                   </h3>
                   <p className="text-zinc-500 font-sans text-xs leading-relaxed mb-4">
-                    Provide the name and corporate email of the primary representative driving the audit.
+                    Provide your representative details and registered business profile for scheme evaluation.
                   </p>
                   
-                  <div className="space-y-1.5">
-                    <Label htmlFor="name" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                      Full Name
-                    </Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      placeholder="e.g. Vikram Sharma"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
-                        errors.name ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
-                    />
-                    {errors.name && <span className="text-[10px] font-semibold text-red-500">{errors.name}</span>}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="name" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                        Full Name
+                      </Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        placeholder="e.g. Vikram Sharma"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
+                          errors.name ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
+                      />
+                      {errors.name && <span className="text-[10px] font-semibold text-red-500">{errors.name}</span>}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                        Corporate Email
+                      </Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="e.g. v.sharma@company.in"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
+                          errors.email ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
+                      />
+                      {errors.email && <span className="text-[10px] font-semibold text-red-500">{errors.email}</span>}
+                    </div>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                      Corporate Email
-                    </Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="e.g. v.sharma@company.in"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
-                        errors.email ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
-                    />
-                    {errors.email && <span className="text-[10px] font-semibold text-red-500">{errors.email}</span>}
-                  </div>
-                </div>
-              </Step>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="phone" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                        Phone Number
+                      </Label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        placeholder="e.g. +91 98765 43210"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
+                          errors.phone ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
+                      />
+                      {errors.phone && <span className="text-[10px] font-semibold text-red-500">{errors.phone}</span>}
+                    </div>
 
-              <Step>
-                <div className="space-y-4 text-left">
-                  <h3 className="font-sans text-sm font-extrabold text-black uppercase tracking-wider mb-2">
-                    Corporate Profile
-                  </h3>
-                  <p className="text-zinc-500 font-sans text-xs leading-relaxed mb-4">
-                    Provide the registered business name and a direct phone number for compliance inquiries.
-                  </p>
-
-                  <div className="space-y-1.5">
-                    <Label htmlFor="phone" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                      Phone Number
-                    </Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      placeholder="e.g. +91 98765 43210"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
-                        errors.phone ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
-                    />
-                    {errors.phone && <span className="text-[10px] font-semibold text-red-500">{errors.phone}</span>}
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label htmlFor="businessName" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                      Business Name
-                    </Label>
-                    <Input
-                      id="businessName"
-                      name="businessName"
-                      placeholder="e.g. Infotech Systems Ltd"
-                      value={formData.businessName}
-                      onChange={handleInputChange}
-                      className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
-                        errors.businessName ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
-                    />
-                    {errors.businessName && (
-                      <span className="text-[10px] font-semibold text-red-500">{errors.businessName}</span>
-                    )}
+                    <div className="space-y-1.5">
+                      <Label htmlFor="businessName" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                        Business Name
+                      </Label>
+                      <Input
+                        id="businessName"
+                        name="businessName"
+                        placeholder="e.g. Infotech Systems Ltd"
+                        value={formData.businessName}
+                        onChange={handleInputChange}
+                        className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
+                          errors.businessName ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
+                      />
+                      {errors.businessName && (
+                        <span className="text-[10px] font-semibold text-red-500">{errors.businessName}</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Step>

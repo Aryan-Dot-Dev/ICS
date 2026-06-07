@@ -149,41 +149,60 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-const getLanguageFromCookie = (): string => {
-  if (typeof document === "undefined") return "en";
-  const match = document.cookie.match(/googtrans=\/en\/([^;]+)/);
-  if (match && match[1]) {
-    return match[1];
+const getLanguageFromStorage = (): string => {
+  if (typeof window === "undefined") return "en";
+  return localStorage.getItem("infou_language") || "en";
+};
+
+const setGoogleTranslateCookie = (lang: string) => {
+  if (typeof document === "undefined") return;
+  const domain = window.location.hostname;
+  
+  // Clear any existing cookies first to avoid duplicates
+  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+  document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain}`;
+  document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain}`;
+  
+  if (lang !== "en") {
+    document.cookie = `googtrans=/en/${lang}; path=/`;
+    document.cookie = `googtrans=/en/${lang}; path=/; domain=${domain}`;
+    document.cookie = `googtrans=/en/${lang}; path=/; domain=.${domain}`;
   }
-  return "en";
 };
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<string>(() => {
-    return getLanguageFromCookie();
+    return getLanguageFromStorage();
   });
 
+  // Sync to cookie on mount and language changes
   useEffect(() => {
-    const handleCookieCheck = () => {
-      const currentLang = getLanguageFromCookie();
-      if (currentLang !== language) {
-        setLanguageState(currentLang);
-      }
-    };
-    const interval = setInterval(handleCookieCheck, 1000);
-    return () => clearInterval(interval);
+    setGoogleTranslateCookie(language);
   }, [language]);
 
-  const setLanguage = (lang: string) => {
-    setLanguageState(lang);
-    if (typeof window !== "undefined") {
-      if (lang === "en") {
-        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-      } else {
-        document.cookie = "googtrans=/en/" + lang + "; path=/";
-        document.cookie = "googtrans=/en/" + lang + "; path=/; domain=" + window.location.hostname;
+  // Constantly reinforce the cookie in case Google Translate deletes or overrides it
+  useEffect(() => {
+    const reinforceCookie = () => {
+      const stored = getLanguageFromStorage();
+      const cookieMatch = document.cookie.match(/googtrans=\/en\/([^;]+)/);
+      const currentCookieLang = (cookieMatch && cookieMatch[1]) || "en";
+      
+      if (currentCookieLang !== stored) {
+        console.log(`[i18n] Enforcing language cookie: ${stored} (was ${currentCookieLang})`);
+        setGoogleTranslateCookie(stored);
       }
+    };
+    
+    const interval = setInterval(reinforceCookie, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const setLanguage = (lang: string) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("infou_language", lang);
+      setLanguageState(lang);
+      setGoogleTranslateCookie(lang);
+      // Reload to let Google Translate initialize with the new cookie
       window.location.reload();
     }
   };

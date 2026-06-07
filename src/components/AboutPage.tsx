@@ -107,7 +107,7 @@ export function AboutPage() {
                   textColor="black"
                 />
               </div>
-              <div className="font-sans text-[10px] tracking-widest text-zinc-400 font-bold uppercase">
+              <div className="font-sans text-[10px] tracking-widest text-zinc-500 font-bold uppercase">
                 {stat.label}
               </div>
             </div>
@@ -119,7 +119,7 @@ export function AboutPage() {
       <section className="px-6 md:px-20 py-24 bg-white border-y border-zinc-200">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-left">
-            <span className="font-sans text-xs font-bold tracking-[0.2em] uppercase text-zinc-400 mb-4 block">
+            <span className="font-sans text-xs font-bold tracking-[0.2em] uppercase text-zinc-500 mb-4 block">
               {t("about.objective")}
             </span>
             <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-black mb-8 tracking-tight">
@@ -170,7 +170,7 @@ export function AboutPage() {
       {/* Governing Principles */}
       <section className="px-6 md:px-20 py-24 max-w-7xl mx-auto">
         <div className="mb-16 text-left">
-          <span className="font-sans text-xs font-bold tracking-[0.2em] uppercase text-zinc-400 mb-4 block">
+          <span className="font-sans text-xs font-bold tracking-[0.2em] uppercase text-zinc-500 mb-4 block">
             {t("about.principlesBadge")}
           </span>
           <h2 className="font-sans text-3xl font-extrabold text-black tracking-tight">
@@ -210,12 +210,12 @@ export function AboutPage() {
                 {/* Timeline node */}
                 <div className="absolute -left-[39px] top-1.5 w-4 h-4 rounded-full border-2 border-black bg-white group-hover:bg-black transition-colors duration-200" />
 
-                <span className="font-sans text-xs font-bold tracking-widest text-zinc-400 block mb-2">
+                <span className="font-sans text-xs font-bold tracking-widest text-zinc-500 block mb-2">
                   {event.year} — {event.phase}
                 </span>
-                <h4 className="font-sans text-lg font-extrabold text-black mb-3">
+                <h3 className="font-sans text-lg font-extrabold text-black mb-3">
                   {event.title}
-                </h4>
+                </h3>
                 <p className="font-sans text-sm text-zinc-500 leading-relaxed max-w-xl">
                   {event.description}
                 </p>
@@ -243,10 +243,10 @@ export function AboutPage() {
               <div className="w-24 h-24 border-2 border-black flex items-center justify-center rounded-full mb-6 group-hover:bg-black group-hover:text-white transition-all duration-200 select-none">
                 <span className="font-sans text-2xl font-extrabold">{member.initials}</span>
               </div>
-              <h5 className="font-sans text-base font-extrabold text-black mb-1">
+              <h3 className="font-sans text-base font-extrabold text-black mb-1">
                 {member.name}
-              </h5>
-              <p className="font-sans text-[10px] tracking-widest font-bold uppercase text-zinc-400 mb-6">
+              </h3>
+              <p className="font-sans text-[10px] tracking-widest font-bold uppercase text-zinc-500 mb-6">
                 {member.role}
               </p>
               <div className="w-10 h-px bg-zinc-200 mb-6" />

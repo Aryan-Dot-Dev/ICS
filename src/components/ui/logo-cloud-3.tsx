@@ -29,8 +29,11 @@ export function LogoCloud({ className, logos, ...props }: LogoCloudProps) {
           >
             <img
               alt={logo.alt}
+              width={144}
+              height={24}
               className="pointer-events-none max-h-4 md:max-h-5 w-auto select-none dark:brightness-0 dark:invert object-contain"
-              loading="eager"
+              style={{ aspectRatio: "144 / 24" }}
+              loading="lazy"
               src={logo.src}
             />
           </div>

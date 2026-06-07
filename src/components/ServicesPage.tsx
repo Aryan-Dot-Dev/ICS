@@ -289,9 +289,9 @@ export function ServicesPage() {
         {/* Dynamic Explorer Section */}
         <section id="solutions-explorer" className="w-full space-y-8 scroll-mt-28">
           <div>
-            <h2 className="font-sans text-2xl md:text-3xl font-extrabold text-black tracking-tight">
+            <h1 className="font-sans text-2xl md:text-3xl font-extrabold text-black tracking-tight">
               Services Provided
-            </h2>
+            </h1>
             <div className="h-1 w-12 bg-primary mt-3" />
           </div>
 
@@ -325,7 +325,7 @@ export function ServicesPage() {
                         >
                           {svc.title}
                         </span>
-                        <span className="block font-sans text-[10px] text-zinc-400 mt-1 select-none font-medium truncate max-w-[200px]">
+                        <span className="block font-sans text-[10px] text-zinc-500 mt-1 select-none font-medium truncate max-w-[200px]">
                           {svc.subtitle}
                         </span>
                       </div>
@@ -367,10 +367,10 @@ export function ServicesPage() {
                     <ActiveIcon size={24} strokeWidth={2.5} />
                   </div>
                   <div>
-                    <h3 className="font-sans text-lg md:text-xl font-black text-black leading-none mb-1.5 uppercase">
+                    <h2 className="font-sans text-lg md:text-xl font-black text-black leading-none mb-1.5 uppercase">
                       {activeService.title}
-                    </h3>
-                    <span className="text-zinc-400 font-sans text-xs font-bold uppercase tracking-wider block">
+                    </h2>
+                    <span className="text-zinc-500 font-sans text-xs font-bold uppercase tracking-wider block">
                       {activeService.subtitle}
                     </span>
                   </div>
@@ -385,7 +385,7 @@ export function ServicesPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   {Object.entries(activeService.metrics).map(([label, val]) => (
                     <div key={label} className="bg-zinc-50 border border-zinc-200/70 p-4 rounded-xl">
-                      <span className="block text-[8px] font-mono font-extrabold uppercase tracking-widest text-zinc-400">
+                      <span className="block text-[8px] font-mono font-extrabold uppercase tracking-widest text-zinc-500">
                         {label}
                       </span>
                       <span className="block text-sm font-extrabold text-black mt-1 font-sans">
@@ -526,7 +526,7 @@ export function ServicesPage() {
         {/* State / Central Advisors FAQ Accordion */}
         <section className="w-full space-y-8">
           <div>
-            <span className="text-[10px] font-mono tracking-widest text-zinc-400 uppercase select-none block mb-1">
+            <span className="text-[10px] font-mono tracking-widest text-zinc-500 uppercase select-none block mb-1">
               ADVISORY DESK RESOURCES
             </span>
             <h2 className="font-sans text-2xl font-extrabold text-black tracking-tight">
@@ -570,7 +570,7 @@ export function ServicesPage() {
 function ChevronDownIcon({ isOpen }: { isOpen: boolean }) {
   return (
     <svg
-      className={`w-4 h-4 text-zinc-400 transition-transform duration-350 shrink-0 ml-4 ${isOpen ? "transform rotate-180 text-black" : ""
+      className={`w-4 h-4 text-zinc-500 transition-transform duration-350 shrink-0 ml-4 ${isOpen ? "transform rotate-180 text-black" : ""
         }`}
       fill="none"
       stroke="currentColor"

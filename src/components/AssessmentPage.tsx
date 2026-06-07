@@ -209,7 +209,7 @@ export function AssessmentPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Name */}
           <div className="space-y-1 text-left">
-            <Label htmlFor="name" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-400">
+            <Label htmlFor="name" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-500">
               Full Name
             </Label>
             <Input
@@ -226,7 +226,7 @@ export function AssessmentPage() {
 
           {/* Email */}
           <div className="space-y-1 text-left">
-            <Label htmlFor="email" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-400">
+            <Label htmlFor="email" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-500">
               Corporate Email
             </Label>
             <Input
@@ -246,7 +246,7 @@ export function AssessmentPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Phone */}
           <div className="space-y-1 text-left">
-            <Label htmlFor="phone" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-400">
+            <Label htmlFor="phone" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-500">
               Phone Number
             </Label>
             <Input
@@ -263,7 +263,7 @@ export function AssessmentPage() {
 
           {/* Business Name */}
           <div className="space-y-1 text-left">
-            <Label htmlFor="businessName" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-400">
+            <Label htmlFor="businessName" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-500">
               Business Name
             </Label>
             <Input
@@ -283,7 +283,7 @@ export function AssessmentPage() {
 
         {/* Business Type Selector */}
         <div className="space-y-1 text-left">
-          <Label htmlFor="businessType" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-400">
+          <Label htmlFor="businessType" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-500">
             Business Vertical
           </Label>
           <Select
@@ -323,7 +323,7 @@ export function AssessmentPage() {
 
         {/* Business Description */}
         <div className="space-y-1 text-left">
-          <Label htmlFor="businessDescription" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-400">
+          <Label htmlFor="businessDescription" className="font-sans text-[10px] font-extrabold tracking-widest uppercase text-zinc-500">
             Business & Funding Goals Description
           </Label>
           <Textarea
@@ -390,9 +390,9 @@ export function AssessmentPage() {
                 <div className="w-12 h-12 bg-red-50 text-red-600 border border-red-100 flex items-center justify-center rounded-full mb-3 shadow-xs">
                   <X size={24} strokeWidth={2} />
                 </div>
-                <h3 className="font-sans text-lg font-extrabold text-black uppercase tracking-wider">
+                <h1 className="font-sans text-lg font-extrabold text-black uppercase tracking-wider">
                   Advisory Database Offline
-                </h3>
+                </h1>
                 <p className="text-zinc-550 font-sans text-xs max-w-sm mt-1 leading-relaxed text-center">
                   The recommendations service returned the following diagnostic warning:
                 </p>
@@ -448,7 +448,7 @@ export function AssessmentPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
                   {/* Entity Profile */}
                   <div className="space-y-1">
-                    <span className="text-[9px] font-mono tracking-widest text-zinc-400 uppercase select-none block">
+                    <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase select-none block">
                       Enterprise Entity
                     </span>
                     <div className="flex items-center gap-2">
@@ -463,7 +463,7 @@ export function AssessmentPage() {
 
                   {/* Key Representative */}
                   <div className="space-y-1">
-                    <span className="text-[9px] font-mono tracking-widest text-zinc-400 uppercase select-none block">
+                    <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase select-none block">
                       Representative
                     </span>
                     <span className="font-sans font-bold text-sm text-zinc-800 block">
@@ -473,7 +473,7 @@ export function AssessmentPage() {
 
                   {/* Contact details */}
                   <div className="space-y-1">
-                    <span className="text-[9px] font-mono tracking-widest text-zinc-400 uppercase select-none block">
+                    <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase select-none block">
                       Contact Information
                     </span>
                     <span className="font-sans text-xs text-zinc-655 block">
@@ -498,7 +498,7 @@ export function AssessmentPage() {
               {isSubmitting ? (
                 <div className="flex flex-col items-center justify-center py-24 space-y-4 bg-white border border-zinc-200 rounded-2xl shadow-xs">
                   <span className="w-8 h-8 border-4 border-zinc-250 border-t-black rounded-full animate-spin" />
-                  <p className="text-zinc-400 font-sans text-xs">Submitting sovereign policy matching matrix...</p>
+                  <p className="text-zinc-500 font-sans text-xs">Submitting sovereign policy matching matrix...</p>
                 </div>
               ) : recommendations && recommendations.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
@@ -542,7 +542,7 @@ export function AssessmentPage() {
                       {/* Scheme Parameters HUD */}
                       <div className="grid grid-cols-2 gap-3 pt-2">
                         <div className="bg-zinc-50 border border-zinc-200/60 rounded-xl p-3 text-left">
-                          <span className="block text-[8px] font-extrabold uppercase tracking-widest text-zinc-400 font-sans">
+                          <span className="block text-[8px] font-extrabold uppercase tracking-widest text-zinc-500 font-sans">
                             Funding Range
                           </span>
                           <span className="block text-[11px] font-bold text-primary tracking-tight mt-1 font-sans">
@@ -550,7 +550,7 @@ export function AssessmentPage() {
                           </span>
                         </div>
                         <div className="bg-zinc-50 border border-zinc-200/60 rounded-xl p-3 text-left">
-                          <span className="block text-[8px] font-extrabold uppercase tracking-widest text-zinc-400 font-sans">
+                          <span className="block text-[8px] font-extrabold uppercase tracking-widest text-zinc-500 font-sans">
                             Expected Timeline
                           </span>
                           <span className="block text-[11px] font-bold text-zinc-800 tracking-tight mt-1 font-sans">
@@ -562,7 +562,7 @@ export function AssessmentPage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-20 bg-white border border-zinc-200 rounded-2xl shadow-xs text-zinc-400 text-xs font-sans">
+                <div className="text-center py-20 bg-white border border-zinc-200 rounded-2xl shadow-xs text-zinc-500 text-xs font-sans">
                   No matching schemes were found for your business profile at this time.
                 </div>
               )}
@@ -598,7 +598,7 @@ export function AssessmentPage() {
               <div className="space-y-4">
                 {/* Business Type Selector (Active) */}
                 <div className="space-y-1">
-                  <Label htmlFor="businessType" className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                  <Label htmlFor="businessType" className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                     Business Vertical
                   </Label>
                   <Select
@@ -636,7 +636,7 @@ export function AssessmentPage() {
 
                 {/* Description (Active) */}
                 <div className="space-y-1">
-                  <Label htmlFor="businessDescription" className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                  <Label htmlFor="businessDescription" className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                     Business & Funding Goals Description
                   </Label>
                   <Textarea

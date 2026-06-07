@@ -58,8 +58,8 @@ export function ContactPage() {
             <div className="bg-white border border-zinc-200 rounded-2xl p-8 flex flex-col justify-between min-h-[200px] hover:border-black transition-colors duration-300 group cursor-pointer text-left">
               <div>
                 <PhoneCall size={32} strokeWidth={1.5} className="text-black mb-6" />
-                <h3 className="font-sans text-lg font-bold text-black mb-2">Call Direct</h3>
-                <p className="font-sans text-xs text-zinc-400">Immediate priority line for urgent institutional inquiries.</p>
+                <h2 className="font-sans text-lg font-bold text-black mb-2">Call Direct</h2>
+                <p className="font-sans text-xs text-zinc-500">Immediate priority line for urgent institutional inquiries.</p>
               </div>
               <p className="font-sans text-lg font-extrabold text-black mt-6 tracking-wide">
                 +1 (800) 555-0199
@@ -70,8 +70,8 @@ export function ContactPage() {
             <div className="bg-white border border-zinc-200 rounded-2xl p-8 flex flex-col justify-between min-h-[200px] hover:border-black transition-colors duration-300 group cursor-pointer text-left">
               <div>
                 <Mail size={32} strokeWidth={1.5} className="text-black mb-6" />
-                <h3 className="font-sans text-lg font-bold text-black mb-2">Email Advisors</h3>
-                <p className="font-sans text-xs text-zinc-400">Submit detailed documentation or formal funding requests.</p>
+                <h2 className="font-sans text-lg font-bold text-black mb-2">Email Advisors</h2>
+                <p className="font-sans text-xs text-zinc-500">Submit detailed documentation or formal funding requests.</p>
               </div>
               <p className="font-sans text-lg font-extrabold text-black mt-6 underline decoration-1 underline-offset-4 tracking-wide">
                 funding@infouconsultancy.com
@@ -85,7 +85,7 @@ export function ContactPage() {
               <h2 className="font-sans text-2xl font-bold text-black mb-4">
                 Request a Callback
               </h2>
-              <p className="font-sans text-sm text-zinc-400 leading-relaxed">
+              <p className="font-sans text-sm text-zinc-500 leading-relaxed">
                 Our senior evaluation analysts review all callback inquiries within 4 hours during market trading cycles.
               </p>
             </div>
@@ -93,7 +93,7 @@ export function ContactPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                  <Label htmlFor="name" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                     Full Name
                   </Label>
                   <Input
@@ -108,7 +108,7 @@ export function ContactPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                  <Label htmlFor="email" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                     Work Email
                   </Label>
                   <Input
@@ -126,7 +126,7 @@ export function ContactPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                  <Label htmlFor="phone" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                     Phone Number
                   </Label>
                   <Input
@@ -141,7 +141,7 @@ export function ContactPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                  <Label htmlFor="company" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                     Company Name
                   </Label>
                   <Input
@@ -157,7 +157,7 @@ export function ContactPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                <Label htmlFor="description" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                   Business Description & Funding Requirements
                 </Label>
                 <Textarea
@@ -175,7 +175,7 @@ export function ContactPage() {
                 <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400} className="w-full" style={{ display: "block", width: "100%" }}>
                   <Button
                     type="submit"
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/95 transition-colors h-14 text-xs font-bold tracking-widest uppercase rounded-lg select-none active:scale-[0.99] duration-100 cursor-pointer"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/95 transition-colors h-14 text-xs font-bold tracking-widest uppercase rounded-lg select-none active:scale-[0.99] duration-105 cursor-pointer"
                   >
                     Send Request
                   </Button>
@@ -189,7 +189,7 @@ export function ContactPage() {
                 </div>
               )}
 
-              <p className="font-sans text-xs text-zinc-400 text-center italic mt-4">
+              <p className="font-sans text-xs text-zinc-500 text-center italic mt-4">
                 By submitting, you agree to our sovereign data encryption and privacy standards.
               </p>
             </form>

@@ -27,7 +27,7 @@ export function BlogPage() {
       readTime: `6 ${t("blog.readTime")}`,
       title: "Navigating Compliance in Cross-Border Funding",
       excerpt: "A practical step-by-step guide for institutional leaders on maintaining transparency while managing diverse global investment portfolios.",
-      image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80",
       featured: false
     },
     {
@@ -36,7 +36,7 @@ export function BlogPage() {
       readTime: `8 ${t("blog.readTime")}`,
       title: "New Fiscal Reforms and Their Impact on Growth",
       excerpt: "Evaluating the legislative changes proposed in the latest treasury summit and what they mean for medium-term capital availability.",
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
       featured: false
     },
     {
@@ -45,7 +45,7 @@ export function BlogPage() {
       readTime: `15 ${t("blog.readTime")}`,
       title: "Scaling the Institutional Advisory Board",
       excerpt: "How a Tier-1 financial group successfully restructured its internal advisory workflows to increase operational efficiency by 40%.",
-      image: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=600&q=80",
       featured: false
     }
   ];
@@ -111,7 +111,10 @@ export function BlogPage() {
             <div className="relative aspect-video overflow-hidden bg-zinc-100 border border-zinc-200 rounded-2xl">
               <img
                 alt={featuredPost.title}
+                width={600}
+                height={338}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103 grayscale"
+                loading="lazy"
                 src={featuredPost.image}
               />
               <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 font-sans text-[9px] font-bold tracking-widest uppercase rounded-lg">
@@ -155,7 +158,10 @@ export function BlogPage() {
                 <div className="aspect-[4/3] bg-zinc-100 mb-6 overflow-hidden border border-zinc-200 rounded-2xl">
                   <img
                     alt={post.title}
+                    width={400}
+                    height={300}
                     className="w-full h-full object-cover grayscale transition-transform duration-500 group-hover:scale-103"
+                    loading="lazy"
                     src={post.image}
                   />
                 </div>

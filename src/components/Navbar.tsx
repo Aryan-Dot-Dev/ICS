@@ -24,6 +24,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 const languages = [
   { code: "en", name: "English" },
@@ -229,19 +236,29 @@ export function Navbar({ currentRoute }: NavbarProps) {
           <div className="hidden md:flex items-center gap-4">
             {/* Language Selection Dropdown */}
             <div className="relative">
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                translate="no"
-                className="appearance-none notranslate pl-4 pr-9 py-2 text-[10px] font-extrabold tracking-widest uppercase rounded-full border border-zinc-200 hover:bg-zinc-50 text-zinc-900 bg-transparent bg-no-repeat bg-[right_12px_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2523000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')]"
-                style={{ backgroundSize: "8px auto" }}
-              >
-                {languages.map((lang) => (
-                  <option key={lang.code} value={lang.code} className="text-black bg-white">
-                    {lang.name}
-                  </option>
-                ))}
-              </select>
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger 
+                  className="h-9 w-fit rounded-full border border-zinc-200 bg-transparent px-4 py-2 text-[10px] font-extrabold tracking-widest uppercase text-zinc-900 hover:bg-zinc-50 cursor-pointer notranslate"
+                  translate="no"
+                  aria-label="Select Language"
+                >
+                  <SelectValue placeholder="Language">
+                    {languages.find(l => l.code === language)?.name || "Language"}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-zinc-200 shadow-md rounded-xl notranslate" translate="no">
+                  {languages.map((lang) => (
+                    <SelectItem 
+                      key={lang.code} 
+                      value={lang.code}
+                      className="text-[10px] font-extrabold tracking-widest uppercase hover:bg-zinc-100 cursor-pointer py-2 notranslate"
+                      translate="no"
+                    >
+                      {lang.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <ClickSpark sparkColor="#FF5A36" sparkRadius={18} sparkCount={6} duration={350}>
@@ -259,19 +276,29 @@ export function Navbar({ currentRoute }: NavbarProps) {
           <div className="md:hidden flex items-center gap-3">
             {/* Language Selection Mobile Dropdown */}
             <div className="relative">
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                translate="no"
-                className="appearance-none notranslate pl-3 pr-7 py-1.5 text-[9px] font-extrabold tracking-wider uppercase rounded-full border border-zinc-200 hover:bg-zinc-50 text-zinc-900 bg-transparent bg-no-repeat bg-[right_10px_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2523000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')]"
-                style={{ backgroundSize: "7px auto" }}
-              >
-                {languages.map((lang) => (
-                  <option key={lang.code} value={lang.code} className="text-black bg-white">
-                    {lang.name}
-                  </option>
-                ))}
-              </select>
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger 
+                  className="h-8 w-fit rounded-full border border-zinc-200 bg-transparent px-3 py-1.5 text-[9px] font-extrabold tracking-wider uppercase text-zinc-900 hover:bg-zinc-50 cursor-pointer notranslate"
+                  translate="no"
+                  aria-label="Select Language"
+                >
+                  <SelectValue placeholder="Language">
+                    {languages.find(l => l.code === language)?.name || "Language"}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-zinc-200 shadow-md rounded-xl notranslate" translate="no">
+                  {languages.map((lang) => (
+                    <SelectItem 
+                      key={lang.code} 
+                      value={lang.code}
+                      className="text-[9px] font-extrabold tracking-wider uppercase hover:bg-zinc-100 cursor-pointer py-1.5 notranslate"
+                      translate="no"
+                    >
+                      {lang.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <ClickSpark sparkColor="#FF5A36" sparkRadius={20} sparkCount={8} duration={350}>

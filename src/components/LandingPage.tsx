@@ -4,21 +4,22 @@ import { navigateTo, navigateToDelayed } from "../lib/router";
 import { Magnet } from "./ui/Magnet";
 const Grainient = React.lazy(() => import("./ui/Grainient"));
 import { ClickSpark } from "./ui/ClickSpark";
-import indiaStatesData from "../data/india_states_compressed.json";
+
 import { AnimatedCounter } from "./ui/Counter";
-import { Testimonials } from "./ui/Testimonials";
-import { LogoCloud } from "./ui/logo-cloud-3";
 import { gsap } from "gsap";
 import { AnimatedGroup } from "./ui/hero-section-with-gradient";
 import { Button } from "./ui/button";
 import { TextType } from "./ui/TextType";
 import { useLanguage } from "../lib/i18n";
-import illustration1 from "../illustration_1.png";
-import illustration3 from "../illustration_3.png";
+import illustration1 from "../illustration_1.webp";
+import illustration3 from "../illustration_3.webp";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import { FounderCard } from "./ui/FounderCard";
+
+const Testimonials = React.lazy(() => import("./ui/Testimonials"));
+const LogoCloud = React.lazy(() => import("./ui/logo-cloud-3").then(module => ({ default: module.LogoCloud })));
+const FounderCard = React.lazy(() => import("./ui/FounderCard").then(module => ({ default: module.FounderCard })));
 
 const logos = [
   {
@@ -55,50 +56,9 @@ const logos = [
   },
 ];
 
-// Map projection math: India boundaries
-// Lon: [68.187, 97.378], Lat: [6.757, 37.074]
-const minLon = 68.187;
-const maxLat = 37.074;
-const centerLatRad = (21.9 * Math.PI) / 180;
-const cosVal = Math.cos(centerLatRad); // ~0.9278
 
-const project = (lon: number, lat: number) => {
-  const x = 19.8 + (lon - minLon) * cosVal * 17.0;
-  const y = 17.3 + (maxLat - lat) * 17.0;
-  return `${x.toFixed(1)},${y.toFixed(1)}`;
-};
 
-const generatePathData = (geometry: any): string => {
-  if (!geometry) return "";
-  if (geometry.type === "Polygon") {
-    return geometry.coordinates
-      .map((ring: number[][]) => {
-        return ring
-          .map((coord, i) => {
-            const p = project(coord[0]!, coord[1]!);
-            return `${i === 0 ? "M" : "L"}${p}`;
-          })
-          .join(" ") + " Z";
-      })
-      .join(" ");
-  } else if (geometry.type === "MultiPolygon") {
-    return geometry.coordinates
-      .map((polygon: number[][][]) => {
-        return polygon
-          .map((ring: number[][]) => {
-            return ring
-              .map((coord, i) => {
-                const p = project(coord[0]!, coord[1]!);
-                return `${i === 0 ? "M" : "L"}${p}`;
-              })
-              .join(" ") + " Z";
-          })
-          .join(" ");
-      })
-      .join(" ");
-  }
-  return "";
-};
+
 
 interface StateMetrics {
   funds: string;
@@ -155,7 +115,7 @@ const getStateImage = (stateName: string): string => {
     "Odisha": "https://images.unsplash.com/photo-1639980290886-6bdd61c7582b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "Chandigarh": "https://images.unsplash.com/photo-1616422285623-13ff0162193c?auto=format&fit=crop&w=1000&q=80",
     "Haryana": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80",
-    "Himachal Pradesh": "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1000&q=80",
+    "Himachal Pradesh": "https://images.unsplash.com/photo-1628699543232-dc241b48a4b3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "Arunachal Pradesh": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
     "Nagaland": "https://plus.unsplash.com/premium_photo-1661957883806-4f6d9ffff913?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "Kerala": "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1000&q=80",
@@ -195,7 +155,7 @@ const MetricItem = React.memo(({ label, value }: MetricItemProps) => {
       <span className="font-sans text-4xl md:text-5xl font-extrabold text-black mb-1 flex items-center justify-center h-[36px] md:h-[48px] w-full">
         <AnimatedCounter hoverTrigger={hoverCount} value={value} fontSize={36} mdFontSize={48} fontWeight={800} textColor="black" />
       </span>
-      <span className="font-sans text-[10px] tracking-widest text-zinc-400 group-hover:text-black transition-colors font-bold uppercase select-none">
+      <span className="font-sans text-[10px] tracking-widest text-zinc-500 group-hover:text-black transition-colors font-bold uppercase select-none">
         {label}
       </span>
     </div>
@@ -231,7 +191,7 @@ const WhyChooseCard = React.memo(({ icon, value, title, description }: WhyChoose
           {description}
         </p>
       </div>
-      <div className="w-12 h-[1px] bg-primary group-hover:w-full transition-all duration-305" />
+      <div className="w-full h-[1px] bg-primary scale-x-[0.15] origin-left group-hover:scale-x-100 transition-transform duration-300" />
     </div>
   );
 });
@@ -269,13 +229,19 @@ export function LandingPage() {
   const { t, language } = useLanguage();
   const [activeRegion, setActiveRegion] = useState("Maharashtra");
   const [hoveredState, setHoveredState] = useState<string | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [statesPaths, setStatesPaths] = useState<{ stateName: string; pathData: string }[]>([]);
 
-  // Auto-switch active states periodically (every 4 seconds) if the user is not hovering over the map
+  useEffect(() => {
+    import("../data/india_states_paths.json").then((module) => {
+      setStatesPaths(module.default || (Array.isArray(module) ? module : []));
+    });
+  }, []);
+
+  // Auto-switch active states periodically (every 1 second) if the user is not hovering over the map
   useEffect(() => {
     if (hoveredState !== null) return;
 
-    const stateNames = indiaStatesData.features.map((f: any) => f.properties.name);
+    const stateNames = Array.isArray(statesPaths) ? statesPaths.map((p) => p.stateName) : [];
     if (stateNames.length === 0) return;
 
     const interval = setInterval(() => {
@@ -284,10 +250,10 @@ export function LandingPage() {
         const nextIndex = (currentIndex + 1) % stateNames.length;
         return stateNames[nextIndex];
       });
-    }, 4000);
+    }, 1000);
 
     return () => clearInterval(interval);
-  }, [hoveredState]);
+  }, [hoveredState, statesPaths]);
 
   const [contactData, setContactData] = useState({
     name: "",
@@ -395,7 +361,10 @@ export function LandingPage() {
             <div className="col-span-1 lg:col-span-3 order-2 lg:order-1 flex justify-center items-center">
               <div className="transition-transform duration-500 cursor-pointer animate-float-slow select-none w-full max-w-[160px] lg:max-w-none">
                 <img
+                  width={205}
+                  height={139}
                   className="w-full h-auto object-contain max-h-[160px] lg:max-h-[220px]"
+                  style={{ aspectRatio: "205 / 139" }}
                   src={illustration1}
                   alt="Policy Diagnostic Seesaw"
                 />
@@ -442,10 +411,10 @@ export function LandingPage() {
 
                 <div className="flex items-center gap-3">
                   <div className="flex -space-x-2">
-                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder 1" />
-                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder 2" />
-                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder 3" />
-                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder 4" />
+                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=60&h=60&q=80" alt="Founder 1" />
+                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=60&h=60&q=80" alt="Founder 2" />
+                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=60&h=60&q=80" alt="Founder 3" />
+                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=60&h=60&q=80" alt="Founder 4" />
                   </div>
                   <span className="font-sans text-xs md:text-sm text-zinc-500 font-medium leading-none">
                     Based on trusted businesses
@@ -507,7 +476,10 @@ export function LandingPage() {
             <div className="col-span-1 lg:col-span-3 order-3 lg:order-3 flex justify-center items-center">
               <div className="transition-transform duration-500 cursor-pointer animate-float-fast select-none w-full max-w-[160px] lg:max-w-none">
                 <img
+                  width={205}
+                  height={139}
                   className="w-full h-auto object-contain max-h-[160px] lg:max-h-[220px]"
+                  style={{ aspectRatio: "205 / 139" }}
                   src={illustration3}
                   alt="Funding Strategy Gears"
                 />
@@ -537,6 +509,9 @@ export function LandingPage() {
           <img
             src={getStateImage(activeRegion)}
             alt={activeRegion}
+            loading="lazy"
+            width={800}
+            height={600}
             className="w-full h-full object-cover select-none transition-all duration-700 ease-in-out scale-105 contrast-[1.08] brightness-[0.90]"
           />
           {/* Black tint overlay to make the content pop */}
@@ -549,9 +524,9 @@ export function LandingPage() {
           {/* Left Column: State Information & Real-time Metrics HUD */}
           <div className="relative z-10 lg:col-span-5 text-left flex flex-col items-start gap-5 self-start pt-12 lg:pt-20">
             <div>
-              <h3 className="font-sans text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+              <h2 className="font-sans text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
                 {activeRegion === "NCT of Delhi" ? "Delhi NCR" : activeRegion}
-              </h3>
+              </h2>
               <p className="font-sans text-sm text-zinc-200 leading-relaxed mt-3 max-w-sm">
                 Powering innovation and growth across {activeRegion === "NCT of Delhi" ? "Delhi NCR" : activeRegion} through capital, incubation, and strategic support.
               </p>
@@ -601,23 +576,21 @@ export function LandingPage() {
                   className="w-full h-full select-none transition-transform duration-500"
                 >
                   <g className="transition-all duration-300">
-                    {indiaStatesData.features.map((feature: any) => {
-                      const stateName = feature.properties.name;
+                    {(statesPaths || []).map(({ stateName, pathData }) => {
                       const isActive = activeRegion === stateName;
 
                       return (
                         <path
                           key={stateName}
-                          d={generatePathData(feature.geometry)}
+                          d={pathData}
                           onMouseEnter={() => {
                             setActiveRegion(stateName);
                             setHoveredState(stateName);
                           }}
                           onMouseLeave={() => setHoveredState(null)}
-                          onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
                           onClick={() => setActiveRegion(stateName)}
                           className={`transition-all duration-300 cursor-pointer stroke-[1.5] ${isActive
-                            ? "fill-white stroke-black drop-shadow-[0_0_16px_rgba(255,255,255,0.3)] z-20"
+                            ? "fill-white stroke-white drop-shadow-[0_0_16px_rgba(255,255,255,0.3)] z-20"
                             : "fill-white/15 hover:fill-white/30 stroke-white/60 hover:stroke-white/90"
                             }`}
                         >
@@ -681,7 +654,7 @@ export function LandingPage() {
 
         <div className="relative max-w-5xl mx-auto px-6 md:px-20 text-center mb-6">
           <h2 className="text-center font-sans font-medium text-zinc-800 text-lg tracking-tight md:text-xl">
-            <span className="text-zinc-400">Trusted by experts.</span>{" "}
+            <span className="text-zinc-500">Trusted by experts.</span>{" "}
             <span className="font-semibold text-black">Used by the leaders.</span>
           </h2>
           <div className="mx-auto mt-6 h-px max-w-md bg-zinc-200 [mask-image:linear-gradient(to_right,transparent,black,transparent)]" />
@@ -689,7 +662,9 @@ export function LandingPage() {
 
         {/* Full width container for LogoCloud */}
         <div className="w-full relative py-2">
-          <LogoCloud logos={logos} />
+          <Suspense fallback={<div className="h-10 w-full animate-pulse bg-zinc-50/50" />}>
+            <LogoCloud logos={logos} />
+          </Suspense>
         </div>
 
         <div className="relative max-w-5xl mx-auto px-6 md:px-20">
@@ -800,7 +775,9 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Testimonials />
+      <Suspense fallback={<div className="h-64 w-full animate-pulse bg-zinc-50/50" />}>
+        <Testimonials />
+      </Suspense>
 
       {/* About Us / Founder Section */}
       <section
@@ -824,8 +801,10 @@ export function LandingPage() {
 
           </div>
 
-          <div className="max-w-5xl mx-auto">
-            <FounderCard />
+          <div className="max-w-7xl mx-auto">
+            <Suspense fallback={<div className="h-96 w-full animate-pulse bg-zinc-50/50" />}>
+              <FounderCard />
+            </Suspense>
           </div>
         </div>
       </section>
@@ -847,7 +826,7 @@ export function LandingPage() {
                 <div>
                   <PhoneCall size={28} strokeWidth={1.5} className="text-black mb-4" />
                   <h3 className="font-sans text-base font-bold text-black mb-1">Call Direct</h3>
-                  <p className="font-sans text-xs text-zinc-400">Immediate priority line for urgent institutional inquiries.</p>
+                  <p className="font-sans text-xs text-zinc-550">Immediate priority line for urgent institutional inquiries.</p>
                 </div>
                 <p className="font-sans text-base font-extrabold text-black mt-4 tracking-wide">
                   +1 (800) 555-0199
@@ -859,7 +838,7 @@ export function LandingPage() {
                 <div>
                   <Mail size={28} strokeWidth={1.5} className="text-black mb-4" />
                   <h3 className="font-sans text-base font-bold text-black mb-1">Email Advisors</h3>
-                  <p className="font-sans text-xs text-zinc-400">Submit detailed documentation or formal funding requests.</p>
+                  <p className="font-sans text-xs text-zinc-550">Submit detailed documentation or formal funding requests.</p>
                 </div>
                 <p className="font-sans text-base font-extrabold text-black mt-4 underline decoration-1 underline-offset-4 tracking-wide">
                   funding@infouconsultancy.com
@@ -881,7 +860,7 @@ export function LandingPage() {
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <Label htmlFor="contact-name" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                    <Label htmlFor="contact-name" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                       Full Name
                     </Label>
                     <Input
@@ -896,7 +875,7 @@ export function LandingPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="contact-email" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                    <Label htmlFor="contact-email" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                       Work Email
                     </Label>
                     <Input
@@ -914,7 +893,7 @@ export function LandingPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <Label htmlFor="contact-phone" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                    <Label htmlFor="contact-phone" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                       Phone Number
                     </Label>
                     <Input
@@ -929,7 +908,7 @@ export function LandingPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="contact-company" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                    <Label htmlFor="contact-company" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                       Company Name
                     </Label>
                     <Input
@@ -945,7 +924,7 @@ export function LandingPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <Label htmlFor="contact-description" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-400 select-none">
+                  <Label htmlFor="contact-description" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                     Business & Funding Requirements
                   </Label>
                   <Textarea
@@ -977,7 +956,7 @@ export function LandingPage() {
                   </div>
                 )}
 
-                <p className="font-sans text-[10px] text-zinc-400 text-center italic mt-2">
+                <p className="font-sans text-[10px] text-zinc-550 text-center italic mt-2">
                   By submitting, you agree to our sovereign data encryption and privacy standards.
                 </p>
               </form>
