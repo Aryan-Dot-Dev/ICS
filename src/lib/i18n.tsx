@@ -170,32 +170,58 @@ const setGoogleTranslateCookie = (lang: string) => {
   }
 };
 
+/**
+ * Lazily load the Google Translate script only when a non-English language
+ * is requested. Avoids loading it eagerly on every page — which was causing
+ * GSAP animation conflicts (MutationObserver 60 fps) and ERR_BLOCKED_BY_CLIENT
+ * errors from ad-blockers.
+ */
+let translateScriptLoaded = false;
+
+const loadGoogleTranslateScript = (): Promise<void> => {
+  if (translateScriptLoaded) return Promise.resolve();
+  if (typeof document === "undefined") return Promise.resolve();
+
+  return new Promise<void>((resolve) => {
+    // Set up the init callback before loading the script
+    (window as any).googleTranslateElementInit = () => {
+      const google = (window as any).google;
+      if (google?.translate?.TranslateElement) {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            layout:
+              google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false,
+          },
+          "google_translate_element"
+        );
+      }
+      translateScriptLoaded = true;
+      resolve();
+    };
+
+    const script = document.createElement("script");
+    script.src =
+      "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  });
+};
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<string>(() => {
     return getLanguageFromStorage();
   });
 
-  // Sync to cookie on mount and language changes
+  // On mount: if the stored language is non-English, load translate and set cookie
   useEffect(() => {
-    setGoogleTranslateCookie(language);
+    if (language !== "en") {
+      setGoogleTranslateCookie(language);
+      loadGoogleTranslateScript();
+    }
   }, [language]);
-
-  // Constantly reinforce the cookie in case Google Translate deletes or overrides it
-  useEffect(() => {
-    const reinforceCookie = () => {
-      const stored = getLanguageFromStorage();
-      const cookieMatch = document.cookie.match(/googtrans=\/en\/([^;]+)/);
-      const currentCookieLang = (cookieMatch && cookieMatch[1]) || "en";
-      
-      if (currentCookieLang !== stored) {
-        console.log(`[i18n] Enforcing language cookie: ${stored} (was ${currentCookieLang})`);
-        setGoogleTranslateCookie(stored);
-      }
-    };
-    
-    const interval = setInterval(reinforceCookie, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const setLanguage = (lang: string) => {
     if (typeof window !== "undefined") {
@@ -225,3 +251,4 @@ export function useLanguage() {
   }
   return context;
 }
+

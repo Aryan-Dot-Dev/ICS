@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
 import "./Grainient.css";
 
@@ -47,6 +47,21 @@ const hexToRgb = (hex: string): [number, number, number] => {
     b = parseInt(cleanHex.substring(4, 6), 16);
   }
   return [r / 255, g / 255, b / 255];
+};
+
+/** Check if WebGL 2 (or at least WebGL 1) is available in this browser. */
+const isWebGLAvailable = (): boolean => {
+  if (typeof document === "undefined") return false;
+  try {
+    const canvas = document.createElement("canvas");
+    const gl =
+      canvas.getContext("webgl2") ||
+      canvas.getContext("webgl") ||
+      canvas.getContext("experimental-webgl");
+    return gl != null;
+  } catch {
+    return false;
+  }
 };
 
 const vertex = `#version 300 es
@@ -168,18 +183,40 @@ export function Grainient({
   className = "",
 }: GrainientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [webglFailed, setWebglFailed] = useState(false);
 
   // Effect 1: build WebGL context once, pause when offscreen / tab hidden
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new Renderer({
-      webgl: 2,
-      alpha: true,
-      antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2),
-    });
+    // Bail out early if WebGL is not available at all
+    if (!isWebGLAvailable()) {
+      console.warn("[Grainient] WebGL not available — using CSS fallback.");
+      setWebglFailed(true);
+      return;
+    }
+
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer({
+        webgl: 2,
+        alpha: true,
+        antialias: false,
+        dpr: Math.min(window.devicePixelRatio || 1, 2),
+      });
+    } catch (err) {
+      console.warn("[Grainient] Failed to create WebGL renderer — using CSS fallback.", err);
+      setWebglFailed(true);
+      return;
+    }
+
+    // Extra safety: verify the GL context was actually created
+    if (!renderer.gl) {
+      console.warn("[Grainient] WebGL context is null — using CSS fallback.");
+      setWebglFailed(true);
+      return;
+    }
 
     const gl = renderer.gl;
     const canvas = gl.canvas;
@@ -347,7 +384,22 @@ export function Grainient({
     color3,
   ]);
 
-  return <div ref={containerRef} className={`grainient-container ${className}`.trim()} />;
+  return (
+    <div ref={containerRef} className={`grainient-container ${className}`.trim()}>
+      {/* CSS gradient fallback when WebGL is unavailable */}
+      {webglFailed && (
+        <div
+          className="grainient-fallback"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: `linear-gradient(135deg, ${color1} 0%, ${color2} 50%, ${color3} 100%)`,
+            filter: "blur(0px)",
+          }}
+        />
+      )}
+    </div>
+  );
 }
 
 export default Grainient;
