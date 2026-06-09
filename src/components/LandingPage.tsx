@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, Suspense } from "react";
-import { ShieldCheck, Landmark, TrendingUp, ArrowRight, MapPin, CheckCircle, HelpCircle, PhoneCall, Mail } from "lucide-react";
+import { ShieldCheck, Landmark, TrendingUp, ArrowRight, MapPin, CheckCircle, HelpCircle, PhoneCall, Mail, Award, Sparkles, Compass } from "lucide-react";
 import { navigateTo, navigateToDelayed } from "../lib/router";
 import { Magnet } from "./ui/Magnet";
 const Grainient = React.lazy(() => import("./ui/Grainient"));
 import { ClickSpark } from "./ui/ClickSpark";
+import { landingServiceHighlights } from "../data/landing_services";
 
 import { AnimatedCounter } from "./ui/Counter";
 import { gsap } from "gsap";
@@ -13,6 +14,10 @@ import { TextType } from "./ui/TextType";
 import { useLanguage } from "../lib/i18n";
 import illustration1 from "../illustration_1.webp";
 import illustration3 from "../illustration_3.webp";
+import avatarIndian1 from "../avatar_indian_1.png";
+import avatarIndian2 from "../avatar_indian_2.png";
+import avatarIndian3 from "../avatar_indian_3.png";
+import avatarIndian4 from "../avatar_indian_4.png";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
@@ -56,30 +61,69 @@ const logos = [
   },
 ];
 
+// Stable reference — prevents TextType effect from resetting on every parent re-render
+const HERO_ROTATING_TEXTS = ["Businesses", "Startups", "MSMEs"];
 
-
+const SERVICE_ICON_MAP = {
+  GRANTS: Award,
+  START: Sparkles,
+  DEBT: Landmark,
+  HUBS: Compass,
+  VC: TrendingUp,
+} as const;
 
 
 interface StateMetrics {
-  funds: string;
-  centers: number;
-  success: string;
-  startups: string;
+  startupFund: string;
+  incubators: string;
+  dpiitStartups: string;
+  strongSector: string;
 }
 
 const getStateData = (name: string): StateMetrics => {
   const hubs: Record<string, StateMetrics> = {
-    "Maharashtra": { funds: "₹12.4B", centers: 18, success: "94.2%", startups: "400+" },
-    "NCT of Delhi": { funds: "₹9.8B", centers: 12, success: "91.5%", startups: "320+" },
-    "Karnataka": { funds: "₹15.2B", centers: 22, success: "89.8%", startups: "450+" },
-    "Tamil Nadu": { funds: "₹8.6B", centers: 14, success: "85.4%", startups: "280+" },
-    "Gujarat": { funds: "₹7.9B", centers: 11, success: "88.0%", startups: "250+" }
+    "Andhra Pradesh": { startupFund: "₹200 Cr", incubators: "30+", dpiitStartups: "4500+", strongSector: "Agritech & Electronics" },
+    "Arunachal Pradesh": { startupFund: "₹10 Cr", incubators: "3+", dpiitStartups: "55+", strongSector: "Tourism" },
+    "Assam": { startupFund: "₹200 Cr", incubators: "15+", dpiitStartups: "1500+", strongSector: "Tea & Agritech" },
+    "Bihar": { startupFund: "₹500 Cr", incubators: "20+", dpiitStartups: "3000+", strongSector: "EdTech & Agriculture" },
+    "Chhattisgarh": { startupFund: "₹100 Cr", incubators: "8+", dpiitStartups: "1200+", strongSector: "Mining & Rural Tech" },
+    "Goa": { startupFund: "₹50 Cr", incubators: "7+", dpiitStartups: "700+", strongSector: "Tourism & SaaS" },
+    "Gujarat": { startupFund: "₹300 Cr", incubators: "200+", dpiitStartups: "16700+", strongSector: "Manufacturing & EV" },
+    "Haryana": { startupFund: "₹200 Cr", incubators: "35+", dpiitStartups: "8000+", strongSector: "AutoTech & Logistics" },
+    "Himachal Pradesh": { startupFund: "₹50 Cr", incubators: "10+", dpiitStartups: "500+", strongSector: "Tourism & Food Processing" },
+    "Jharkhand": { startupFund: "₹50 Cr", incubators: "7+", dpiitStartups: "1000+", strongSector: "Mining & Tribal Innovation" },
+    "Karnataka": { startupFund: "₹518 Cr", incubators: "210+", dpiitStartups: "16954+", strongSector: "AI & SaaS" },
+    "Kerala": { startupFund: "₹100 Cr", incubators: "55+", dpiitStartups: "6000+", strongSector: "DeepTech & HealthTech" },
+    "Madhya Pradesh": { startupFund: "₹200 Cr", incubators: "40+", dpiitStartups: "4000+", strongSector: "Agritech & Manufacturing" },
+    "Maharashtra": { startupFund: "₹500 Cr", incubators: "220+", dpiitStartups: "28511+", strongSector: "FinTech & SaaS" },
+    "Manipur": { startupFund: "₹10 Cr", incubators: "4+", dpiitStartups: "185+", strongSector: "Handicraft & Sports" },
+    "Meghalaya": { startupFund: "₹10 Cr", incubators: "4+", dpiitStartups: "63+", strongSector: "Tourism" },
+    "Mizoram": { startupFund: "₹10 Cr", incubators: "4+", dpiitStartups: "44+", strongSector: "Bamboo & Handicraft" },
+    "Nagaland": { startupFund: "₹10 Cr", incubators: "4+", dpiitStartups: "88+", strongSector: "Agriculture" },
+    "Odisha": { startupFund: "₹100 Cr", incubators: "45+", dpiitStartups: "3500+", strongSector: "DeepTech & Manufacturing" },
+    "Punjab": { startupFund: "₹150 Cr", incubators: "35+", dpiitStartups: "3000+", strongSector: "Agritech & Logistics" },
+    "Rajasthan": { startupFund: "₹500 Cr", incubators: "60+", dpiitStartups: "6500+", strongSector: "EV & Tourism" },
+    "Sikkim": { startupFund: "₹5 Cr", incubators: "3+", dpiitStartups: "13+", strongSector: "Organic Farming" },
+    "Tamil Nadu": { startupFund: "₹100 Cr", incubators: "228+", dpiitStartups: "11900+", strongSector: "Automobile & EV" },
+    "Telangana": { startupFund: "₹100 Cr", incubators: "140+", dpiitStartups: "8000+", strongSector: "AI & Pharma" },
+    "Tripura": { startupFund: "₹10 Cr", incubators: "8+", dpiitStartups: "147+", strongSector: "Bamboo & Rural Innovation" },
+    "Uttar Pradesh": { startupFund: "₹1000 Cr", incubators: "70+", dpiitStartups: "14000+", strongSector: "Agritech & Electronics" },
+    "Uttarakhand": { startupFund: "₹200 Cr", incubators: "12+", dpiitStartups: "1200+", strongSector: "Tourism & Sustainability" },
+    "West Bengal": { startupFund: "₹100 Cr", incubators: "50+", dpiitStartups: "5500+", strongSector: "DeepTech & FinTech" },
+    "NCT of Delhi": { startupFund: "₹200 Cr", incubators: "130+", dpiitStartups: "15000+", strongSector: "AI & FinTech" },
+    "Jammu & Kashmir": { startupFund: "₹50 Cr", incubators: "8+", dpiitStartups: "900+", strongSector: "Tourism & Handicraft" },
+    "Chandigarh": { startupFund: "₹25 Cr", incubators: "3+", dpiitStartups: "600+", strongSector: "IT Services" },
+    "Puducherry": { startupFund: "₹20 Cr", incubators: "5+", dpiitStartups: "250+", strongSector: "Tourism & MSME" },
+    "Andaman and Nicobar Islands": { startupFund: "N/A", incubators: "N/A", dpiitStartups: "N/A", strongSector: "N/A" },
+    "Dadra and Nagar Haveli and Daman and Diu": { startupFund: "N/A", incubators: "N/A", dpiitStartups: "N/A", strongSector: "N/A" },
+    "Lakshadweep": { startupFund: "N/A", incubators: "N/A", dpiitStartups: "N/A", strongSector: "N/A" },
+    "Ladakh": { startupFund: "N/A", incubators: "N/A", dpiitStartups: "N/A", strongSector: "N/A" },
   };
 
   const matched = hubs[name];
   if (matched) return matched;
 
-  // Deterministic hash-based mock generator
+  // Deterministic hash-based fallback for any unmapped state name
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -87,14 +131,13 @@ const getStateData = (name: string): StateMetrics => {
   hash = Math.abs(hash);
 
   const fundsNum = ((hash % 56) + 12) / 10;
-  const funds = `₹${fundsNum.toFixed(1)}B`;
-  const centers = (hash % 8) + 2;
-  const successNum = (hash % 16) + 72;
-  const success = `${successNum}%`;
+  const startupFund = `₹${fundsNum.toFixed(1)}B`;
+  const incubators = `${(hash % 8) + 2}+`;
   const startupsNum = (hash % 200) + 100;
-  const startups = `${startupsNum}+`;
+  const dpiitStartups = `${startupsNum}+`;
+  const strongSector = "—";
 
-  return { funds, centers, success, startups };
+  return { startupFund, incubators, dpiitStartups, strongSector };
 };
 
 const getStateImage = (stateName: string): string => {
@@ -143,9 +186,10 @@ const getStateImage = (stateName: string): string => {
 interface MetricItemProps {
   label: string;
   value: string;
+  viewTrigger?: number;
 }
 
-const MetricItem = React.memo(({ label, value }: MetricItemProps) => {
+const MetricItem = React.memo(({ label, value, viewTrigger = 0 }: MetricItemProps) => {
   const [hoverCount, setHoverCount] = useState(0);
   return (
     <div
@@ -153,7 +197,7 @@ const MetricItem = React.memo(({ label, value }: MetricItemProps) => {
       className="flex flex-col items-center text-center cursor-pointer group animate-fade-in w-full"
     >
       <span className="font-sans text-4xl md:text-5xl font-extrabold text-black mb-1 flex items-center justify-center h-[36px] md:h-[48px] w-full">
-        <AnimatedCounter hoverTrigger={hoverCount} value={value} fontSize={36} mdFontSize={48} fontWeight={800} textColor="black" />
+        <AnimatedCounter hoverTrigger={hoverCount + viewTrigger} value={value} fontSize={36} mdFontSize={48} fontWeight={800} textColor="black" />
       </span>
       <span className="font-sans text-[10px] tracking-widest text-zinc-500 group-hover:text-black transition-colors font-bold uppercase select-none">
         {label}
@@ -162,6 +206,42 @@ const MetricItem = React.memo(({ label, value }: MetricItemProps) => {
   );
 });
 MetricItem.displayName = "MetricItem";
+
+/** Wrapper that re-triggers counter animations every time the section scrolls into view */
+function MetricsSection({ t }: { t: (key: string) => string }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [viewCount, setViewCount] = useState(0);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setViewCount((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.4 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="border-y border-zinc-200/80 bg-secondary/35">
+      <div className="max-w-7xl mx-auto px-6 md:px-20 py-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
+          <MetricItem label={t("metrics.activeSchemes")} value="950" viewTrigger={viewCount} />
+          <MetricItem label={t("metrics.statesMapped")} value="28 + 7" viewTrigger={viewCount} />
+          <MetricItem label={t("metrics.capitalOptimized")} value="₹19400 Crs" viewTrigger={viewCount} />
+          <MetricItem label={t("metrics.accuracy")} value="97%" viewTrigger={viewCount} />
+        </div>
+      </div>
+    </section>
+  );
+}
 
 interface WhyChooseCardProps {
   icon: React.ReactNode;
@@ -269,10 +349,42 @@ export function LandingPage() {
     setContactData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (contactData.name && contactData.email && contactData.phone) {
+
+    if (
+      !contactData.name ||
+      !contactData.email ||
+      !contactData.phone ||
+      !contactData.company ||
+      !contactData.description
+    ) {
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: contactData.name,
+          email: contactData.email,
+          phone: contactData.phone,
+          company: contactData.company,
+          description: contactData.description,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit form");
+      }
+
       setIsContactSubmitted(true);
+
       setTimeout(() => {
         setIsContactSubmitted(false);
         setContactData({
@@ -280,9 +392,12 @@ export function LandingPage() {
           email: "",
           phone: "",
           company: "",
-          description: ""
+          description: "",
         });
-      }, 5000);
+      }, 10000);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to send message. Please try again.");
     }
   };
 
@@ -379,7 +494,7 @@ export function LandingPage() {
                 AI Search Engine for {" "}
                 <span className="inline-block min-w-[200px] sm:min-w-[320px] text-center text-primary notranslate">
                   <TextType
-                    text={["Businesses", "Startups", "MSMEs"]}
+                    text={HERO_ROTATING_TEXTS}
                     as="span"
                     typingSpeed={80}
                     deletingSpeed={45}
@@ -411,10 +526,10 @@ export function LandingPage() {
 
                 <div className="flex items-center gap-3">
                   <div className="flex -space-x-2">
-                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=60&h=60&q=80" alt="Founder 1" />
-                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=60&h=60&q=80" alt="Founder 2" />
-                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=60&h=60&q=80" alt="Founder 3" />
-                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=60&h=60&q=80" alt="Founder 4" />
+                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src={avatarIndian1} alt="Indian Business Leader 1" />
+                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src={avatarIndian2} alt="Indian Business Leader 2" />
+                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src={avatarIndian3} alt="Indian Business Leader 3" />
+                    <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src={avatarIndian4} alt="Indian Business Leader 4" />
                   </div>
                   <span className="font-sans text-xs md:text-sm text-zinc-500 font-medium leading-none">
                     Based on trusted businesses
@@ -489,17 +604,9 @@ export function LandingPage() {
         </div>
       </section>
 
+
       {/* Metrics Row */}
-      <section className="border-y border-zinc-200/80 bg-secondary/35">
-        <div className="max-w-7xl mx-auto px-6 md:px-20 py-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
-            <MetricItem label={t("metrics.activeSchemes")} value="950" />
-            <MetricItem label={t("metrics.statesMapped")} value="28 + 7" />
-            <MetricItem label={t("metrics.capitalOptimized")} value="₹19400 Crs" />
-            <MetricItem label={t("metrics.accuracy")} value="97%" />
-          </div>
-        </div>
-      </section>
+      <MetricsSection t={t} />
 
       {/* Unified Interactive Map & State Advisory HUD (Full Width & Height Dark Layout) */}
       <section className="w-full min-h-[calc(100vh-80px)] flex items-center justify-center bg-zinc-950 py-12 lg:py-16 border-y border-zinc-800 relative overflow-hidden">
@@ -528,32 +635,40 @@ export function LandingPage() {
                 {activeRegion === "NCT of Delhi" ? "Delhi NCR" : activeRegion}
               </h2>
               <p className="font-sans text-sm text-zinc-200 leading-relaxed mt-3 max-w-sm">
-                Powering innovation and growth across {activeRegion === "NCT of Delhi" ? "Delhi NCR" : activeRegion} through capital, incubation, and strategic support.
+                Supporting startups and MSMEs in {activeRegion === "NCT of Delhi" ? "Delhi NCR" : activeRegion} with access to incubators, funding opportunities, government support and emerging business sectors.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-6 w-full max-w-sm mt-6 p-5 bg-white/[0.08] backdrop-blur-md border border-white/15 rounded-2xl">
               <div className="flex flex-col gap-1">
                 <span className="text-[9px] font-mono tracking-widest text-white/50 uppercase select-none">
-                  State Budget
+                  Startup Fund
                 </span>
                 <span className="text-2xl font-sans font-extrabold text-white">
-                  {getStateData(activeRegion).funds}
+                  {getStateData(activeRegion).startupFund}
                 </span>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-[9px] font-mono tracking-widest text-white/50 uppercase select-none">
-                  INCUBATION NUMBER
+                  Incubators
                 </span>
                 <span className="text-2xl font-sans font-extrabold text-white">
-                  {getStateData(activeRegion).centers}
+                  {getStateData(activeRegion).incubators}
                 </span>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-[9px] font-mono tracking-widest text-white/50 uppercase select-none">
-                  SUCCESS AUDIT
+                  DPIIT Startups
                 </span>
                 <span className="text-2xl font-sans font-extrabold text-emerald-400">
-                  {getStateData(activeRegion).success}
+                  {getStateData(activeRegion).dpiitStartups}
+                </span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-[9px] font-mono tracking-widest text-white/50 uppercase select-none">
+                  Strong Sector
+                </span>
+                <span className="text-base font-sans font-bold text-amber-300 leading-tight">
+                  {getStateData(activeRegion).strongSector}
                 </span>
               </div>
             </div>
@@ -608,6 +723,159 @@ export function LandingPage() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* Orbital Services Section — ICS Hub */}
+      <section className="relative px-6 md:px-20 py-24 lg:py-32 bg-white border-b border-zinc-200/70 overflow-hidden">
+        {/* Subtle radial glow behind the orbit */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-radial from-secondary/40 via-secondary/10 to-transparent blur-3xl opacity-60" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto z-10">
+          {/* Section Header */}
+          <div className="flex flex-col items-center text-center mb-16 lg:mb-20">
+            <span className="font-mono text-[10px] font-extrabold tracking-widest text-primary uppercase select-none mb-3">
+              Advisory Channels
+            </span>
+            <h2 className="font-sans text-3xl md:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-4">
+              Services built around your capital path
+            </h2>
+            <p className="font-sans text-sm text-zinc-500 leading-relaxed max-w-lg">
+              Five specialized channels — all connected through one intelligent platform.
+            </p>
+          </div>
+
+          {/* Desktop: Orbital Layout */}
+          <div className="hidden lg:block">
+            <div className="relative w-full max-w-[720px] aspect-square mx-auto">
+              {/* Orbit rings */}
+              <div className="absolute inset-[60px] rounded-full border border-dashed border-zinc-200/70 animate-[spin_90s_linear_infinite]" />
+              <div className="absolute inset-[100px] rounded-full border border-zinc-100" />
+
+              {/* Center ICS Hub */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                <div className="relative w-36 h-36 rounded-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-950 border-2 border-zinc-700 shadow-2xl shadow-zinc-900/30 flex items-center justify-center group cursor-pointer transition-transform duration-500 hover:scale-110">
+                  <span className="font-sans text-4xl font-black text-white tracking-wider select-none">ICS</span>
+                  {/* Pulse ring */}
+                  <div className="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping opacity-20" />
+                  <div className="absolute -inset-3 rounded-full border border-zinc-300/30" />
+                </div>
+              </div>
+
+              {/* Orbital Service Nodes */}
+              {landingServiceHighlights.map((service, index) => {
+                const Icon = SERVICE_ICON_MAP[service.code];
+                const totalItems = landingServiceHighlights.length;
+                // Distribute evenly around the circle, starting from top (-90°)
+                const angleDeg = (360 / totalItems) * index - 90;
+                const angleRad = (angleDeg * Math.PI) / 180;
+                const radius = 42; // percentage from center
+
+                const x = 50 + radius * Math.cos(angleRad);
+                const y = 50 + radius * Math.sin(angleRad);
+
+                return (
+                  <div
+                    key={service.code}
+                    className="absolute z-10 group"
+                    style={{
+                      top: `${y}%`,
+                      left: `${x}%`,
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  >
+                    {/* Connector line to center */}
+                    <svg
+                      className="absolute top-1/2 left-1/2 pointer-events-none -z-10"
+                      style={{
+                        width: "1px",
+                        height: "1px",
+                        overflow: "visible",
+                      }}
+                    >
+                      <line
+                        x1="0"
+                        y1="0"
+                        x2={`${(50 - x) * 7.2}px`}
+                        y2={`${(50 - y) * 7.2}px`}
+                        stroke="currentColor"
+                        strokeWidth="1"
+                        className="text-zinc-200 group-hover:text-primary/40 transition-colors duration-300"
+                        strokeDasharray="4 4"
+                      />
+                    </svg>
+
+                    {/* Service Card Node */}
+                    <div className="relative w-44 bg-white rounded-2xl border border-zinc-200 p-4 shadow-sm hover:shadow-lg hover:border-primary/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 text-primary group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
+                          <Icon size={16} strokeWidth={2.3} />
+                        </div>
+                        <span className="font-mono text-[8px] font-black tracking-widest text-zinc-300 group-hover:text-primary/60 transition-colors">
+                          {service.code}
+                        </span>
+                      </div>
+                      <h3 className="font-sans text-sm font-bold text-black leading-tight mb-1.5">
+                        {service.title}
+                      </h3>
+                      <p className="font-sans text-[11px] leading-relaxed text-zinc-500">
+                        {service.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Mobile/Tablet: Vertical list with center ICS badge */}
+          <div className="lg:hidden flex flex-col items-center gap-6">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-950 border-2 border-zinc-700 shadow-xl flex items-center justify-center mb-4">
+              <span className="font-sans text-2xl font-black text-white tracking-wider select-none">ICS</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
+              {landingServiceHighlights.map((service) => {
+                const Icon = SERVICE_ICON_MAP[service.code];
+                return (
+                  <div
+                    key={service.code}
+                    className="group bg-white rounded-2xl border border-zinc-200 p-5 hover:shadow-md hover:border-primary/40 transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 text-primary group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
+                        <Icon size={16} strokeWidth={2.3} />
+                      </div>
+                      <span className="font-mono text-[8px] font-black tracking-widest text-zinc-300">
+                        {service.code}
+                      </span>
+                    </div>
+                    <h3 className="font-sans text-sm font-bold text-black leading-tight mb-1.5">
+                      {service.title}
+                    </h3>
+                    <p className="font-sans text-[11px] leading-relaxed text-zinc-500">
+                      {service.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="flex justify-center mt-14">
+            <ClickSpark sparkColor="#000" sparkRadius={18} sparkCount={6} duration={350}>
+              <button
+                onClick={() => navigateToDelayed("services", 150)}
+                className="border border-zinc-200 hover:border-black bg-white text-black px-6 py-3 text-[11px] font-extrabold tracking-widest uppercase rounded-lg hover:bg-zinc-50 transition-colors active:scale-95 duration-100 cursor-pointer flex items-center gap-2"
+              >
+                Explore all services
+                <ArrowRight size={13} />
+              </button>
+            </ClickSpark>
+          </div>
         </div>
       </section>
 
@@ -829,7 +1097,7 @@ export function LandingPage() {
                   <p className="font-sans text-xs text-zinc-550">Immediate priority line for urgent institutional inquiries.</p>
                 </div>
                 <p className="font-sans text-base font-extrabold text-black mt-4 tracking-wide">
-                  +1 (800) 555-0199
+                  +91 8447198483
                 </p>
               </div>
 
@@ -841,7 +1109,7 @@ export function LandingPage() {
                   <p className="font-sans text-xs text-zinc-550">Submit detailed documentation or formal funding requests.</p>
                 </div>
                 <p className="font-sans text-base font-extrabold text-black mt-4 underline decoration-1 underline-offset-4 tracking-wide">
-                  funding@infouconsultancy.com
+                  support@infou.in
                 </p>
               </div>
             </div>

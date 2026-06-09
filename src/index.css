@@ -129,11 +129,22 @@ body::before {
 
 /* Custom spin keyframes declared inside @theme */
 
-@media (prefers-reduced-motion) {
+@media (prefers-reduced-motion: reduce) {
   *,
   ::before,
   ::after {
-    animation: none !important;
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+
+  /* Exempt spinners/loaders so the user still has system state visibility */
+  .animate-spin {
+    animation: spin 1s linear infinite !important;
   }
 }
 
@@ -182,5 +193,10 @@ body {
 .notranslate {
   /* Prevent translation of elements where typing animations occur */
   translate: no !important;
+}
+
+/* Explicit fallback rule to guarantee spin utility works across all environments */
+.animate-spin {
+  animation: spin 1s linear infinite !important;
 }
 

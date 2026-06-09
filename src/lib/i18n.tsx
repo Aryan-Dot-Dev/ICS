@@ -43,7 +43,7 @@ export const translations = {
     // Why Choose ICS
     "choose.badge": "",
     "choose.title": "Why Choose ICS?",
-    "choose.desc": "We align deep policy analytics with rigorous audit frameworks to ensure high-growth businesses secure maximum non-dilutive funding.",
+    "choose.desc": "We help startups and MSMEs identify the right government schemes, grants, incubators, and funding opportunities with proper guidance, research and strategic support across India",
     "choose.card1.title": "Diagnostic First-Pass Success",
     "choose.card1.desc": "Our proprietary pre-submission audit frameworks eliminate policy loopholes, ensuring compliance and maximizing approval probability.",
     "choose.card2.title": "Capital Optimized",
@@ -157,12 +157,12 @@ const getLanguageFromStorage = (): string => {
 const setGoogleTranslateCookie = (lang: string) => {
   if (typeof document === "undefined") return;
   const domain = window.location.hostname;
-  
+
   // Clear any existing cookies first to avoid duplicates
   document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
   document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain}`;
   document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain}`;
-  
+
   if (lang !== "en") {
     document.cookie = `googtrans=/en/${lang}; path=/`;
     document.cookie = `googtrans=/en/${lang}; path=/; domain=${domain}`;

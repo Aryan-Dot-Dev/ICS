@@ -169,7 +169,8 @@ export function Navbar({ currentRoute }: NavbarProps) {
               onClick={() => handleNavClick("landing")}
               className="font-sans text-xl md:text-2xl font-extrabold tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity uppercase text-primary"
             >
-              {t("nav.brand")}
+              {/* {t("nav.brand")} */}
+              <img src="https://imgh.in/host/vwh54k" alt="Logo" className="h-10 w-auto" />
             </div>
           </ClickSpark>
 
@@ -237,7 +238,7 @@ export function Navbar({ currentRoute }: NavbarProps) {
             {/* Language Selection Dropdown */}
             <div className="relative">
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger 
+                <SelectTrigger
                   className="h-9 w-fit rounded-full border border-zinc-200 bg-transparent px-4 py-2 text-[10px] font-extrabold tracking-widest uppercase text-zinc-900 hover:bg-zinc-50 cursor-pointer notranslate"
                   translate="no"
                   aria-label="Select Language"
@@ -248,8 +249,8 @@ export function Navbar({ currentRoute }: NavbarProps) {
                 </SelectTrigger>
                 <SelectContent className="bg-white border border-zinc-200 shadow-md rounded-xl notranslate" translate="no">
                   {languages.map((lang) => (
-                    <SelectItem 
-                      key={lang.code} 
+                    <SelectItem
+                      key={lang.code}
                       value={lang.code}
                       className="text-[10px] font-extrabold tracking-widest uppercase hover:bg-zinc-100 cursor-pointer py-2 notranslate"
                       translate="no"
@@ -263,11 +264,11 @@ export function Navbar({ currentRoute }: NavbarProps) {
 
             <ClickSpark sparkColor="#FF5A36" sparkRadius={18} sparkCount={6} duration={350}>
               <a
-                href="tel:+18005550199"
+                href="tel:+91 8447198483"
                 className="px-5 py-2 text-xs font-bold tracking-widest uppercase rounded-full border border-zinc-200 hover:bg-zinc-50 text-zinc-900 bg-transparent flex items-center gap-2"
               >
                 <Phone size={12} />
-                +1 (800) 555-0199
+                +91 8447198483
               </a>
             </ClickSpark>
           </div>
@@ -277,7 +278,7 @@ export function Navbar({ currentRoute }: NavbarProps) {
             {/* Language Selection Mobile Dropdown */}
             <div className="relative">
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger 
+                <SelectTrigger
                   className="h-8 w-fit rounded-full border border-zinc-200 bg-transparent px-3 py-1.5 text-[9px] font-extrabold tracking-wider uppercase text-zinc-900 hover:bg-zinc-50 cursor-pointer notranslate"
                   translate="no"
                   aria-label="Select Language"
@@ -288,8 +289,8 @@ export function Navbar({ currentRoute }: NavbarProps) {
                 </SelectTrigger>
                 <SelectContent className="bg-white border border-zinc-200 shadow-md rounded-xl notranslate" translate="no">
                   {languages.map((lang) => (
-                    <SelectItem 
-                      key={lang.code} 
+                    <SelectItem
+                      key={lang.code}
                       value={lang.code}
                       className="text-[9px] font-extrabold tracking-wider uppercase hover:bg-zinc-100 cursor-pointer py-1.5 notranslate"
                       translate="no"
@@ -303,7 +304,7 @@ export function Navbar({ currentRoute }: NavbarProps) {
 
             <ClickSpark sparkColor="#FF5A36" sparkRadius={20} sparkCount={8} duration={350}>
               <a
-                href="tel:+18005550199"
+                href="tel:+91 8447198483"
                 className="p-2 border border-zinc-200 hover:bg-zinc-50 text-zinc-900 rounded-full transition-colors flex items-center justify-center"
                 title="Call Us"
               >
@@ -386,11 +387,11 @@ export function Navbar({ currentRoute }: NavbarProps) {
                   <div className="border-t border-zinc-200 py-4 flex flex-col gap-3">
                     <ClickSpark sparkColor="#FF5A36" sparkRadius={20} sparkCount={8} duration={400} className="w-full">
                       <a
-                        href="tel:+18005550199"
+                        href="tel:+91 8447198483"
                         className="border border-zinc-200 text-zinc-900 text-center py-3.5 text-xs font-bold tracking-widest uppercase rounded-full hover:bg-zinc-50 transition-all active:scale-95 duration-100 flex items-center justify-center gap-2 cursor-pointer w-full"
                       >
                         <Phone size={12} />
-                        +1 (800) 555-0199
+                        +91 8447198483
                       </a>
                     </ClickSpark>
                   </div>

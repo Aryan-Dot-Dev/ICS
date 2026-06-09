@@ -6,6 +6,7 @@ import { Textarea } from "./ui/textarea";
 import ClickSpark from "./ui/ClickSpark";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { gsap } from "gsap";
+import { apiUrl } from "../lib/api";
 const Grainient = React.lazy(() => import("./ui/Grainient"));
 
 export function AssessmentPage() {
@@ -141,7 +142,7 @@ export function AssessmentPage() {
     setRequestPayload(reqJson);
 
     try {
-      const response = await fetch("/api/recommend-schemes", {
+      const response = await fetch(apiUrl("/api/recommend-schemes"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -510,7 +511,7 @@ export function AssessmentPage() {
                       {/* Premium Call Badge with Tooltip */}
                       <div className="absolute top-5 right-5 z-20 group/tooltip">
                         <a
-                          href="tel:+18005550199"
+                          href="tel:+91 8447198483"
                           className="w-7 h-7 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-sm border border-primary/20 relative"
                         >
                           {/* Pulsing ring indicator */}

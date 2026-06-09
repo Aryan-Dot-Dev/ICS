@@ -62,7 +62,7 @@ export function ContactPage() {
                 <p className="font-sans text-xs text-zinc-500">Immediate priority line for urgent institutional inquiries.</p>
               </div>
               <p className="font-sans text-lg font-extrabold text-black mt-6 tracking-wide">
-                +1 (800) 555-0199
+                +91 8447198483
               </p>
             </div>
 
@@ -74,7 +74,7 @@ export function ContactPage() {
                 <p className="font-sans text-xs text-zinc-500">Submit detailed documentation or formal funding requests.</p>
               </div>
               <p className="font-sans text-lg font-extrabold text-black mt-6 underline decoration-1 underline-offset-4 tracking-wide">
-                funding@infouconsultancy.com
+                support@infou.in
               </p>
             </div>
           </div>

@@ -3,6 +3,7 @@ import { MessageSquare, X, Send, ArrowRight, Sparkles } from "lucide-react";
 import { Input } from "./ui/input";
 import ClickSpark from "./ui/ClickSpark";
 import { navigateToDelayed } from "../lib/router";
+import { apiUrl } from "../lib/api";
 
 interface Message {
   id: string;
@@ -62,6 +63,7 @@ export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(loadMessages);
   const [inputValue, setInputValue] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -91,35 +93,29 @@ export function ChatbotWidget() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const getResponse = (query: string): { text: string; isActionable: boolean; type?: "assessment" | "contact" } => {
-    const q = query.toLowerCase().trim();
-    if (q.includes("pli")) {
-      return POLICY_ANSWERS["pli subsidies"];
+  const getResponse = async (query: string): Promise<{ text: string; isActionable: boolean; type?: "assessment" | "contact" }> => {
+    const response = await fetch(apiUrl("/api/chat-restricted"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ query })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error ${response.status}`);
     }
-    if (q.includes("msme") || q.includes("grant") || q.includes("loan")) {
-      return POLICY_ANSWERS["msme grants"];
-    }
-    if (q.includes("tax") || q.includes("exempt") || q.includes("rebate")) {
-      return POLICY_ANSWERS["tax exemptions"];
-    }
-    if (q.includes("state") || q.includes("audit") || q.includes("policy") || q.includes("mumbai") || q.includes("gujarat")) {
-      return POLICY_ANSWERS["state policy audit"];
-    }
-    if (q.includes("contact") || q.includes("call") || q.includes("email") || q.includes("desk") || q.includes("phone")) {
-      return {
-        text: "You can reach our strategy desk directly at +1 (800) 555-0199 or email us at funding@infouconsultancy.com.",
-        isActionable: true,
-        type: "contact"
-      };
-    }
+
+    const data = await response.json() as { answer?: string };
+    const answer = data.answer?.trim();
     return {
-      text: "I can assist you with PLI Subsidies, MSME Grants, Tax Exemptions, and State Policies. For a comprehensive profile evaluation, please start a free funding audit.",
+      text: answer || "I do not have information on this.",
       isActionable: true,
       type: "assessment"
     };
   };
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
     const userMsg: Message = {
@@ -129,18 +125,37 @@ export function ChatbotWidget() {
       timestamp: new Date()
     };
 
-    const replyData = getResponse(text);
-    const botMsg: Message = {
-      id: `bot_${Math.random().toString(36).substring(2, 9)}`,
-      sender: "bot",
-      text: replyData.text,
-      timestamp: new Date(),
-      isActionable: replyData.isActionable,
-      type: replyData.type
-    };
-
-    setMessages((prev) => [...prev, userMsg, botMsg]);
+    setMessages((prev) => [...prev, userMsg]);
     setInputValue("");
+    setIsSending(true);
+
+    try {
+      const replyData = await getResponse(text);
+      const botMsg: Message = {
+        id: `bot_${Math.random().toString(36).substring(2, 9)}`,
+        sender: "bot",
+        text: replyData.text,
+        timestamp: new Date(),
+        isActionable: replyData.isActionable,
+        type: replyData.type
+      };
+
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (error) {
+      const botMsg: Message = {
+        id: `bot_${Math.random().toString(36).substring(2, 9)}`,
+        sender: "bot",
+        text: "I’m unable to reach the policy assistant right now. Please try again in a moment.",
+        timestamp: new Date(),
+        isActionable: true,
+        type: "assessment"
+      };
+
+      setMessages((prev) => [...prev, botMsg]);
+      console.error("[CHATBOT_WIDGET] Failed to fetch chat response:", error);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const triggerAction = (type?: "assessment" | "contact") => {
@@ -158,7 +173,7 @@ export function ChatbotWidget() {
     <div ref={containerRef} className="fixed bottom-6 right-6 z-40 font-sans text-left">
       {/* Chat Window Panel */}
       {isOpen && (
-        <div className="absolute bottom-16 right-0 w-[340px] sm:w-[380px] h-[480px] bg-white border border-zinc-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50 animate-in slide-in-from-bottom-5 duration-200 origin-bottom-right">
+        <div className="absolute bottom-16 right-0 w-85 sm:w-95 h-120 bg-white border border-zinc-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50 animate-in slide-in-from-bottom-5 duration-200 origin-bottom-right">
           
           {/* Chat Header */}
           <div className="bg-zinc-50 border-b border-zinc-150 px-4 py-4 flex items-center justify-between select-none">
@@ -177,7 +192,7 @@ export function ChatbotWidget() {
           </div>
 
           {/* Chat Messages Log */}
-          <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-zinc-50/50">
+          <div className="grow overflow-y-auto p-4 space-y-4 bg-zinc-50/50">
             {messages.map((msg) => {
               const isBot = msg.sender === "bot";
               return (
@@ -190,19 +205,6 @@ export function ChatbotWidget() {
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{msg.text}</p>
-                    
-                    {/* Action Link Shortcut inside bot reply */}
-                    {isBot && msg.isActionable && (
-                      <div className="mt-3 pt-2.5 border-t border-orange-100/70 flex justify-end">
-                        <button
-                          onClick={() => triggerAction(msg.type)}
-                          className="text-[10px] font-bold text-orange-600 hover:text-orange-800 transition-colors uppercase tracking-wider flex items-center gap-1 cursor-pointer"
-                        >
-                          {msg.type === "contact" ? "Go to Contact" : "Launch Free Form"}
-                          <ArrowRight size={10} />
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               );
@@ -226,11 +228,13 @@ export function ChatbotWidget() {
               placeholder="Query government funding..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="flex-grow rounded-lg text-xs h-9 border-zinc-200 focus-visible:ring-black/10 placeholder:text-zinc-300 text-black bg-zinc-50/50"
+              disabled={isSending}
+              className="grow rounded-lg text-xs h-9 border-zinc-200 focus-visible:ring-black/10 placeholder:text-zinc-300 text-black bg-zinc-50/50"
             />
             <ClickSpark sparkColor="#fff" sparkRadius={15} sparkCount={6} duration={350}>
               <button
                 type="submit"
+                disabled={isSending}
                 className="w-9 h-9 bg-primary text-white hover:bg-primary/90 rounded-lg flex items-center justify-center transition-colors active:scale-95 duration-100 shrink-0 cursor-pointer"
                 title="Send Message"
               >
@@ -247,7 +251,7 @@ export function ChatbotWidget() {
           <div className="absolute bottom-16 right-0 mb-3 bg-[#FFF8F5] border-2 border-black rounded-2xl px-4 py-2.5 shadow-[3px_3px_0px_rgba(0,0,0,1)] text-xs font-extrabold text-black uppercase tracking-wider select-none whitespace-nowrap pointer-events-none animate-in fade-in slide-in-from-bottom-2 duration-300 z-10">
             Let's chat!
             {/* Cartoon tail pointing down-right */}
-            <div className="absolute bottom-[-8px] right-6 w-3.5 h-3.5 bg-[#FFF8F5] border-r-2 border-b-2 border-black rotate-45 z-0" />
+            <div className="absolute -bottom-2 right-6 w-3.5 h-3.5 bg-[#FFF8F5] border-r-2 border-b-2 border-black rotate-45 z-0" />
           </div>
         )}
         <ClickSpark sparkColor="#fff" sparkRadius={24} sparkCount={8} duration={400}>

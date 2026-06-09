@@ -7,6 +7,7 @@ import ClickSpark from "./ui/ClickSpark";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { navigateTo } from "../lib/router";
 import Stepper, { Step } from "./ui/Stepper";
+import { apiUrl } from "../lib/api";
 
 interface AssessmentModalProps {
   isOpen: boolean;
@@ -175,7 +176,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
     console.log("[INFOU API RECOMMEND INITIATED]", payload);
 
     try {
-      const response = await fetch("/api/recommend-schemes", {
+      const response = await fetch(apiUrl("/api/recommend-schemes"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -562,7 +563,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                         <span>{rec.schemeName}</span>
                         <div className="relative group/tooltip shrink-0">
                           <a
-                            href="tel:+18005550199"
+                            href="tel:+91 8447198483"
                             className="w-5 h-5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 border border-primary/20"
                           >
                             <Phone size={8} strokeWidth={2.5} />
