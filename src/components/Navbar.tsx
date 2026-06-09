@@ -170,7 +170,7 @@ export function Navbar({ currentRoute }: NavbarProps) {
               className="font-sans text-xl md:text-2xl font-extrabold tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity uppercase text-primary"
             >
               {/* {t("nav.brand")} */}
-              <img src="https://imgh.in/host/vwh54k" alt="Logo" className="h-10 w-auto" />
+              <img src="https://imgh.in/host/5qzegn" alt="Logo" className="h-12 w-auto" />
             </div>
           </ClickSpark>
 

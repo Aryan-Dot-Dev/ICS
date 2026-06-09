@@ -233,7 +233,7 @@ function MetricsSection({ t }: { t: (key: string) => string }) {
     <section ref={sectionRef} className="border-y border-zinc-200/80 bg-secondary/35">
       <div className="max-w-7xl mx-auto px-6 md:px-20 py-12">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
-          <MetricItem label={t("metrics.activeSchemes")} value="950" viewTrigger={viewCount} />
+          <MetricItem label={t("metrics.activeSchemes")} value="1200+" viewTrigger={viewCount} />
           <MetricItem label={t("metrics.statesMapped")} value="28 + 7" viewTrigger={viewCount} />
           <MetricItem label={t("metrics.capitalOptimized")} value="₹19400 Crs" viewTrigger={viewCount} />
           <MetricItem label={t("metrics.accuracy")} value="97%" viewTrigger={viewCount} />
@@ -922,8 +922,8 @@ export function LandingPage() {
 
         <div className="relative max-w-5xl mx-auto px-6 md:px-20 text-center mb-6">
           <h2 className="text-center font-sans font-medium text-zinc-800 text-lg tracking-tight md:text-xl">
-            <span className="text-zinc-500">Trusted by experts.</span>{" "}
-            <span className="font-semibold text-black">Used by the leaders.</span>
+            <span className="text-zinc-500">Trusted by startups.</span>{" "}
+            <span className="font-semibold text-black">Used by innovative leaders.</span>
           </h2>
           <div className="mx-auto mt-6 h-px max-w-md bg-zinc-200 [mask-image:linear-gradient(to_right,transparent,black,transparent)]" />
         </div>

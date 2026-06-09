@@ -18,7 +18,7 @@ interface TestimonialsColumnProps {
 export const TestimonialsColumn = ({
   className = "",
   testimonials,
-  duration = 10,
+  duration = -1,
 }: TestimonialsColumnProps) => {
   return (
     <div className={className}>
