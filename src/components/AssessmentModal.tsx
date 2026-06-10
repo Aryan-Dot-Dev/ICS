@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { navigateTo } from "../lib/router";
 import Stepper, { Step } from "./ui/Stepper";
 import { apiUrl } from "../lib/api";
+import { BACKEND_URL } from "../config";
 
 interface AssessmentModalProps {
   isOpen: boolean;
@@ -15,9 +16,6 @@ interface AssessmentModalProps {
   source: "manual_click" | "random_popup";
   onSubmitSuccess?: (payload: any) => void;
 }
-
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
-
 
 export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: AssessmentModalProps) {
   const [formData, setFormData] = useState({
@@ -179,7 +177,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
     console.log("[INFOU API RECOMMEND INITIATED]", payload);
 
     try {
-      const response = await fetch(apiUrl(`${BACKEND_URL}/api/recommend-schemes`), {
+      const response = await fetch(apiUrl(`/api/recommend-schemes`), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -21,12 +21,12 @@ import avatarIndian4 from "../avatar_indian_4.png";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
+import { BACKEND_URL } from "../config";
+import { apiUrl } from "@/lib/api";
 
 const Testimonials = React.lazy(() => import("./ui/Testimonials"));
 const LogoCloud = React.lazy(() => import("./ui/logo-cloud-3").then(module => ({ default: module.LogoCloud })));
 const FounderCard = React.lazy(() => import("./ui/FounderCard").then(module => ({ default: module.FounderCard })));
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
-
 
 const logos = [
   {
@@ -365,7 +365,7 @@ export function LandingPage() {
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/contact`, {
+      const response = await fetch(apiUrl(`/api/contact`), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

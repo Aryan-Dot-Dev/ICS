@@ -4,6 +4,8 @@ import { Input } from "./ui/input";
 import ClickSpark from "./ui/ClickSpark";
 import { navigateToDelayed } from "../lib/router";
 import { apiUrl } from "../lib/api";
+import { BACKEND_URL } from "../config";
+
 
 interface Message {
   id: string;
@@ -13,8 +15,6 @@ interface Message {
   isActionable?: boolean;
   type?: "assessment" | "contact";
 }
-
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
 
 const POLICY_ANSWERS: Record<string, { text: string; isActionable: boolean; type?: "assessment" | "contact" }> = {
   "pli subsidies": {
@@ -96,7 +96,7 @@ export function ChatbotWidget() {
   }, [messages]);
 
   const getResponse = async (query: string): Promise<{ text: string; isActionable: boolean; type?: "assessment" | "contact" }> => {
-    const response = await fetch(apiUrl(`${BACKEND_URL}/api/chat-restricted`), {
+    const response = await fetch(apiUrl(`/api/chat-restricted`), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

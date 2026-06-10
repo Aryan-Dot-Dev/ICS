@@ -91,115 +91,118 @@ function LandingPageFallback() {
 
 
 export function App() {
-    const route = useHashLocation();
-    const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
-    const [assessmentSource, setAssessmentSource] = useState<"manual_click" | "random_popup">("manual_click");
-    const [hasSubmitted, setHasSubmitted] = useState(() => {
-        return typeof window !== "undefined" && sessionStorage.getItem("infou_assessment_submitted") === "true";
-    });
+  const route = useHashLocation();
+  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
+  const [assessmentSource, setAssessmentSource] = useState<"manual_click" | "random_popup">("manual_click");
+  const [hasSubmitted, setHasSubmitted] = useState(() => {
+    return typeof window !== "undefined" && sessionStorage.getItem("infou_assessment_submitted") === "true";
+  });
 
-    // Custom Event Listener to open assessment modal
-    useEffect(() => {
-        const handleOpenModal = (e: Event) => {
-            const customEvent = e as CustomEvent;
-            const source = customEvent.detail?.source || "manual_click";
-            setAssessmentSource(source);
-            setIsAssessmentOpen(true);
-        };
+  // console.log(import.meta);
+  // console.log(globalThis)
 
-        window.addEventListener("open-assessment", handleOpenModal);
-        return () => window.removeEventListener("open-assessment", handleOpenModal);
-    }, []);
-
-    // Random Auto-Popup Scheduler Engine
-    useEffect(() => {
-        // If the user has completed the assessment form, if the modal is currently visible, or if on the assessment page, do not schedule
-        if (hasSubmitted || isAssessmentOpen || route === "assessment") return;
-
-        // Define random delay between 20 and 40 seconds
-        const minMs = 20000;
-        const maxMs = 40000;
-        const randomDelay = Math.floor(Math.random() * (maxMs - minMs) + minMs);
-
-        console.log(`[INFOU POLICY ENGINE] Next diagnostic audit check scheduled in ${(randomDelay / 1000).toFixed(1)} seconds.`);
-
-        const timer = setTimeout(() => {
-            setAssessmentSource("random_popup");
-            setIsAssessmentOpen(true);
-        }, randomDelay);
-
-        return () => clearTimeout(timer);
-    }, [hasSubmitted, isAssessmentOpen, route]);
-
-    // Redirect from hidden blog page to landing page
-    useEffect(() => {
-        if (route === "blog") {
-            navigateTo("landing");
-        }
-    }, [route]);
-
-    const handleAssessmentSubmit = (payload: any) => {
-        setHasSubmitted(true);
-        sessionStorage.setItem("infou_assessment_submitted", "true");
-        console.log("[INFOU ACTION REPORT] Assessment successfully compiled. Global auto-popup engine silenced.");
+  // Custom Event Listener to open assessment modal
+  useEffect(() => {
+    const handleOpenModal = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const source = customEvent.detail?.source || "manual_click";
+      setAssessmentSource(source);
+      setIsAssessmentOpen(true);
     };
 
-    const renderPage = () => {
-        switch (route) {
-            case "services":
-                return (
-                    <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="animate-pulse text-zinc-400 font-sans text-sm tracking-widest uppercase">Loading Services...</div></div>}>
-                        <ServicesPage />
-                    </Suspense>
-                );
-            // case "blog":
-            //     return <BlogPage />;
-            case "assessment":
-                return (
-                    <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="animate-pulse text-zinc-400 font-sans text-sm tracking-widest uppercase">Loading Assessment...</div></div>}>
-                        <AssessmentPage />
-                    </Suspense>
-                );
-            case "landing":
-            default:
-                return (
-                    <Suspense fallback={<LandingPageFallback />}>
-                        <LandingPage />
-                    </Suspense>
-                );
-        }
-    };
+    window.addEventListener("open-assessment", handleOpenModal);
+    return () => window.removeEventListener("open-assessment", handleOpenModal);
+  }, []);
 
-    return (
-        <LanguageProvider>
-            <div className="flex flex-col min-h-screen bg-zinc-50 font-sans selection:bg-black selection:text-white antialiased relative">
-                {/* Dynamic Shell Navigation */}
-                <Navbar currentRoute={route} />
+  // Random Auto-Popup Scheduler Engine
+  useEffect(() => {
+    // If the user has completed the assessment form, if the modal is currently visible, or if on the assessment page, do not schedule
+    if (hasSubmitted || isAssessmentOpen || route === "assessment") return;
 
-                {/* Main Content Area */}
-                <main className="flex-grow w-full">
-                    {renderPage()}
-                </main>
+    // Define random delay between 20 and 40 seconds
+    const minMs = 20000;
+    const maxMs = 40000;
+    const randomDelay = Math.floor(Math.random() * (maxMs - minMs) + minMs);
 
-                {/* Structured Footer */}
-                <Footer />
+    console.log(`[INFOU POLICY ENGINE] Next diagnostic audit check scheduled in ${(randomDelay / 1000).toFixed(1)} seconds.`);
 
-                {/* Global Interactive Elements */}
-                <Suspense fallback={null}>
-                    <AssessmentModal
-                        isOpen={isAssessmentOpen}
-                        onClose={() => setIsAssessmentOpen(false)}
-                        source={assessmentSource}
-                        onSubmitSuccess={handleAssessmentSubmit}
-                    />
-                </Suspense>
+    const timer = setTimeout(() => {
+      setAssessmentSource("random_popup");
+      setIsAssessmentOpen(true);
+    }, randomDelay);
 
-                <Suspense fallback={null}>
-                    <ChatbotWidget />
-                </Suspense>
-            </div>
-        </LanguageProvider>
-    );
+    return () => clearTimeout(timer);
+  }, [hasSubmitted, isAssessmentOpen, route]);
+
+  // Redirect from hidden blog page to landing page
+  useEffect(() => {
+    if (route === "blog") {
+      navigateTo("landing");
+    }
+  }, [route]);
+
+  const handleAssessmentSubmit = (payload: any) => {
+    setHasSubmitted(true);
+    sessionStorage.setItem("infou_assessment_submitted", "true");
+    console.log("[INFOU ACTION REPORT] Assessment successfully compiled. Global auto-popup engine silenced.");
+  };
+
+  const renderPage = () => {
+    switch (route) {
+      case "services":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="animate-pulse text-zinc-400 font-sans text-sm tracking-widest uppercase">Loading Services...</div></div>}>
+            <ServicesPage />
+          </Suspense>
+        );
+      // case "blog":
+      //     return <BlogPage />;
+      case "assessment":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="animate-pulse text-zinc-400 font-sans text-sm tracking-widest uppercase">Loading Assessment...</div></div>}>
+            <AssessmentPage />
+          </Suspense>
+        );
+      case "landing":
+      default:
+        return (
+          <Suspense fallback={<LandingPageFallback />}>
+            <LandingPage />
+          </Suspense>
+        );
+    }
+  };
+
+  return (
+    <LanguageProvider>
+      <div className="flex flex-col min-h-screen bg-zinc-50 font-sans selection:bg-black selection:text-white antialiased relative">
+        {/* Dynamic Shell Navigation */}
+        <Navbar currentRoute={route} />
+
+        {/* Main Content Area */}
+        <main className="flex-grow w-full">
+          {renderPage()}
+        </main>
+
+        {/* Structured Footer */}
+        <Footer />
+
+        {/* Global Interactive Elements */}
+        <Suspense fallback={null}>
+          <AssessmentModal
+            isOpen={isAssessmentOpen}
+            onClose={() => setIsAssessmentOpen(false)}
+            source={assessmentSource}
+            onSubmitSuccess={handleAssessmentSubmit}
+          />
+        </Suspense>
+
+        <Suspense fallback={null}>
+          <ChatbotWidget />
+        </Suspense>
+      </div>
+    </LanguageProvider>
+  );
 }
 
 export default App;
