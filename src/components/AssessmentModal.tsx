@@ -16,6 +16,9 @@ interface AssessmentModalProps {
   onSubmitSuccess?: (payload: any) => void;
 }
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
+
+
 export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: AssessmentModalProps) {
   const [formData, setFormData] = useState({
     name: "",
@@ -176,7 +179,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
     console.log("[INFOU API RECOMMEND INITIATED]", payload);
 
     try {
-      const response = await fetch(apiUrl("/api/recommend-schemes"), {
+      const response = await fetch(apiUrl(`${BACKEND_URL}/api/recommend-schemes`), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -191,7 +194,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
           if (errData && errData.detail) {
             errorMsg = errData.detail;
           }
-        } catch (_) {}
+        } catch (_) { }
         throw new Error(errorMsg);
       }
 
@@ -235,7 +238,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
       <div className="absolute inset-0" onClick={onClose} />
 
       <div className="relative w-full max-w-xl z-10 animate-in zoom-in-95 duration-200">
-        
+
         {/* Premium white circular Close Button positioned floating above on mobile and diagonally at the corner on desktop */}
         <button
           onClick={onClose}
@@ -313,7 +316,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                     Back to Form
                   </button>
                 </ClickSpark>
-                
+
                 <ClickSpark sparkColor="#fff" sparkRadius={20} sparkCount={8} duration={400}>
                   <button
                     onClick={onClose}
@@ -325,200 +328,194 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
               </div>
             </div>
           </div>
-          ) : isSubmitting ? (
-            <div className="step-circle-container p-6 md:p-8 pt-16 pb-16 flex flex-col items-center justify-center min-h-[350px] bg-white border border-zinc-200 rounded-2xl shadow-xl text-center">
-              <span className="w-10 h-10 border-4 border-zinc-200 border-t-primary rounded-full animate-spin" />
-              <div className="space-y-1">
-                <h3 className="font-sans text-base font-extrabold text-[#1c1d1a] uppercase tracking-wider">
-                  Compiling Diagnostic Audit
-                </h3>
-                <p className="text-zinc-500 font-sans text-xs max-w-xs leading-relaxed">
-                  Mapping corporate profile against 130+ active central & state policies...
-                </p>
-              </div>
+        ) : isSubmitting ? (
+          <div className="step-circle-container p-6 md:p-8 pt-16 pb-16 flex flex-col items-center justify-center min-h-[350px] bg-white border border-zinc-200 rounded-2xl shadow-xl text-center">
+            <span className="w-10 h-10 border-4 border-zinc-200 border-t-primary rounded-full animate-spin" />
+            <div className="space-y-1">
+              <h3 className="font-sans text-base font-extrabold text-[#1c1d1a] uppercase tracking-wider">
+                Compiling Diagnostic Audit
+              </h3>
+              <p className="text-zinc-500 font-sans text-xs max-w-xs leading-relaxed">
+                Mapping corporate profile against 130+ active central & state policies...
+              </p>
             </div>
-          ) : !isSuccess ? (
-            <Stepper
-              initialStep={1}
-              onStepChange={(step) => setCurrentStepIndex(step)}
-              onFinalStepCompleted={handleFinalStepCompleted}
-              disableStepIndicators={false}
-              backButtonText="Back"
-              nextButtonText="Continue"
-              nextButtonProps={{
-                disabled: !isCurrentStepValid(),
-                style: { opacity: isCurrentStepValid() ? 1 : 0.6 }
-              }}
-            >
-              <Step>
-                <div className="space-y-4 text-left">
-                  <h3 className="font-sans text-sm font-extrabold text-black uppercase tracking-wider mb-2">
-                    Corporate & Representative Profile
-                  </h3>
-                  <p className="text-zinc-500 font-sans text-xs leading-relaxed mb-4">
-                    Provide your representative details and registered business profile for scheme evaluation.
-                  </p>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="name" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                        Full Name
-                      </Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        placeholder="e.g. Vikram Sharma"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
-                          errors.name ? "border-red-500 focus-visible:ring-red-100" : ""
-                        }`}
-                      />
-                      {errors.name && <span className="text-[10px] font-semibold text-red-500">{errors.name}</span>}
-                    </div>
+          </div>
+        ) : !isSuccess ? (
+          <Stepper
+            initialStep={1}
+            onStepChange={(step) => setCurrentStepIndex(step)}
+            onFinalStepCompleted={handleFinalStepCompleted}
+            disableStepIndicators={false}
+            backButtonText="Back"
+            nextButtonText="Continue"
+            nextButtonProps={{
+              disabled: !isCurrentStepValid(),
+              style: { opacity: isCurrentStepValid() ? 1 : 0.6 }
+            }}
+          >
+            <Step>
+              <div className="space-y-4 text-left">
+                <h3 className="font-sans text-sm font-extrabold text-black uppercase tracking-wider mb-2">
+                  Corporate & Representative Profile
+                </h3>
+                <p className="text-zinc-500 font-sans text-xs leading-relaxed mb-4">
+                  Provide your representative details and registered business profile for scheme evaluation.
+                </p>
 
-                    <div className="space-y-1.5">
-                      <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                        Corporate Email
-                      </Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="e.g. v.sharma@company.in"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
-                          errors.email ? "border-red-500 focus-visible:ring-red-100" : ""
-                        }`}
-                      />
-                      {errors.email && <span className="text-[10px] font-semibold text-red-500">{errors.email}</span>}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="phone" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                        Phone Number
-                      </Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        placeholder="e.g. +91 98765 43210"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
-                          errors.phone ? "border-red-500 focus-visible:ring-red-100" : ""
-                        }`}
-                      />
-                      {errors.phone && <span className="text-[10px] font-semibold text-red-500">{errors.phone}</span>}
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <Label htmlFor="businessName" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                        Business Name
-                      </Label>
-                      <Input
-                        id="businessName"
-                        name="businessName"
-                        placeholder="e.g. Infotech Systems Ltd"
-                        value={formData.businessName}
-                        onChange={handleInputChange}
-                        className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${
-                          errors.businessName ? "border-red-500 focus-visible:ring-red-100" : ""
-                        }`}
-                      />
-                      {errors.businessName && (
-                        <span className="text-[10px] font-semibold text-red-500">{errors.businessName}</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Step>
-
-              <Step>
-                <div className="space-y-4 text-left">
-                  <h3 className="font-sans text-sm font-extrabold text-black uppercase tracking-wider mb-2">
-                    Industry Alignment
-                  </h3>
-                  <p className="text-zinc-500 font-sans text-xs leading-relaxed mb-4">
-                    Select the business vertical that primary represents your company's core operational activities.
-                  </p>
-
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="businessType" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                      Business Vertical
+                    <Label htmlFor="name" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                      Full Name
                     </Label>
-                    <Select
-                      value={formData.businessType}
-                      onValueChange={(val) => {
-                        setFormData((prev) => ({ ...prev, businessType: val }));
-                        setErrors((prev) => {
-                          const next = { ...prev };
-                          delete next.businessType;
-                          return next;
-                        });
-                      }}
-                    >
-                      <SelectTrigger
-                        id="businessType"
-                        className={`w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-black shadow-xs outline-none focus:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 h-10 cursor-pointer ${
-                          errors.businessType ? "border-red-500" : ""
-                        }`}
-                      >
-                        <SelectValue placeholder="Select business sector" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white border border-zinc-250 text-black">
-                        <SelectItem value="Technology">Technology & SaaS</SelectItem>
-                        <SelectItem value="Manufacturing">Heavy Manufacturing & PLI</SelectItem>
-                        <SelectItem value="Renewable Energy">Renewable Energy & Infrastructure</SelectItem>
-                        <SelectItem value="Healthcare">Healthcare & Biotech</SelectItem>
-                        <SelectItem value="Agriculture">Agri-tech & Rural Development</SelectItem>
-                        <SelectItem value="Services">Professional Services & Consulting</SelectItem>
-                        <SelectItem value="Other">Other Enterprise Sector</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {errors.businessType && (
-                      <span className="text-[10px] font-semibold text-red-500 block">{errors.businessType}</span>
-                    )}
-                  </div>
-                </div>
-              </Step>
-
-              <Step>
-                <div className="space-y-4 text-left">
-                  <h3 className="font-sans text-sm font-extrabold text-black uppercase tracking-wider mb-2">
-                    Operations & Subsidies
-                  </h3>
-                  <p className="text-zinc-500 font-sans text-xs leading-relaxed mb-4">
-                    Describe your primary operations, expansion roadmap, and targeted government schemes or grants.
-                  </p>
-
-                  <div className="space-y-1.5">
-                    <Label htmlFor="businessDescription" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
-                      Business & Funding Goals Description
-                    </Label>
-                    <Textarea
-                      id="businessDescription"
-                      name="businessDescription"
-                      rows={4}
-                      placeholder="Outline your primary operations, expansion roadmap, and what funding schemes you seek (e.g. central capital subsidy, technology development grants)."
-                      value={formData.businessDescription}
+                    <Input
+                      id="name"
+                      name="name"
+                      placeholder="e.g. Vikram Sharma"
+                      value={formData.name}
                       onChange={handleInputChange}
-                      className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 text-sm min-h-[110px] resize-none ${
-                        errors.businessDescription ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
+                      className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${errors.name ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
                     />
-                    {errors.businessDescription && (
-                      <span className="text-[10px] font-semibold text-red-500">{errors.businessDescription}</span>
+                    {errors.name && <span className="text-[10px] font-semibold text-red-500">{errors.name}</span>}
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                      Corporate Email
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="e.g. v.sharma@company.in"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${errors.email ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
+                    />
+                    {errors.email && <span className="text-[10px] font-semibold text-red-500">{errors.email}</span>}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="phone" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                      Phone Number
+                    </Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      placeholder="e.g. +91 98765 43210"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${errors.phone ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
+                    />
+                    {errors.phone && <span className="text-[10px] font-semibold text-red-500">{errors.phone}</span>}
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label htmlFor="businessName" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                      Business Name
+                    </Label>
+                    <Input
+                      id="businessName"
+                      name="businessName"
+                      placeholder="e.g. Infotech Systems Ltd"
+                      value={formData.businessName}
+                      onChange={handleInputChange}
+                      className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 ${errors.businessName ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
+                    />
+                    {errors.businessName && (
+                      <span className="text-[10px] font-semibold text-red-500">{errors.businessName}</span>
                     )}
                   </div>
                 </div>
-              </Step>
-            </Stepper>
-          ) : (
-            <div className="step-circle-container p-6 md:p-8 pt-16 bg-white border border-zinc-200 rounded-2xl shadow-xl overflow-y-auto max-h-[90vh] text-left">
-              <div className="py-2 space-y-6 animate-in fade-in-0 duration-200">
+              </div>
+            </Step>
+
+            <Step>
+              <div className="space-y-4 text-left">
+                <h3 className="font-sans text-sm font-extrabold text-black uppercase tracking-wider mb-2">
+                  Industry Alignment
+                </h3>
+                <p className="text-zinc-500 font-sans text-xs leading-relaxed mb-4">
+                  Select the business vertical that primary represents your company's core operational activities.
+                </p>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="businessType" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                    Business Vertical
+                  </Label>
+                  <Select
+                    value={formData.businessType}
+                    onValueChange={(val) => {
+                      setFormData((prev) => ({ ...prev, businessType: val }));
+                      setErrors((prev) => {
+                        const next = { ...prev };
+                        delete next.businessType;
+                        return next;
+                      });
+                    }}
+                  >
+                    <SelectTrigger
+                      id="businessType"
+                      className={`w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-black shadow-xs outline-none focus:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 h-10 cursor-pointer ${errors.businessType ? "border-red-500" : ""
+                        }`}
+                    >
+                      <SelectValue placeholder="Select business sector" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border border-zinc-250 text-black">
+                      <SelectItem value="Technology">Technology & SaaS</SelectItem>
+                      <SelectItem value="Manufacturing">Heavy Manufacturing & PLI</SelectItem>
+                      <SelectItem value="Renewable Energy">Renewable Energy & Infrastructure</SelectItem>
+                      <SelectItem value="Healthcare">Healthcare & Biotech</SelectItem>
+                      <SelectItem value="Agriculture">Agri-tech & Rural Development</SelectItem>
+                      <SelectItem value="Services">Professional Services & Consulting</SelectItem>
+                      <SelectItem value="Other">Other Enterprise Sector</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.businessType && (
+                    <span className="text-[10px] font-semibold text-red-500 block">{errors.businessType}</span>
+                  )}
+                </div>
+              </div>
+            </Step>
+
+            <Step>
+              <div className="space-y-4 text-left">
+                <h3 className="font-sans text-sm font-extrabold text-black uppercase tracking-wider mb-2">
+                  Operations & Subsidies
+                </h3>
+                <p className="text-zinc-500 font-sans text-xs leading-relaxed mb-4">
+                  Describe your primary operations, expansion roadmap, and targeted government schemes or grants.
+                </p>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="businessDescription" className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+                    Business & Funding Goals Description
+                  </Label>
+                  <Textarea
+                    id="businessDescription"
+                    name="businessDescription"
+                    rows={4}
+                    placeholder="Outline your primary operations, expansion roadmap, and what funding schemes you seek (e.g. central capital subsidy, technology development grants)."
+                    value={formData.businessDescription}
+                    onChange={handleInputChange}
+                    className={`rounded-lg border-zinc-200 focus-visible:ring-black/20 text-sm min-h-[110px] resize-none ${errors.businessDescription ? "border-red-500 focus-visible:ring-red-100" : ""
+                      }`}
+                  />
+                  {errors.businessDescription && (
+                    <span className="text-[10px] font-semibold text-red-500">{errors.businessDescription}</span>
+                  )}
+                </div>
+              </div>
+            </Step>
+          </Stepper>
+        ) : (
+          <div className="step-circle-container p-6 md:p-8 pt-16 bg-white border border-zinc-200 rounded-2xl shadow-xl overflow-y-auto max-h-[90vh] text-left">
+            <div className="py-2 space-y-6 animate-in fade-in-0 duration-200">
               {/* Header Info */}
               <div className="flex flex-col items-center justify-center text-center">
                 <div className="w-10 h-10 bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center rounded-full mb-3 shadow-xs">
@@ -543,11 +540,10 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                           {rec.ministry || "Ministry of Commerce & Industry"}
                         </span>
                         <div className="flex items-center gap-1.5">
-                          <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded-sm uppercase tracking-wider ${
-                            rec.confidence === "high" ? "bg-emerald-950 text-emerald-400 border border-emerald-900" :
+                          <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded-sm uppercase tracking-wider ${rec.confidence === "high" ? "bg-emerald-950 text-emerald-400 border border-emerald-900" :
                             rec.confidence === "medium" ? "bg-amber-950 text-amber-400 border border-amber-900" :
-                            "bg-zinc-900 text-zinc-400 border border-zinc-800"
-                          }`}>
+                              "bg-zinc-900 text-zinc-400 border border-zinc-800"
+                            }`}>
                             {rec.confidence} Match
                           </span>
                           {rec.relevanceScore && (
@@ -568,7 +564,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                           >
                             <Phone size={8} strokeWidth={2.5} />
                           </a>
-                          
+
                           {/* Tooltip Content */}
                           <div className="absolute bottom-full right-0 mb-1.5 px-2 py-1 bg-zinc-900 text-white text-[9px] font-bold tracking-wide uppercase rounded-md shadow-md whitespace-nowrap opacity-0 scale-95 pointer-events-none group-hover/tooltip:opacity-100 group-hover/tooltip:scale-100 transition-all duration-200 ease-out z-30 font-sans border border-zinc-800 flex items-center gap-1">
                             <Phone size={8} className="text-primary" />
@@ -683,7 +679,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
               </div>
             </div>
           </div>
-          )}
+        )}
       </div>
     </div>
   );

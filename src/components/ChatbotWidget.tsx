@@ -14,6 +14,8 @@ interface Message {
   type?: "assessment" | "contact";
 }
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
+
 const POLICY_ANSWERS: Record<string, { text: string; isActionable: boolean; type?: "assessment" | "contact" }> = {
   "pli subsidies": {
     text: "The Production Linked Incentive (PLI) scheme offers 4% to 6% financial incentives on incremental sales for eligible manufacturing sectors (Electronics, Auto, Pharma, etc.).",
@@ -94,7 +96,7 @@ export function ChatbotWidget() {
   }, [messages]);
 
   const getResponse = async (query: string): Promise<{ text: string; isActionable: boolean; type?: "assessment" | "contact" }> => {
-    const response = await fetch(apiUrl("/api/chat-restricted"), {
+    const response = await fetch(apiUrl(`${BACKEND_URL}/api/chat-restricted`), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -174,7 +176,7 @@ export function ChatbotWidget() {
       {/* Chat Window Panel */}
       {isOpen && (
         <div className="absolute bottom-16 right-0 w-85 sm:w-95 h-120 bg-white border border-zinc-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50 animate-in slide-in-from-bottom-5 duration-200 origin-bottom-right">
-          
+
           {/* Chat Header */}
           <div className="bg-zinc-50 border-b border-zinc-150 px-4 py-4 flex items-center justify-between select-none">
             <div className="flex items-center gap-2">
@@ -198,18 +200,17 @@ export function ChatbotWidget() {
               return (
                 <div key={msg.id} className={`flex flex-col ${isBot ? "items-start" : "items-end"}`}>
                   <div
-                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed shadow-xs ${
-                      isBot
-                        ? "bg-[#FFF7F0] border border-orange-100 text-zinc-800 rounded-tl-none"
-                        : "bg-[#C45000] text-white rounded-tr-none"
-                    }`}
+                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed shadow-xs ${isBot
+                      ? "bg-[#FFF7F0] border border-orange-100 text-zinc-800 rounded-tl-none"
+                      : "bg-[#C45000] text-white rounded-tr-none"
+                      }`}
                   >
                     <p className="whitespace-pre-wrap">{msg.text}</p>
                   </div>
                 </div>
               );
             })}
-            
+
             <div ref={chatEndRef} />
           </div>
 

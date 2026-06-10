@@ -9,6 +9,9 @@ import { gsap } from "gsap";
 import { apiUrl } from "../lib/api";
 const Grainient = React.lazy(() => import("./ui/Grainient"));
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
+
+
 export function AssessmentPage() {
   const gradientRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -142,7 +145,7 @@ export function AssessmentPage() {
     setRequestPayload(reqJson);
 
     try {
-      const response = await fetch(apiUrl("/api/recommend-schemes"), {
+      const response = await fetch(apiUrl(`${BACKEND_URL}/api/recommend-schemes`), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
