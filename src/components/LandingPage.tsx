@@ -653,17 +653,16 @@ export function LandingPage() {
                     <StarIcon half />
                   </div>
                 </div>
-
                 <div className="w-[1px] h-4 bg-zinc-200 hidden sm:block" />
 
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col min-[425px]:flex-row items-center gap-2.5 min-[425px]:gap-3 text-center min-[425px]:text-left">
                   <div className="flex -space-x-2 shrink-0">
                     <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src={avatarIndian1} alt="Indian Business Leader 1" />
                     <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src={avatarIndian2} alt="Indian Business Leader 2" />
                     <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src={avatarIndian3} alt="Indian Business Leader 3" />
                     <img width={28} height={28} className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src={avatarIndian4} alt="Indian Business Leader 4" />
                   </div>
-                  <span className="font-sans text-xs md:text-sm text-zinc-500 font-medium ng-none">
+                  <span className="font-sans text-[11px] sm:text-xs md:text-sm text-zinc-500 font-medium leading-tight min-[425px]:leading-none whitespace-normal min-[425px]:whitespace-nowrap">
                     Trusted by 100+ businesses across India
                   </span>
                 </div>
