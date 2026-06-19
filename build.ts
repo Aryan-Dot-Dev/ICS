@@ -26,8 +26,9 @@ for (const output of result.outputs) {
   console.log(` ${path.relative(process.cwd(), output.path)}  ${(output.size / 1024).toFixed(1)} KB`);
 }
 
-// Copy robots.txt and logo.svg to the dist directory
+// Copy robots.txt, logo.svg and sitemap.xml to the dist directory
 await copyFile(path.join(process.cwd(), "src/robots.txt"), path.join(outdir, "robots.txt"));
 await copyFile(path.join(process.cwd(), "src/logo.svg"), path.join(outdir, "logo.svg"));
-console.log(" Copied src/robots.txt and src/logo.svg to dist/");
+await copyFile(path.join(process.cwd(), "src/sitemap.xml"), path.join(outdir, "sitemap.xml"));
+console.log(" Copied src/robots.txt, src/logo.svg and src/sitemap.xml to dist/");
 

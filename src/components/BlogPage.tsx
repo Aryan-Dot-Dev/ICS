@@ -6,6 +6,7 @@ import { useLanguage } from "../lib/i18n";
 export function BlogPage() {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { t } = useLanguage();
 
@@ -52,11 +53,18 @@ export function BlogPage() {
 
   const handleSubscribeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) {
-      setIsSubscribed(true);
-      setTimeout(() => setIsSubscribed(false), 5000);
-      setEmail("");
+    if (!email.trim()) {
+      setEmailError("Email address is required");
+      return;
     }
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+    setEmailError("");
+    setIsSubscribed(true);
+    setTimeout(() => setIsSubscribed(false), 5000);
+    setEmail("");
   };
 
   const filteredPosts = posts.filter(post => {
@@ -201,14 +209,17 @@ export function BlogPage() {
             Stay at the forefront of the industry.
           </h2>
 
-          <form onSubmit={handleSubscribeSubmit} className="flex flex-col sm:flex-row gap-2 max-w-2xl border border-zinc-800 bg-zinc-950 p-2 rounded-xl">
+          <form onSubmit={handleSubscribeSubmit} className={`flex flex-col sm:flex-row gap-2 max-w-2xl border bg-zinc-950 p-2 rounded-xl transition-colors ${emailError ? "border-red-500" : "border-zinc-800"}`} noValidate>
             <input
               required
               className="flex-1 bg-transparent border-0 focus:ring-0 focus:outline-none px-4 py-3 text-white placeholder:text-zinc-700 font-sans text-sm tracking-wider uppercase"
               placeholder="Email address"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (emailError) setEmailError("");
+              }}
             />
             <ClickSpark sparkColor="#000" sparkRadius={24} sparkCount={8} duration={350}>
               <button
@@ -219,6 +230,12 @@ export function BlogPage() {
               </button>
             </ClickSpark>
           </form>
+
+          {emailError && (
+            <div className="text-red-500 text-xs font-bold tracking-wider uppercase mt-2 animate-fadeIn">
+              {emailError}
+            </div>
+          )}
 
           {isSubscribed && (
             <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold tracking-wider uppercase mt-4 animate-fadeIn">

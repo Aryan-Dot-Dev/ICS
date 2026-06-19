@@ -474,23 +474,93 @@ export function LandingPage() {
     company: "",
     description: ""
   });
+  const [contactErrors, setContactErrors] = useState<Record<string, string>>({});
   const [isContactSubmitted, setIsContactSubmitted] = useState(false);
+
+  const validateContactField = (name: string, value: string) => {
+    let errorMsg = "";
+    if (name === "name") {
+      if (!value.trim()) {
+        errorMsg = "Full name is required";
+      } else if (value.trim().length < 2) {
+        errorMsg = "Name must be at least 2 characters";
+      }
+    } else if (name === "email") {
+      if (!value.trim()) {
+        errorMsg = "Email address is required";
+      } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
+        errorMsg = "Please enter a valid email address";
+      }
+    } else if (name === "phone") {
+      if (!value.trim()) {
+        errorMsg = "Phone number is required";
+      } else if (!/^[+0-9\s-]{8,20}$/.test(value)) {
+        errorMsg = "Please enter a valid phone number (8-20 digits)";
+      }
+    } else if (name === "company") {
+      if (!value.trim()) {
+        errorMsg = "Company name is required";
+      }
+    } else if (name === "description") {
+      if (!value.trim()) {
+        errorMsg = "Business summary is required";
+      }
+    }
+
+    setContactErrors((prev) => {
+      const next = { ...prev };
+      if (errorMsg) {
+        next[name] = errorMsg;
+      } else {
+        delete next[name];
+      }
+      return next;
+    });
+  };
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setContactData((prev) => ({ ...prev, [name]: value }));
+    validateContactField(name, value);
+  };
+
+  const validateContactForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!contactData.name.trim()) {
+      newErrors.name = "Full name is required";
+    } else if (contactData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
+
+    if (!contactData.email.trim()) {
+      newErrors.email = "Email address is required";
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(contactData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (!contactData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^[+0-9\s-]{8,20}$/.test(contactData.phone)) {
+      newErrors.phone = "Please enter a valid phone number (8-20 digits)";
+    }
+
+    if (!contactData.company.trim()) {
+      newErrors.company = "Company name is required";
+    }
+
+    if (!contactData.description.trim()) {
+      newErrors.description = "Business summary is required";
+    }
+
+    setContactErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !contactData.name ||
-      !contactData.email ||
-      !contactData.phone ||
-      !contactData.company ||
-      !contactData.description
-    ) {
+    if (!validateContactForm()) {
       return;
     }
 
@@ -501,11 +571,11 @@ export function LandingPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: contactData.name,
-          email: contactData.email,
-          phone: contactData.phone,
-          company: contactData.company,
-          description: contactData.description,
+          name: contactData.name.trim(),
+          email: contactData.email.trim(),
+          phone: contactData.phone.trim(),
+          company: contactData.company.trim(),
+          description: contactData.description.trim(),
         }),
       });
 
@@ -526,6 +596,7 @@ export function LandingPage() {
           company: "",
           description: "",
         });
+        setContactErrors({});
       }, 10000);
     } catch (error) {
       console.error(error);
@@ -1210,7 +1281,7 @@ export function LandingPage() {
                 </p>
               </div>
 
-              <form onSubmit={handleContactSubmit} className="space-y-4">
+              <form onSubmit={handleContactSubmit} className="space-y-4" noValidate>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <Label htmlFor="contact-name" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
@@ -1224,8 +1295,15 @@ export function LandingPage() {
                       placeholder="John Doe"
                       value={contactData.name}
                       onChange={handleContactChange}
-                      className="font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10"
+                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${
+                        contactErrors.name ? "border-red-500 focus-visible:ring-red-100" : ""
+                      }`}
                     />
+                    {contactErrors.name && (
+                      <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
+                        {contactErrors.name}
+                      </span>
+                    )}
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="contact-email" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
@@ -1239,8 +1317,15 @@ export function LandingPage() {
                       placeholder="john@company.com"
                       value={contactData.email}
                       onChange={handleContactChange}
-                      className="font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10"
+                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${
+                        contactErrors.email ? "border-red-500 focus-visible:ring-red-100" : ""
+                      }`}
                     />
+                    {contactErrors.email && (
+                      <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
+                        {contactErrors.email}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -1257,22 +1342,37 @@ export function LandingPage() {
                       placeholder="+91 99999 99999"
                       value={contactData.phone}
                       onChange={handleContactChange}
-                      className="font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10"
+                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${
+                        contactErrors.phone ? "border-red-500 focus-visible:ring-red-100" : ""
+                      }`}
                     />
+                    {contactErrors.phone && (
+                      <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
+                        {contactErrors.phone}
+                      </span>
+                    )}
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="contact-company" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
                       Company Name
                     </Label>
                     <Input
+                      required
                       id="contact-company"
                       name="company"
                       type="text"
                       placeholder="Institutional Ltd."
                       value={contactData.company}
                       onChange={handleContactChange}
-                      className="font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10"
+                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${
+                        contactErrors.company ? "border-red-500 focus-visible:ring-red-100" : ""
+                      }`}
                     />
+                    {contactErrors.company && (
+                      <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
+                        {contactErrors.company}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -1281,14 +1381,22 @@ export function LandingPage() {
                     Business & Funding Requirements
                   </Label>
                   <Textarea
+                    required
                     id="contact-description"
                     name="description"
                     placeholder="Briefly describe your current business stage and funding requirements..."
                     rows={3}
                     value={contactData.description}
                     onChange={handleContactChange}
-                    className="font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg min-h-[100px] resize-none"
+                    className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg min-h-[100px] resize-none ${
+                      contactErrors.description ? "border-red-500 focus-visible:ring-red-100" : ""
+                    }`}
                   />
+                  {contactErrors.description && (
+                    <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
+                      {contactErrors.description}
+                    </span>
+                  )}
                 </div>
 
                 <div className="pt-2">

@@ -14,28 +14,89 @@ export function ContactPage() {
     company: "",
     description: ""
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const validateField = (name: string, value: string) => {
+    let errorMsg = "";
+    if (name === "name") {
+      if (!value.trim()) {
+        errorMsg = "Full name is required";
+      } else if (value.trim().length < 2) {
+        errorMsg = "Name must be at least 2 characters";
+      }
+    } else if (name === "email") {
+      if (!value.trim()) {
+        errorMsg = "Work email is required";
+      } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
+        errorMsg = "Please enter a valid email address";
+      }
+    } else if (name === "phone") {
+      if (!value.trim()) {
+        errorMsg = "Phone number is required";
+      } else if (!/^[+0-9\s-]{8,20}$/.test(value)) {
+        errorMsg = "Please enter a valid phone number (8-20 digits)";
+      }
+    }
+
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (errorMsg) {
+        next[name] = errorMsg;
+      } else {
+        delete next[name];
+      }
+      return next;
+    });
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    validateField(name, value);
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = "Full name is required";
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Work email is required";
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^[+0-9\s-]{8,20}$/.test(formData.phone)) {
+      newErrors.phone = "Please enter a valid phone number (8-20 digits)";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name && formData.email && formData.phone) {
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          company: "",
-          description: ""
-        });
-      }, 5000);
-    }
+    if (!validateForm()) return;
+
+    setIsSubmitted(true);
+    setTimeout(() => {
+      setIsSubmitted(false);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        description: ""
+      });
+      setErrors({});
+    }, 5000);
   };
 
   return (
@@ -90,7 +151,7 @@ export function ContactPage() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-500 select-none">
@@ -104,8 +165,15 @@ export function ContactPage() {
                     placeholder="John Doe"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="font-sans text-sm placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-12"
+                    className={`font-sans text-sm placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-12 ${
+                      errors.name ? "border-red-500 focus-visible:ring-red-100" : ""
+                    }`}
                   />
+                  {errors.name && (
+                    <span className="text-[10px] font-semibold text-red-500 block mt-1">
+                      {errors.name}
+                    </span>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-500 select-none">
@@ -119,8 +187,15 @@ export function ContactPage() {
                     placeholder="john@company.com"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="font-sans text-sm placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-12"
+                    className={`font-sans text-sm placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-12 ${
+                      errors.email ? "border-red-500 focus-visible:ring-red-100" : ""
+                    }`}
                   />
+                  {errors.email && (
+                    <span className="text-[10px] font-semibold text-red-500 block mt-1">
+                      {errors.email}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -137,8 +212,15 @@ export function ContactPage() {
                     placeholder="+91 99999 99999"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="font-sans text-sm placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-12"
+                    className={`font-sans text-sm placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-12 ${
+                      errors.phone ? "border-red-500 focus-visible:ring-red-100" : ""
+                    }`}
                   />
+                  {errors.phone && (
+                    <span className="text-[10px] font-semibold text-red-500 block mt-1">
+                      {errors.phone}
+                    </span>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="company" className="font-sans text-[10px] font-bold tracking-widest uppercase text-zinc-500 select-none">

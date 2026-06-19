@@ -105,18 +105,45 @@ export function AssessmentPage() {
     }
   }, []);
 
+  const validateField = (name: string, value: string) => {
+    let errorMsg = "";
+    if (name === "name" && !value.trim()) {
+      errorMsg = "Full name is required";
+    } else if (name === "email") {
+      if (!value.trim()) {
+        errorMsg = "Corporate email is required";
+      } else if (!/\S+@\S+\.\S+/.test(value)) {
+        errorMsg = "Please enter a valid email address";
+      }
+    } else if (name === "phone") {
+      if (!value.trim()) {
+        errorMsg = "Contact number is required";
+      } else if (!/^[+0-9\s-]{8,20}$/.test(value)) {
+        errorMsg = "Please enter a valid contact number";
+      }
+    } else if (name === "businessName" && !value.trim()) {
+      errorMsg = "Business/Company name is required";
+    } else if (name === "businessDescription" && !value.trim()) {
+      errorMsg = "Business summary is required";
+    }
+
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (errorMsg) {
+        next[name] = errorMsg;
+      } else {
+        delete next[name];
+      }
+      return next;
+    });
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => {
-        const next = { ...prev };
-        delete next[name];
-        return next;
-      });
-    }
+    validateField(name, value);
   };
 
   const validate = () => {
@@ -258,7 +285,7 @@ export function AssessmentPage() {
 
   const renderForm = () => {
     return (
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <div>
           <h2 className="font-sans text-xl font-extrabold text-black mb-1">
             Free Advisory Diagnostic
@@ -797,7 +824,7 @@ export function AssessmentPage() {
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                 <div>
                   <h3 className="font-sans text-lg font-extrabold text-black uppercase tracking-wider">
                     SUBMIT
