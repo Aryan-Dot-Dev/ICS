@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://infouconsultancy.com/sitemap.xml
+Sitemap: https://infou.in/sitemap.xml

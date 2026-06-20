@@ -594,8 +594,8 @@ export function AssessmentPage() {
             {/* 1. Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-1">
               <div className="space-y-1">
-                <h1 className="font-sans text-3xl md:text-4xl font-extrabold text-black tracking-tight leading-tight">
-                  Matched Sovereign Funding Schemes
+                <h1 className="font-sans text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight leading-tight">
+                  Matched Funding Schemes
                 </h1>
               </div>
             </div>

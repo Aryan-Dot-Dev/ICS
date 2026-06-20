@@ -26,9 +26,22 @@ for (const output of result.outputs) {
   console.log(` ${path.relative(process.cwd(), output.path)}  ${(output.size / 1024).toFixed(1)} KB`);
 }
 
-// Copy robots.txt, logo.svg and sitemap.xml to the dist directory
-await copyFile(path.join(process.cwd(), "src/robots.txt"), path.join(outdir, "robots.txt"));
-await copyFile(path.join(process.cwd(), "src/logo.svg"), path.join(outdir, "logo.svg"));
-await copyFile(path.join(process.cwd(), "src/sitemap.xml"), path.join(outdir, "sitemap.xml"));
-console.log(" Copied src/robots.txt, src/logo.svg and src/sitemap.xml to dist/");
+// Copy robots.txt, logo.svg, sitemap.xml, and favicon files to the dist directory
+const filesToCopy = [
+  "robots.txt",
+  "logo.svg",
+  "sitemap.xml",
+  "favicon.ico",
+  "favicon-32.png",
+  "favicon-48.png",
+  "logo_mark_square.png"
+];
+
+for (const file of filesToCopy) {
+  await copyFile(
+    path.join(process.cwd(), `src/${file}`),
+    path.join(outdir, file)
+  );
+}
+console.log(` Copied static assets (${filesToCopy.join(", ")}) to dist/`);
 

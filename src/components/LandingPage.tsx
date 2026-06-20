@@ -690,8 +690,8 @@ export function LandingPage() {
             </div>
 
             <div className="col-span-1 lg:col-span-6 lg:order-2 text-center flex flex-col items-center justify-center">
-              <span className="font-sans text-base sm:text-lg font-extrabold tracking-[0.25em] uppercase text-[#ea580c] mb-4 block select-none">
-                Introducing
+              <span className="font-sans text-base sm:text-lg font-bold tracking-widest uppercase text-[#ea580c] mb-4 block select-none">
+                Introducing <span className="text-black font-bold ml-1">Lilly</span>
               </span>
               <h1 className="text-[32px] sm:text-[40px] md:text-5xl lg:text-[40px] xl:text-[48px] 2xl:text-6xl font-extrabold tracking-tight text-zinc-900 leading-[1.15] lg:leading-[1.1] text-center">
                 <span className="sm:whitespace-nowrap">AI Funding Search Engine for</span>
@@ -1295,9 +1295,8 @@ export function LandingPage() {
                       placeholder="John Doe"
                       value={contactData.name}
                       onChange={handleContactChange}
-                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${
-                        contactErrors.name ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
+                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${contactErrors.name ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
                     />
                     {contactErrors.name && (
                       <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
@@ -1317,9 +1316,8 @@ export function LandingPage() {
                       placeholder="john@company.com"
                       value={contactData.email}
                       onChange={handleContactChange}
-                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${
-                        contactErrors.email ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
+                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${contactErrors.email ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
                     />
                     {contactErrors.email && (
                       <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
@@ -1342,9 +1340,8 @@ export function LandingPage() {
                       placeholder="+91 99999 99999"
                       value={contactData.phone}
                       onChange={handleContactChange}
-                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${
-                        contactErrors.phone ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
+                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${contactErrors.phone ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
                     />
                     {contactErrors.phone && (
                       <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
@@ -1364,9 +1361,8 @@ export function LandingPage() {
                       placeholder="Institutional Ltd."
                       value={contactData.company}
                       onChange={handleContactChange}
-                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${
-                        contactErrors.company ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
+                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${contactErrors.company ? "border-red-500 focus-visible:ring-red-100" : ""
+                        }`}
                     />
                     {contactErrors.company && (
                       <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
@@ -1388,9 +1384,8 @@ export function LandingPage() {
                     rows={3}
                     value={contactData.description}
                     onChange={handleContactChange}
-                    className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg min-h-[100px] resize-none ${
-                      contactErrors.description ? "border-red-500 focus-visible:ring-red-100" : ""
-                    }`}
+                    className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg min-h-[100px] resize-none ${contactErrors.description ? "border-red-500 focus-visible:ring-red-100" : ""
+                      }`}
                   />
                   {contactErrors.description && (
                     <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
