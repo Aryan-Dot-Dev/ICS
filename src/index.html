@@ -31,10 +31,13 @@
     }, true);
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/svg+xml" href="./logo_mark_square.png" />
+  <link rel="icon" href="./favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
   <link rel="icon" type="image/png" sizes="48x48" href="./favicon-48.png" />
-  <link rel="shortcut icon" href="./favicon-96.png" type="image/x-icon" />
+  <link rel="icon" type="image/png" sizes="180x180" href="./favicon-180.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="./favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon-180.png" />
   <title>Infou Consultancy Services</title>
   <meta name="description"
     content="Infou Consultancy provides precision-engineered compliance and allocation frameworks to unlock institutional capital across state and central government schemes for Indian businesses." />
@@ -45,7 +48,9 @@
     content="Precision-engineered compliance and allocation frameworks designed to unlock institutional capital across state and central schemes for Indian businesses." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://infou.in" />
-  <meta property="og:image" content="./favicon-256.png" />
+  <meta property="og:image" content="https://infou.in/favicon-512.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
 
   <!-- Resource Preconnection Hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -60,6 +65,18 @@
   </noscript>
 
   <!-- Structured Organization Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Infou Consultancy Services",
+    "url": "https://infou.in",
+    "logo": "https://infou.in/logo_mark_square.png",
+    "image": "https://infou.in/favicon-512.png"
+  }
+  </script>
+
+  <!-- Structured Government Service Schema -->
   <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -127,11 +144,10 @@
 
       <div class="relative max-w-7xl mx-auto px-6 pt-24 pb-16 z-10 w-full">
         <div class="grid grid-cols-2 lg:grid-cols-12 gap-8 items-center">
-          <!-- Left Column: Notion-style floating illustration 1 placeholder -->
+          <!-- Left Column: Notion-style floating company image for crawler indexing -->
           <div class="col-span-1 lg:col-span-3 order-2 lg:order-1 flex justify-center items-center">
-            <div
-              class="w-full max-w-[160px] lg:max-w-none aspect-[205/139] bg-zinc-50 border border-zinc-100 rounded-2xl opacity-70 animate-pulse">
-            </div>
+            <img src="./favicon-512.png" alt="Infou Consultancy Services Logo Banner"
+              class="w-full max-w-[160px] lg:max-w-none aspect-[205/139] object-cover rounded-2xl border border-zinc-100 shadow-sm" />
           </div>
 
           <!-- Center Column Content -->

@@ -34,6 +34,9 @@ const filesToCopy = [
   "favicon.ico",
   "favicon-32.png",
   "favicon-48.png",
+  "favicon-180.png",
+  "favicon-192.png",
+  "favicon-512.png",
   "logo_mark_square.png"
 ];
 

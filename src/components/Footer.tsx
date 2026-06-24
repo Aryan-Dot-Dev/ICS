@@ -1,5 +1,6 @@
 import React from "react";
 import { RoutePath, navigateTo } from "../lib/router";
+import favicon16 from "../favicon-16.png";
 
 interface FooterProps {
   onNavigate?: (route: RoutePath) => void;
@@ -45,8 +46,8 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand Info */}
           <div className="md:col-span-1">
-            <div className="font-sans text-xl font-extrabold tracking-tighter text-black mb-6 uppercase">
-              Infou Consultancy Services
+            <div className="mb-4 h-14 w-auto rounded-lg overflow-hidden">
+              <img src={`https://imgh.in/host/5qzegn`} alt="Infou Consultancy Services Office Workspace" className="w-full h-full object-cover" />
             </div>
             <p className="text-zinc-500 font-sans text-sm leading-relaxed max-w-xs">
               Trusted by startups. Supported by innovative leaders
