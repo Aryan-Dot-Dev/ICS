@@ -1,5 +1,5 @@
 import tailwind from "bun-plugin-tailwind";
-import { rm, copyFile } from "node:fs/promises";
+import { rm, copyFile, cp } from "node:fs/promises";
 import path from "node:path";
 
 const outdir = path.join(process.cwd(), "dist");
@@ -26,25 +26,29 @@ for (const output of result.outputs) {
   console.log(` ${path.relative(process.cwd(), output.path)}  ${(output.size / 1024).toFixed(1)} KB`);
 }
 
-// Copy robots.txt, logo.svg, sitemap.xml, and favicon files to the dist directory
-const filesToCopy = [
-  "robots.txt",
-  "logo.svg",
-  "sitemap.xml",
-  "favicon.ico",
-  "favicon-32.png",
-  "favicon-48.png",
-  "favicon-180.png",
-  "favicon-192.png",
-  "favicon-512.png",
-  "logo_mark_square.png"
-];
+// Copy robots.txt, sitemap.xml to the dist root
+await copyFile(
+  path.join(process.cwd(), "src/robots.txt"),
+  path.join(outdir, "robots.txt")
+);
+await copyFile(
+  path.join(process.cwd(), "src/sitemap.xml"),
+  path.join(outdir, "sitemap.xml")
+);
 
-for (const file of filesToCopy) {
-  await copyFile(
-    path.join(process.cwd(), `src/${file}`),
-    path.join(outdir, file)
-  );
-}
-console.log(` Copied static assets (${filesToCopy.join(", ")}) to dist/`);
+// Copy favicon.ico to the dist root for fallback browser requests
+await copyFile(
+  path.join(process.cwd(), "src/assets/favicons/favicon.ico"),
+  path.join(outdir, "favicon.ico")
+);
+
+// Copy the organized assets folder recursively to the dist directory
+await cp(
+  path.join(process.cwd(), "src/assets"),
+  path.join(outdir, "assets"),
+  { recursive: true }
+);
+
+console.log(" Copied static assets and assets folder recursively to dist/");
+
 

@@ -3,7 +3,8 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const srcDir = path.join(import.meta.dirname, "../src");
-const svgPath = path.join(srcDir, "logo.svg");
+const faviconsDir = path.join(srcDir, "assets/favicons");
+const logoPath = path.join(srcDir, "assets/logo/downloaded_logo.png");
 
 const targetPngs = [
   { name: "favicon-16.png", size: 16 },
@@ -35,19 +36,39 @@ function createIco(pngBuffer: Buffer): Buffer {
 }
 
 async function run() {
-  console.log("Generating favicons from SVG:", svgPath);
+  console.log("Generating favicons from PNG logo mark:", logoPath);
 
   // Generate PNGs
   let favicon32Buffer: Buffer | null = null;
   for (const target of targetPngs) {
-    const outputPath = path.join(srcDir, target.name);
-    const buffer = await sharp(svgPath)
-      .resize(target.size, target.size)
+    const outputPath = path.join(faviconsDir, target.name);
+    
+    // Add 10% padding margin on all sides (making the logo occupy 80% of canvas)
+    const contentSize = Math.max(12, Math.round(target.size * 0.8));
+    const padTop = Math.round((target.size - contentSize) / 2);
+    const padBottom = target.size - contentSize - padTop;
+    const padLeft = Math.round((target.size - contentSize) / 2);
+    const padRight = target.size - contentSize - padLeft;
+
+    // Crop the full logo mark (both overlapping crescent shapes) at left=1, top=56, width=423, height=181
+    const buffer = await sharp(logoPath)
+      .extract({ left: 1, top: 56, width: 423, height: 181 })
+      .resize(contentSize, contentSize, {
+        fit: "contain",
+        background: { r: 0, g: 0, b: 0, alpha: 0 }
+      })
+      .extend({
+        top: padTop,
+        bottom: padBottom,
+        left: padLeft,
+        right: padRight,
+        background: { r: 0, g: 0, b: 0, alpha: 0 }
+      })
       .png()
       .toBuffer();
     
     await writeFile(outputPath, buffer);
-    console.log(`Generated: ${target.name} (${target.size}x${target.size})`);
+    console.log(`Generated: ${target.name} (${target.size}x${target.size}) with padding`);
 
     if (target.size === 32) {
       favicon32Buffer = buffer;
@@ -56,7 +77,7 @@ async function run() {
 
   // Generate ICO from the 32x32 PNG buffer
   if (favicon32Buffer) {
-    const icoPath = path.join(srcDir, "favicon.ico");
+    const icoPath = path.join(faviconsDir, "favicon.ico");
     const icoBuffer = createIco(favicon32Buffer);
     await writeFile(icoPath, icoBuffer);
     console.log(`Generated: favicon.ico (32x32 ICO container)`);
@@ -64,7 +85,7 @@ async function run() {
     console.error("Error: Could not generate favicon.ico because 32x32 PNG buffer was missing.");
   }
 
-  console.log("All favicons successfully generated!");
+  console.log("All favicons successfully generated in assets/favicons!");
 }
 
 run().catch(console.error);

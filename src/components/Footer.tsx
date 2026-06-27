@@ -1,6 +1,6 @@
 import React from "react";
 import { RoutePath, navigateTo } from "../lib/router";
-import favicon16 from "../favicon-16.png";
+import favicon16 from "../assets/favicons/favicon-16.png";
 
 interface FooterProps {
   onNavigate?: (route: RoutePath) => void;
