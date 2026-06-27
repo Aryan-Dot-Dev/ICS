@@ -16,11 +16,12 @@ export function Footer({ onNavigate }: FooterProps) {
     }
   };
 
-  const handleAboutClick = (e: React.MouseEvent) => {
+  const handleSectionClick = (e: React.MouseEvent, section: "about" | "contact") => {
     e.preventDefault();
-    if (window.location.hash.startsWith("#/landing")) {
-      window.location.hash = "#/landing#about";
-      const element = document.getElementById("about-section");
+    const currentPath = window.location.pathname;
+    if (currentPath === "/" || currentPath === "/landing") {
+      window.location.hash = `#${section}`;
+      const element = document.getElementById(`${section}-section`);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
       }
@@ -31,8 +32,8 @@ export function Footer({ onNavigate }: FooterProps) {
         navigateTo("landing");
       }
       setTimeout(() => {
-        window.location.hash = "#/landing#about";
-        const element = document.getElementById("about-section");
+        window.location.hash = `#${section}`;
+        const element = document.getElementById(`${section}-section`);
         if (element) {
           element.scrollIntoView({ behavior: "smooth" });
         }
@@ -97,12 +98,12 @@ export function Footer({ onNavigate }: FooterProps) {
             </h4>
             <ul className="space-y-4 font-sans text-sm">
               <li>
-                <a href="#/privacy" className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1">
+                <a href="/privacy" className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#/terms" className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1">
+                <a href="/terms" className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1">
                   Terms & Conditions
                 </a>
               </li>
@@ -117,8 +118,8 @@ export function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-4 font-sans text-sm">
               <li>
                 <a
-                  href="#/landing#about"
-                  onClick={handleAboutClick}
+                  href="/#about"
+                  onClick={(e) => handleSectionClick(e, "about")}
                   className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1"
                 >
                   About Us
@@ -126,7 +127,7 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
               <li>
                 <a
-                  href="#/landing#services"
+                  href="/services"
                   onClick={(e) => handleLinkClick(e, "services")}
                   className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1"
                 >
@@ -135,22 +136,13 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
               <li>
                 <a
-                  href="#/landing#contact"
-                  onClick={(e) => handleLinkClick}
+                  href="/#contact"
+                  onClick={(e) => handleSectionClick(e, "contact")}
                   className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1"
                 >
                   Contact Us
                 </a>
               </li>
-              {/* <li>
-                <a 
-                  href="#/blog" 
-                  onClick={(e) => handleLinkClick(e, "blog")}
-                  className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1"
-                >
-                  Research Papers
-                </a>
-              </li> */}
             </ul>
           </div>
 

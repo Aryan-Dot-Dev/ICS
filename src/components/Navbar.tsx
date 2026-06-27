@@ -69,8 +69,9 @@ export function Navbar({ currentRoute }: NavbarProps) {
     setIsSheetOpen(false);
     startTransition(() => {
       if (hash) {
-        if (window.location.hash.startsWith("#/landing")) {
-          window.location.hash = `#/landing${hash}`;
+        const currentPath = window.location.pathname;
+        if (currentPath === "/" || currentPath === "/landing") {
+          window.location.hash = hash;
           const element = document.getElementById(hash.replace("#", "") + "-section");
           if (element) {
             element.scrollIntoView({ behavior: "smooth" });
@@ -78,7 +79,7 @@ export function Navbar({ currentRoute }: NavbarProps) {
         } else {
           navigateTo(route);
           setTimeout(() => {
-            window.location.hash = `#/landing${hash}`;
+            window.location.hash = hash;
             const element = document.getElementById(hash.replace("#", "") + "-section");
             if (element) {
               element.scrollIntoView({ behavior: "smooth" });

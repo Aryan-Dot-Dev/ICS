@@ -3,46 +3,44 @@ import { useState, useEffect } from "react";
 export type RoutePath = "landing" | "services" | "blog" | "assessment";
 
 /**
- * Custom React hook to subscribe to browser hash routing changes (popstate / hashchange).
+ * Custom React hook to subscribe to browser pathname routing changes (popstate).
  * Helps build clean, optimized SPAs without pulling in bloated routing packages.
  */
-export function useHashLocation(): RoutePath {
+export function usePathLocation(): RoutePath {
   const [route, setRoute] = useState<RoutePath>(() => {
-    const hash = window.location.hash.replace("#/", "");
-    return isValidRoute(hash) ? hash : "landing";
+    const path = window.location.pathname.replace(/^\//, "");
+    return isValidRoute(path) ? path : "landing";
   });
 
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace("#/", "");
-      setRoute(isValidRoute(hash) ? hash : "landing");
+    const handlePopState = () => {
+      const path = window.location.pathname.replace(/^\//, "");
+      setRoute(isValidRoute(path) ? path : "landing");
       
       // Smooth scroll to top on page change, unless navigating to a section anchor
-      const hasSectionHash = window.location.hash.slice(2).includes("#");
+      const hasSectionHash = window.location.hash.includes("#");
       if (!hasSectionHash) {
         window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
       }
     };
 
-    window.addEventListener("hashchange", handleHashChange);
-    
-    // Trigger check on mount if hash is empty
-    if (!window.location.hash) {
-      window.location.hash = "#/landing";
-    }
+    window.addEventListener("popstate", handlePopState);
 
-    return () => window.removeEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   return route;
 }
 
-function isValidRoute(hash: string): hash is RoutePath {
-  return ["landing", "services", "blog", "assessment"].includes(hash);
+function isValidRoute(path: string): path is RoutePath {
+  return ["landing", "services", "blog", "assessment"].includes(path);
 }
 
 export function navigateTo(path: RoutePath) {
-  window.location.hash = `#/${path}`;
+  const urlPath = path === "landing" ? "/" : `/${path}`;
+  window.history.pushState(null, "", urlPath);
+  // Dispatch custom popstate event so listeners/hooks update
+  window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
 export function navigateToDelayed(path: RoutePath, sparkDuration: number) {
@@ -50,3 +48,4 @@ export function navigateToDelayed(path: RoutePath, sparkDuration: number) {
     navigateTo(path);
   }, sparkDuration + 50);
 }
+

@@ -7,7 +7,7 @@ const ServicesPage = React.lazy(() => import("./components/ServicesPage").then(m
 // const BlogPage = React.lazy(() => import("./components/BlogPage").then(module => ({ default: module.BlogPage })));
 const AssessmentModal = React.lazy(() => import("./components/AssessmentModal").then(module => ({ default: module.AssessmentModal })));
 const ChatbotWidget = React.lazy(() => import("./components/ChatbotWidget").then(module => ({ default: module.ChatbotWidget })));
-import { useHashLocation, navigateTo } from "./lib/router";
+import { usePathLocation, navigateTo } from "./lib/router";
 const AssessmentPage = React.lazy(() => import("./components/AssessmentPage").then(module => ({ default: module.AssessmentPage })));
 import "./index.css";
 
@@ -92,7 +92,7 @@ function LandingPageFallback() {
 
 
 export function App() {
-  const route = useHashLocation();
+  const route = usePathLocation();
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
   const [assessmentSource, setAssessmentSource] = useState<"manual_click" | "random_popup">("manual_click");
   const [hasSubmitted, setHasSubmitted] = useState(() => {
