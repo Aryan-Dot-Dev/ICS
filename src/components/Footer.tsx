@@ -47,8 +47,8 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand Info */}
           <div className="md:col-span-1">
-            <div className="mb-4 h-14 w-auto rounded-lg overflow-hidden">
-              <img src={`https://imgh.in/host/5qzegn`} alt="Infou Consultancy Services Office Workspace" className="w-full h-full object-cover" />
+            <div className="mb-4 h-12 flex items-center">
+              <img src="https://imgh.in/host/5qzegn" alt="Infou Consultancy Services Logo" className="h-full w-auto object-contain" />
             </div>
             <p className="text-zinc-500 font-sans text-sm leading-relaxed max-w-xs">
               Trusted by startups. Supported by innovative leaders
