@@ -36,6 +36,22 @@ const team: TeamMember[] = [
     ],
   },
   {
+    id: "cto",
+    name: "Adarsh Sharma",
+    age: "",
+    role: "Chair Advisory Board",
+    tagline: "",
+    bio: "",
+    image: "https://imgh.in/host/r01dgz",
+    icon: <HeartHandshake className="w-4 h-4" />,
+    verified: true,
+    interests: ["AI/ML", "Search Engineering", "Policy Parsing"],
+    stats: [
+      { label: "Directives Indexed", value: "10k+" },
+      { label: "Accuracy", value: "99.8%" },
+    ],
+  },
+  {
     id: "strategy",
     name: "Aryan Sharma",
     age: "",
