@@ -190,6 +190,12 @@ export function Grainient({
     const container = containerRef.current;
     if (!container) return;
 
+    // Bail out to lightweight CSS fallback on mobile screens to preserve battery & performance
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setWebglFailed(true);
+      return;
+    }
+
     // Bail out early if WebGL is not available at all
     if (!isWebGLAvailable()) {
       console.warn("[Grainient] WebGL not available — using CSS fallback.");

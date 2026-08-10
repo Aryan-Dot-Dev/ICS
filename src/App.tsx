@@ -116,17 +116,14 @@ export function App() {
     return () => window.removeEventListener("open-assessment", handleOpenModal);
   }, []);
 
-  // Random Auto-Popup Scheduler Engine
+  // Auto-Popup Scheduler Engine (Appears 3 times, 15s interval each)
   useEffect(() => {
-    // If the user has completed the assessment form, if the modal is currently visible, on the assessment page, or if popped up 2 times, do not schedule
-    if (hasSubmitted || isAssessmentOpen || route === "assessment" || popupCount >= 2) return;
+    // If the user has completed the assessment form, if the modal is currently visible, on the assessment page, or if popped up 3 times, do not schedule
+    if (hasSubmitted || isAssessmentOpen || route === "assessment" || popupCount >= 3) return;
 
-    // Define random delay between 50 and 80 seconds
-    const minMs = 50000;
-    const maxMs = 80000;
-    const randomDelay = Math.floor(Math.random() * (maxMs - minMs) + minMs);
+    const popupDelay = 15000; // 15 seconds
 
-    console.log(`[INFOU POLICY ENGINE] Next diagnostic audit check scheduled in ${(randomDelay / 1000).toFixed(1)} seconds. (Popup count: ${popupCount})`);
+    console.log(`[INFOU POLICY ENGINE] Next diagnostic audit check scheduled in 15 seconds. (Popup count: ${popupCount}/3)`);
 
     const timer = setTimeout(() => {
       const nextCount = popupCount + 1;
@@ -134,7 +131,7 @@ export function App() {
       sessionStorage.setItem("infou_popup_count", String(nextCount));
       setAssessmentSource("random_popup");
       setIsAssessmentOpen(true);
-    }, randomDelay);
+    }, popupDelay);
 
     return () => clearTimeout(timer);
   }, [hasSubmitted, isAssessmentOpen, route, popupCount]);

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { navigateTo } from "../lib/router";
 import Stepper, { Step } from "./ui/Stepper";
 import { apiUrl } from "../lib/api";
+import { trackMetaPixelEvent } from "../lib/metaPixel";
 
 const SECTORS = [
   "Technology / SaaS",
@@ -272,35 +273,24 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
     console.log("[INFOU API RECOMMEND INITIATED]", payload);
 
     try {
-      // Securely save the lead to Neon DB and wait for it
-      const dbResponse = await fetch("https://rw4taxkwgg.execute-api.ap-south-1.amazonaws.com/dev/api/save-assessment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim(),
-          businessName: formData.businessName.trim(),
-          businessType: formData.businessType,
-          businessDescription: formData.businessDescription.trim()
-        })
-      });
+      // Save lead directly to Google Sheets (mode: no-cors prevents browser CORS redirect blocking)
+      const sheetParams = new URLSearchParams();
+      sheetParams.append("formType", "Assessment Audit Modal");
+      sheetParams.append("name", formData.name.trim());
+      sheetParams.append("email", formData.email.trim());
+      sheetParams.append("phone", formData.phone.trim());
+      sheetParams.append("businessName", formData.businessName.trim());
+      sheetParams.append("businessType", formData.businessType);
+      sheetParams.append("businessDescription", formData.businessDescription.trim());
 
-      if (!dbResponse.ok) {
-        let dbErrorMsg = `Database Error: HTTP ${dbResponse.status}`;
-        try {
-          const errData = await dbResponse.json();
-          dbErrorMsg = typeof errData === "object" ? JSON.stringify(errData, null, 2) : errData;
-        } catch (_) {
-          try {
-            const txt = await dbResponse.text();
-            if (txt) dbErrorMsg = txt;
-          } catch (__) { }
-        }
-        throw new Error(dbErrorMsg);
-      }
+      fetch("https://script.google.com/macros/s/AKfycbxB329qp143zGDsPbnPb09pV3UvuDBIhkFKgXz-EW_txebwJNOHxRwWaxBnsNW5d2E/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: sheetParams,
+      }).catch((err) => console.warn("[GOOGLE SHEETS LEAD SAVE WARNING]", err));
 
       const response = await fetch(apiUrl(`/api/recommend-schemes`), {
         method: "POST",
@@ -339,6 +329,12 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
         }
       };
       sessionStorage.setItem("infou_assessment_results", JSON.stringify(sessionPayload));
+
+      // Fire Meta Pixel Lead event for conversion tracking
+      trackMetaPixelEvent("Lead", {
+        content_name: "Assessment Form Submission",
+        business_type: formData.businessType
+      });
 
       if (onSubmitSuccess) {
         onSubmitSuccess(payload);

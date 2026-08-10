@@ -56,12 +56,19 @@ export function Navbar({ currentRoute }: NavbarProps) {
   const [, startTransition] = useTransition();
   const { t, language, setLanguage } = useLanguage();
 
-  // Detect scroll state to trigger capsule style
+  // Detect scroll state to trigger capsule style (throttled with requestAnimationFrame)
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

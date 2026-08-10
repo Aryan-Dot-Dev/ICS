@@ -174,7 +174,7 @@ export function ChatbotWidget() {
     <div ref={containerRef} className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 font-sans text-left">
       {/* Chat Window Panel */}
       {isOpen && (
-        <div className="absolute bottom-14 sm:bottom-16 right-0 w-[calc(100vw-32px)] sm:w-95 h-[65vh] sm:h-120 bg-white border border-zinc-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50 animate-in slide-in-from-bottom-5 duration-200 origin-bottom-right">
+        <div className="absolute bottom-14 sm:bottom-16 right-0 w-[calc(100vw-32px)] sm:w-95 h-[65vh] sm:h-120 max-h-[calc(100dvh-100px)] max-h-[calc(100vh-100px)] bg-white border border-zinc-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50 animate-in slide-in-from-bottom-5 duration-200 origin-bottom-right">
 
           {/* Chat Header */}
           <div className="bg-zinc-50 border-b border-zinc-150 px-4 py-4 flex items-center justify-between select-none">
