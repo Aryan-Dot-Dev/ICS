@@ -12,7 +12,9 @@ RUN bun install --frozen-lockfile
 
 # Copy the rest of the source code
 COPY src ./src
+COPY styles ./styles
 COPY build.ts ./build.ts
+
 
 # Build the production bundle
 RUN bun run build
