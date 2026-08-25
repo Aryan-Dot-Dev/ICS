@@ -1,6 +1,8 @@
 import React from "react";
 import { RoutePath, navigateTo } from "../lib/router";
 import favicon16 from "../assets/favicons/favicon-16.png";
+import privacyPolicyPdf from "../assets/legal/Infou_ICS_Privacy_Policy.pdf";
+import termsAndConditionsPdf from "../assets/legal/Infou_ICS_Terms_and_Conditions.pdf";
 
 interface FooterProps {
   onNavigate?: (route: RoutePath) => void;
@@ -98,12 +100,22 @@ export function Footer({ onNavigate }: FooterProps) {
             </h4>
             <ul className="space-y-4 font-sans text-sm">
               <li>
-                <a href="/privacy" className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1">
+                <a
+                  href={privacyPolicyPdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1"
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="/terms" className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1">
+                <a
+                  href={termsAndConditionsPdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-zinc-500 hover:text-black transition-colors hover:underline underline-offset-4 decoration-1"
+                >
                   Terms & Conditions
                 </a>
               </li>
