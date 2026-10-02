@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { TestimonialsColumn, Testimonial } from "./testimonials-columns-1";
+import { TestimonialsColumn } from "./testimonials-columns-1";
+import type { Testimonial } from "./testimonials-columns-1";
 
 const testimonials: Testimonial[] = [
   {

@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "bun src/index.html --port=3000 --hot",
     "start": "bun dist/index.html --host=0.0.0.0:3000",
-    "build": "bun run build.ts"
+    "build": "bun run build.ts",
+    "ingest-schemes": "bun scripts/ingest-schemes.ts",
+    "serve:api": "bun backend/server.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",

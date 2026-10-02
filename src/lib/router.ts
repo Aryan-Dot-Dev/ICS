@@ -49,3 +49,16 @@ export function navigateToDelayed(path: RoutePath, sparkDuration: number) {
   }, sparkDuration + 50);
 }
 
+/**
+ * Navigate to the landing page and scroll to its contact/callback section.
+ * The contact form lives on the landing page (no dedicated /contact route).
+ */
+export function navigateToContactSection(delayMs = 0): void {
+  setTimeout(() => {
+    navigateTo("landing");
+    requestAnimationFrame(() => {
+      document.getElementById("contact-section")?.scrollIntoView({ behavior: "smooth" });
+    });
+  }, delayMs);
+}
+

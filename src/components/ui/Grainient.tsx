@@ -38,9 +38,9 @@ const hexToRgb = (hex: string): [number, number, number] => {
   const cleanHex = hex.replace(/^#/, "");
   let r = 255, g = 255, b = 255;
   if (cleanHex.length === 3 || cleanHex.length === 4) {
-    r = parseInt(cleanHex[0] + cleanHex[0], 16);
-    g = parseInt(cleanHex[1] + cleanHex[1], 16);
-    b = parseInt(cleanHex[2] + cleanHex[2], 16);
+    r = parseInt((cleanHex[0] ?? "0") + (cleanHex[0] ?? "0"), 16);
+    g = parseInt((cleanHex[1] ?? "0") + (cleanHex[1] ?? "0"), 16);
+    b = parseInt((cleanHex[2] ?? "0") + (cleanHex[2] ?? "0"), 16);
   } else if (cleanHex.length === 6 || cleanHex.length === 8) {
     r = parseInt(cleanHex.substring(0, 2), 16);
     g = parseInt(cleanHex.substring(2, 4), 16);
@@ -304,7 +304,7 @@ export function Grainient({
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        isVisible = entry.isIntersecting;
+        isVisible = Boolean(entry?.isIntersecting);
         isVisible ? tryStart() : tryStop();
       },
       { threshold: 0 }

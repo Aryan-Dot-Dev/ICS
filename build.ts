@@ -5,6 +5,15 @@ import path from "node:path";
 const outdir = path.join(process.cwd(), "dist");
 await rm(outdir, { recursive: true, force: true });
 
+// Environment contract: production builds MUST pin the backend origin.
+// Fails the build (not the browser) when the URL is missing.
+const backendUrl = process.env.VITE_BACKEND_URL;
+if (!backendUrl || !/^https?:\/\//.test(backendUrl)) {
+  throw new Error(
+    "VITE_BACKEND_URL is required for production builds — set it to the deployed backend origin (e.g. https://api.example.com).",
+  );
+}
+
 const entrypoints = [...new Bun.Glob("src/**/*.html").scanSync()];
 
 const result = await Bun.build({
@@ -18,7 +27,7 @@ const result = await Bun.build({
   format: "esm",
   define: {
     "process.env.NODE_ENV": JSON.stringify("production"),
-    "import.meta.env.VITE_BACKEND_URL": JSON.stringify(process.env.VITE_BACKEND_URL || import.meta.env?.VITE_BACKEND_URL || ""),
+    "import.meta.env.VITE_BACKEND_URL": JSON.stringify(backendUrl.replace(/\/+$/, "")),
   },
 });
 

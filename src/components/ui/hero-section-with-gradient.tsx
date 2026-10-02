@@ -4,13 +4,15 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ReactNode } from 'react';
-import { motion, Variants } from 'framer-motion';
+import type { ReactNode } from 'react';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 
 export default function HeroSection_05() {
   const gradientRef = useRef<HTMLDivElement>(null);
 
-  const transitionVariants = {
+  // Map of variant-name groups consumed by AnimatedGroup ({ item, container }).
+  const transitionVariants: { item: Variants } = {
     item: {
       hidden: {
         opacity: 0,

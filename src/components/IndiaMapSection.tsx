@@ -272,7 +272,7 @@ export function IndiaMapSection({ statesPaths }: IndiaMapSectionProps) {
       setActiveRegion((prev) => {
         const currentIndex = allStateNames.indexOf(prev);
         const nextIndex = (currentIndex + 1) % allStateNames.length;
-        return allStateNames[nextIndex];
+        return allStateNames[nextIndex] ?? prev;
       });
     }, 3000);
 
@@ -325,7 +325,6 @@ export function IndiaMapSection({ statesPaths }: IndiaMapSectionProps) {
                 viewBox="0 0 500 550"
                 preserveAspectRatio="xMaxYMid meet"
                 className="w-full h-full select-none transition-transform duration-500 notranslate"
-                translate="no"
               >
                 <g className="transition-all duration-300">
                   {(statesPaths || []).map(({ stateName, pathData }) => {

@@ -1,4 +1,5 @@
-import React, { useLayoutEffect, useRef, useCallback, ReactNode, useState } from "react";
+import React, { useLayoutEffect, useRef, useCallback, useState } from "react";
+import type { ReactNode } from "react";
 import Lenis from "lenis";
 import "./ScrollStack.css";
 
@@ -148,8 +149,8 @@ export const ScrollStack = ({
     // 3. Restore original transforms and filters
     cards.forEach((card, i) => {
       if (card) {
-        card.style.transform = originalTransforms[i];
-        card.style.filter = originalFilters[i];
+        card.style.transform = originalTransforms[i] ?? "";
+        card.style.filter = originalFilters[i] ?? "";
       }
     });
   }, [useWindowScroll]);
@@ -305,13 +306,10 @@ export const ScrollStack = ({
         smoothWheel: true,
         touchMultiplier: 1,
         infinite: false,
-        gestureOrientationHandler: true,
-        normalizeWheel: true,
+        gestureOrientation: "vertical",
         wheelMultiplier: 1,
-        touchInertiaMultiplier: 1,
         lerp: 0.1,
         syncTouch: false,
-        touchInertia: 0.6,
       });
 
       lenis.on("scroll", handleScroll);

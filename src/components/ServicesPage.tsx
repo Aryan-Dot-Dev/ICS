@@ -119,7 +119,7 @@ export function ServicesPage() {
   // FAQ state
   const [faqOpenIdx, setFaqOpenIdx] = useState<number | null>(null);
 
-  const activeService = servicesData[selectedIdx] || servicesData[0];
+  const activeService = servicesData[selectedIdx] ?? servicesData[0]!;
   const ActiveIcon = activeService.icon;
 
   const openModal = () => {
@@ -158,9 +158,9 @@ export function ServicesPage() {
     };
 
     const sectorKey = (estimates[calcSector] ? calcSector : "Other") as keyof typeof estimates;
-    const stageKey = (estimates[sectorKey][calcStage] ? calcStage : "Early") as keyof typeof estimates["Technology"];
+    const stageKey = (estimates[sectorKey]![calcStage] ? calcStage : "Early") as keyof typeof estimates["Technology"];
 
-    return estimates[sectorKey][stageKey];
+    return estimates[sectorKey]![stageKey]!;
   };
 
   const calcResults = getCalculatorResults();

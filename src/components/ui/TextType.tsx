@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useRef, useState, createElement, useMemo, useCallback, ElementType, ReactNode, ComponentPropsWithoutRef } from 'react';
+import React, { useEffect, useRef, useState, createElement, useMemo, useCallback } from 'react';
+import type { ElementType, ReactNode, ComponentPropsWithoutRef } from 'react';
 import { gsap } from 'gsap';
 import './TextType.css';
 

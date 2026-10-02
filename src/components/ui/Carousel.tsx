@@ -13,7 +13,7 @@ export interface CarouselItemData {
 const DRAG_BUFFER = 0;
 const VELOCITY_THRESHOLD = 1000;
 const GAP = 16;
-const SPRING_OPTIONS = { type: "spring", stiffness: 300, damping: 30 };
+const SPRING_OPTIONS = { type: "spring", stiffness: 300, damping: 30 } as const;
 
 interface CarouselItemProps {
   item: CarouselItemData;
@@ -110,10 +110,13 @@ export function Carousel({
   const trackWidth = baseWidth - containerPadding * 2;
   const itemWidth = (trackWidth - (visibleItems - 1) * GAP) / visibleItems;
   const trackItemOffset = itemWidth + GAP;
-  const itemsForRender = useMemo(() => {
+  const itemsForRender = useMemo<CarouselItemData[]>(() => {
     if (!loop) return items;
     if (items.length === 0) return [];
-    return [items[items.length - 1], ...items, items[0]];
+    const last = items[items.length - 1];
+    const first = items[0];
+    if (!last || !first) return items;
+    return [last, ...items, first];
   }, [items, loop]);
 
   const [position, setPosition] = useState(loop ? 1 : 0);

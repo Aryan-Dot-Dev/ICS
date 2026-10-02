@@ -1,29 +1,41 @@
-# Use the official lightweight Bun image
+# Single-container DEMO deployment: builds the frontend AND runs the backend
+# API server, which also serves the built static files. The backend lives in
+# its own folder (backend/) and will move to a separate repository — this
+# Dockerfile is the transitional demo topology.
+#
+#   docker build -t ics-demo .
+#   docker run -p 8000:8000 ics-demo
+#   open http://localhost:8000
+#
+# Production (backend deployed separately): build the frontend with
+#   VITE_BACKEND_URL=https://api.example.com bun run build
+# and deploy dist/ to any static host; the backend repo ships its own image.
 FROM oven/bun:alpine
 
-# Set working directory
 WORKDIR /app
 
-# Copy configuration and dependency manifest files
+# Install dependencies once (manifest + lockfile layer)
 COPY package.json bun.lock tsconfig.json ./
-
-# Install dependencies using the frozen lockfile
 RUN bun install --frozen-lockfile
 
-# Copy the rest of the source code
+# Copy application sources
 COPY src ./src
 COPY styles ./styles
+COPY backend ./backend
+COPY govt-schemes-okf ./govt-schemes-okf
+COPY scripts ./scripts
 COPY build.ts ./build.ts
+COPY bunfig.toml ./bunfig.toml
 
-
-# Build the production bundle
+# The frontend build requires the backend origin (environment contract).
+# For the demo container the API is served from the same origin on port 8000.
+ARG VITE_BACKEND_URL=http://localhost:8000
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
 RUN bun run build
 
-# Expose the default server port
-EXPOSE 3000
-
-# Run in production mode
+# Runtime: backend API serves the static dist/ on one port
 ENV NODE_ENV=production
+ENV PORT=8000
+EXPOSE 8000
 
-# Start the server
-CMD ["bun", "run", "start"]
+CMD ["bun", "backend/server.ts"]

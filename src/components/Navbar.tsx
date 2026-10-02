@@ -1,6 +1,7 @@
 import React, { useState, useTransition, useEffect } from "react";
 import { Menu, X, Phone, Book, Sunset, Trees, Zap, Award, Landmark, TrendingUp, Sparkles, Compass, Briefcase } from "lucide-react";
-import { RoutePath, navigateTo, navigateToDelayed } from "../lib/router";
+import { navigateTo, navigateToDelayed } from "../lib/router";
+import type { RoutePath } from "../lib/router";
 import ClickSpark from "./ui/ClickSpark";
 import { useLanguage } from "../lib/i18n";
 import {

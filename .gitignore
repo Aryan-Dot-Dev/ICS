@@ -37,3 +37,6 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .agents
 .kiro
 stitch_professional_web_ui_redesign
+
+# Captured leads (PII — local system of record, never commit)
+data/

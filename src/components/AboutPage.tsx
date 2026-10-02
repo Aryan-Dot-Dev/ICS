@@ -1,5 +1,5 @@
 import React, { useTransition } from "react";
-import { navigateTo, navigateToDelayed } from "../lib/router";
+import { navigateTo, navigateToContactSection } from "../lib/router";
 import { SpotlightCard } from "./ui/SpotlightCard";
 import ClickSpark from "./ui/ClickSpark";
 import { AnimatedCounter } from "./ui/Counter";
@@ -271,7 +271,7 @@ export function AboutPage() {
           </div>
           <ClickSpark sparkColor="#000" sparkRadius={24} sparkCount={8} duration={350}>
             <button
-              onClick={() => startTransition(() => navigateToDelayed("contact", 350))}
+              onClick={() => startTransition(() => navigateToContactSection(350))}
               className="bg-white text-black px-10 py-4.5 text-xs font-bold tracking-widest uppercase rounded-lg hover:bg-zinc-100 transition-colors active:scale-95 duration-100 shrink-0 cursor-pointer"
             >
               {t("action.contact")}

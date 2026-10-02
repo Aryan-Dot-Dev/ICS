@@ -22,8 +22,8 @@ export const translations = {
     // Hero Section
     "hero.subtitle": "Sovereign Integration Desk",
     "hero.title": "Government Funding Strategy for Indian",
-    "hero.desc": "1200+ funding opportunities exist across India. Our AI tool finds your best matches in 30 seconds and our experts handle everything after.",
-    "hero.assessmentBtn": "Start for Free",
+    "hero.desc": "Check which Indian government schemes you may qualify for. Our AI engine matches your profile against a verified, source-linked scheme knowledge base in about 30 seconds — then our experts handle everything after.",
+    "hero.assessmentBtn": "Check Your Scheme Eligibility",
     "hero.servicesBtn": "View Services Catalog",
 
     // Metrics Row
@@ -198,14 +198,36 @@ const setGoogleTranslateCookie = (lang: string) => {
  */
 let translateScriptLoaded = false;
 
+/** Minimal shape of the Google Translate global used here (no `any`). */
+interface TranslateElementCtor {
+  new (
+    options: { pageLanguage: string; layout?: unknown; autoDisplay: boolean },
+    elementId: string,
+  ): unknown;
+  InlineLayout: { SIMPLE: unknown };
+}
+
+interface GoogleTranslateGlobal {
+  translate?: {
+    TranslateElement?: TranslateElementCtor;
+  };
+}
+
+declare global {
+  interface Window {
+    googleTranslateElementInit?: () => void;
+    google?: GoogleTranslateGlobal;
+  }
+}
+
 const loadGoogleTranslateScript = (): Promise<void> => {
   if (translateScriptLoaded) return Promise.resolve();
   if (typeof document === "undefined") return Promise.resolve();
 
   return new Promise<void>((resolve) => {
     // Set up the init callback before loading the script
-    (window as any).googleTranslateElementInit = () => {
-      const google = (window as any).google;
+    window.googleTranslateElementInit = () => {
+      const google = window.google;
       if (google?.translate?.TranslateElement) {
         new google.translate.TranslateElement(
           {

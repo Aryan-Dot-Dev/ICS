@@ -1,5 +1,6 @@
 import React from "react";
-import { RoutePath, navigateTo } from "../lib/router";
+import { navigateTo } from "../lib/router";
+import type { RoutePath } from "../lib/router";
 import favicon16 from "../assets/favicons/favicon-16.png";
 import privacyPolicyPdf from "../assets/legal/Infou_ICS_Privacy_Policy.pdf";
 import termsAndConditionsPdf from "../assets/legal/Infou_ICS_Terms_and_Conditions.pdf";

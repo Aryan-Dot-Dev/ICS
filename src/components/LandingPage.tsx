@@ -12,7 +12,8 @@ import { AnimatedGroup } from "./ui/hero-section-with-gradient";
 import { Button } from "./ui/button";
 import { TextType } from "./ui/TextType";
 import { useLanguage } from "../lib/i18n";
-import { Carousel, CarouselItemData } from "./ui/Carousel";
+import { Carousel } from "./ui/Carousel";
+import type { CarouselItemData } from "./ui/Carousel";
 import { IndiaMapSection } from "./IndiaMapSection";
 import illustration1 from "../assets/illustrations/illustration_1.webp";
 import illustration3 from "../assets/illustrations/illustration_3.webp";
@@ -28,9 +29,7 @@ import avatarIndian3 from "../assets/avatars/avatar_indian_3.png";
 import avatarIndian4 from "../assets/avatars/avatar_indian_4.png";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Textarea } from "./ui/textarea";
-import { apiUrl } from "@/lib/api";
-import { trackMetaPixelEvent } from "@/lib/metaPixel";
+import { ContactSection } from "./landing/ContactSection";
 
 const Testimonials = React.lazy(() => import("./ui/Testimonials"));
 const LogoCloud = React.lazy(() => import("./ui/logo-cloud-3").then(module => ({ default: module.LogoCloud })));
@@ -119,7 +118,7 @@ const MetricItem = React.memo(({ label, value, viewTrigger = 0 }: MetricItemProp
 MetricItem.displayName = "MetricItem";
 
 /** Wrapper that re-triggers counter animations every time the section scrolls into view */
-function MetricsSection({ t }: { t: (key: string) => string }) {
+function MetricsSection({ t }: { t: (key: Parameters<ReturnType<typeof useLanguage>["t"]>[0]) => string }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [viewCount, setViewCount] = useState(0);
 
@@ -129,7 +128,7 @@ function MetricsSection({ t }: { t: (key: string) => string }) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry && entry.isIntersecting) {
           setViewCount((prev) => prev + 1);
         }
       },
@@ -352,149 +351,6 @@ export function LandingPage() {
       setStatesPaths(module.default || (Array.isArray(module) ? module : []));
     });
   }, []);
-
-
-
-  const [contactData, setContactData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    company: "",
-    description: ""
-  });
-  const [contactErrors, setContactErrors] = useState<Record<string, string>>({});
-  const [isContactSubmitted, setIsContactSubmitted] = useState(false);
-
-  const validateContactField = (name: string, value: string) => {
-    let errorMsg = "";
-    if (name === "name") {
-      if (!value.trim()) {
-        errorMsg = "Full name is required";
-      } else if (value.trim().length < 2) {
-        errorMsg = "Name must be at least 2 characters";
-      }
-    } else if (name === "email") {
-      if (!value.trim()) {
-        errorMsg = "Email address is required";
-      } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
-        errorMsg = "Please enter a valid email address";
-      }
-    } else if (name === "phone") {
-      if (!value.trim()) {
-        errorMsg = "Phone number is required";
-      } else if (!/^[+0-9\s-]{8,20}$/.test(value)) {
-        errorMsg = "Please enter a valid phone number (8-20 digits)";
-      }
-    } else if (name === "company") {
-      if (!value.trim()) {
-        errorMsg = "Company name is required";
-      }
-    } else if (name === "description") {
-      if (!value.trim()) {
-        errorMsg = "Business summary is required";
-      }
-    }
-
-    setContactErrors((prev) => {
-      const next = { ...prev };
-      if (errorMsg) {
-        next[name] = errorMsg;
-      } else {
-        delete next[name];
-      }
-      return next;
-    });
-  };
-
-  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setContactData((prev) => ({ ...prev, [name]: value }));
-    validateContactField(name, value);
-  };
-
-  const validateContactForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!contactData.name.trim()) {
-      newErrors.name = "Full name is required";
-    } else if (contactData.name.trim().length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-    }
-
-    if (!contactData.email.trim()) {
-      newErrors.email = "Email address is required";
-    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(contactData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (!contactData.phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    } else if (!/^[+0-9\s-]{8,20}$/.test(contactData.phone)) {
-      newErrors.phone = "Please enter a valid phone number (8-20 digits)";
-    }
-
-    if (!contactData.company.trim()) {
-      newErrors.company = "Company name is required";
-    }
-
-    if (!contactData.description.trim()) {
-      newErrors.description = "Business summary is required";
-    }
-
-    setContactErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateContactForm()) {
-      return;
-    }
-
-    try {
-      // Save contact request directly to Google Sheets (mode: no-cors prevents browser CORS redirect blocking)
-      const sheetParams = new URLSearchParams();
-      sheetParams.append("formType", "Callback Request");
-      sheetParams.append("name", contactData.name.trim());
-      sheetParams.append("email", contactData.email.trim());
-      sheetParams.append("phone", contactData.phone.trim());
-      sheetParams.append("company", contactData.company.trim());
-      sheetParams.append("description", contactData.description.trim());
-
-      fetch("https://script.google.com/macros/s/AKfycbxB329qp143zGDsPbnPb09pV3UvuDBIhkFKgXz-EW_txebwJNOHxRwWaxBnsNW5d2E/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: sheetParams,
-      }).catch((err) => console.warn("[GOOGLE SHEETS CONTACT SAVE WARNING]", err));
-
-      setIsContactSubmitted(true);
-
-      // Fire Meta Pixel Contact event
-      trackMetaPixelEvent("Contact", {
-        content_name: "Request Callback Form",
-        company: contactData.company.trim()
-      });
-
-      setTimeout(() => {
-        setIsContactSubmitted(false);
-        setContactData({
-          name: "",
-          email: "",
-          phone: "",
-          company: "",
-          description: "",
-        });
-        setContactErrors({});
-      }, 10000);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to send message. Please try again.");
-    }
-  };
 
   // Listen for hash-based scrolling on mount and hash changes
   useEffect(() => {
@@ -1009,193 +865,8 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Contact Us Section */}
-      <section id="contact-section" className="px-6 md:px-12 lg:px-20 py-16 lg:py-24 bg-zinc-50 border-t border-zinc-200 scroll-mt-20">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-12 lg:mb-16 text-center">
-            <h2 className="font-sans text-3xl md:text-4xl lg:text-5xl font-extrabold text-black tracking-tight">
-              Speak with funding advisors today
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-            {/* Left Column: Contact Channels */}
-            <div className="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col gap-4 lg:gap-6">
-              {/* Phone */}
-              <div className="flex-1 bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col justify-between min-h-[160px] hover:border-black transition-colors duration-300 group cursor-pointer text-left">
-                <div>
-                  <PhoneCall size={28} strokeWidth={1.5} className="text-black mb-4" />
-                  <h3 className="font-sans text-base font-bold text-black mb-1">Call Direct</h3>
-                  <p className="font-sans text-xs text-zinc-500">Immediate priority line for urgent institutional inquiries.</p>
-                </div>
-                <p className="font-sans text-base font-extrabold text-black mt-4 tracking-wide">
-                  +91 8447198483
-                </p>
-              </div>
-
-              {/* Email */}
-              <div className="flex-1 bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col justify-between min-h-[160px] hover:border-black transition-colors duration-300 group cursor-pointer text-left">
-                <div>
-                  <Mail size={28} strokeWidth={1.5} className="text-black mb-4" />
-                  <h3 className="font-sans text-base font-bold text-black mb-1">Email Advisors</h3>
-                  <p className="font-sans text-xs text-zinc-500">Submit detailed documentation or formal funding requests.</p>
-                </div>
-                <p className="font-sans text-base font-extrabold text-black mt-4 underline decoration-1 underline-offset-4 tracking-wide">
-                  support@infou.in
-                </p>
-              </div>
-            </div>
-
-            {/* Right Column: Callback Request Form */}
-            <div className="lg:col-span-7 bg-white border border-zinc-200 rounded-2xl p-6 md:p-8 text-left h-fit shadow-sm">
-              <div className="mb-6">
-                <h3 className="font-sans text-xl font-bold text-black mb-2">
-                  Request a Callback
-                </h3>
-                <p className="font-sans text-xs text-zinc-500 leading-relaxed">
-                  Our senior evaluation analysts review all callback inquiries within 4 hours during market trading cycles.
-                </p>
-              </div>
-
-              <form onSubmit={handleContactSubmit} className="space-y-4" noValidate>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <Label htmlFor="contact-name" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
-                      Full Name
-                    </Label>
-                    <Input
-                      required
-                      id="contact-name"
-                      name="name"
-                      type="text"
-                      placeholder="John Doe"
-                      value={contactData.name}
-                      onChange={handleContactChange}
-                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${contactErrors.name ? "border-red-500 focus-visible:ring-red-100" : ""
-                        }`}
-                    />
-                    {contactErrors.name && (
-                      <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
-                        {contactErrors.name}
-                      </span>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="contact-email" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
-                      Email Address
-                    </Label>
-                    <Input
-                      required
-                      id="contact-email"
-                      name="email"
-                      type="email"
-                      placeholder="john@company.com"
-                      value={contactData.email}
-                      onChange={handleContactChange}
-                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${contactErrors.email ? "border-red-500 focus-visible:ring-red-100" : ""
-                        }`}
-                    />
-                    {contactErrors.email && (
-                      <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
-                        {contactErrors.email}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <Label htmlFor="contact-phone" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
-                      Phone Number
-                    </Label>
-                    <Input
-                      required
-                      id="contact-phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="+91 99999 99999"
-                      value={contactData.phone}
-                      onChange={handleContactChange}
-                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${contactErrors.phone ? "border-red-500 focus-visible:ring-red-100" : ""
-                        }`}
-                    />
-                    {contactErrors.phone && (
-                      <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
-                        {contactErrors.phone}
-                      </span>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="contact-company" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
-                      Company Name
-                    </Label>
-                    <Input
-                      required
-                      id="contact-company"
-                      name="company"
-                      type="text"
-                      placeholder="Institutional Ltd."
-                      value={contactData.company}
-                      onChange={handleContactChange}
-                      className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg h-10 ${contactErrors.company ? "border-red-500 focus-visible:ring-red-100" : ""
-                        }`}
-                    />
-                    {contactErrors.company && (
-                      <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
-                        {contactErrors.company}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor="contact-description" className="font-sans text-[9px] font-bold tracking-widest uppercase text-zinc-500 select-none">
-                    Business & Funding Requirements
-                  </Label>
-                  <Textarea
-                    required
-                    id="contact-description"
-                    name="description"
-                    placeholder="Briefly describe your current business stage and funding requirements..."
-                    rows={3}
-                    value={contactData.description}
-                    onChange={handleContactChange}
-                    className={`font-sans text-xs placeholder:text-zinc-300 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg min-h-[100px] resize-none ${contactErrors.description ? "border-red-500 focus-visible:ring-red-100" : ""
-                      }`}
-                  />
-                  {contactErrors.description && (
-                    <span className="text-[10px] font-semibold text-red-500 block mt-0.5">
-                      {contactErrors.description}
-                    </span>
-                  )}
-                </div>
-
-                <div className="pt-2">
-                  <ClickSpark sparkColor="#ea580c" sparkRadius={20} sparkCount={8} duration={400} className="w-full" style={{ display: "block", width: "100%" }}>
-                    <Button
-                      type="submit"
-                      className="w-full bg-[#ea580c] text-white hover:bg-[#ea580c]/90 transition-colors h-11 text-xs font-bold tracking-widest uppercase rounded-lg select-none active:scale-[0.99] duration-105 cursor-pointer flex items-center justify-center"
-                    >
-                      Send Request
-                    </Button>
-                  </ClickSpark>
-                </div>
-
-                {isContactSubmitted && (
-                  <div className="flex items-center justify-center gap-2 text-zinc-800 text-[10px] font-bold tracking-wider uppercase bg-zinc-50 border border-zinc-200 py-3 rounded-lg">
-                    <CheckCircle size={12} className="text-black shrink-0" />
-                    Request Sent. An advisor will contact you shortly.
-                  </div>
-                )}
-
-                <p className="font-sans text-[10px] text-zinc-500 text-center italic mt-2">
-                  By submitting, you agree to our sovereign data encryption and privacy standards.
-                </p>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Contact Us Section (extracted — owns its own form state) */}
+      <ContactSection />
     </div>
   );
 }
