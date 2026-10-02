@@ -4,14 +4,9 @@
  * Contract (single source of truth, replaces the three-way split of a
  * hardcoded gateway URL, a test preload and the Docker default):
  *
- * 1. VITE_BACKEND_URL set (any environment)  -> used verbatim.
- * 2. VITE_BACKEND_URL unset + `bun run dev`  -> http://localhost:8000
- *    (matches `bun run serve:api`).
- * 3. Production builds (`bun run build`)     -> build.ts FAILS THE BUILD when
- *    VITE_BACKEND_URL is missing, so this module never has to throw at
- *    runtime. Browser code must never reference `process` — Bun's dev server
- *    does not define it outside NODE_ENV, and a module-eval throw here would
- *    white-screen the entire app.
+ * 1. VITE_BACKEND_URL set (any environment) -> used verbatim.
+ * 2. Production builds with an empty value -> same-origin relative URLs.
+ * 3. VITE_BACKEND_URL unset during dev -> http://localhost:8000.
  *
  * IMPORTANT: this module runs in the BROWSER. Only `import.meta.env` is
  * available here — never `process.env`.
@@ -21,7 +16,8 @@ function resolveBackendUrl(): string {
   const env = (import.meta as { env?: Record<string, string | undefined> }).env ?? {};
   const configured = env.VITE_BACKEND_URL;
 
-  if (configured !== undefined && configured !== "") {
+  if (configured !== undefined) {
+    if (configured === "") return "";
     if (!/^https?:\/\//.test(configured)) {
       console.error(
         `[api] Invalid VITE_BACKEND_URL "${configured}" — must start with http:// or https://. Falling back to same-origin relative URLs.`,

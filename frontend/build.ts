@@ -6,9 +6,12 @@ const root = process.cwd();
 const outdir = path.join(root, "dist");
 await rm(outdir, { recursive: true, force: true });
 
-const backendUrl = process.env.VITE_BACKEND_URL;
-if (!backendUrl || !/^https?:\/\//.test(backendUrl)) {
-  throw new Error("VITE_BACKEND_URL is required for production builds (for example, https://api.example.com).");
+// An empty value means the frontend and API share an origin. This keeps static
+// hosting deployments buildable without inventing an API hostname; set the
+// variable for a separately deployed backend.
+const backendUrl = process.env.VITE_BACKEND_URL?.trim() ?? "";
+if (backendUrl && !/^https?:\/\//.test(backendUrl)) {
+  throw new Error("VITE_BACKEND_URL must be an absolute http(s) URL when provided (for example, https://api.example.com).");
 }
 
 const result = await Bun.build({
