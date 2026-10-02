@@ -6,7 +6,8 @@
  *
  * 1. VITE_BACKEND_URL set (any environment) -> used verbatim.
  * 2. Production builds with an empty value -> same-origin relative URLs.
- * 3. VITE_BACKEND_URL unset during dev -> http://localhost:8000.
+ * 3. VITE_BACKEND_URL unset on localhost -> http://localhost:8000.
+ * 4. VITE_BACKEND_URL unset in production -> the deployed backend Worker.
  *
  * IMPORTANT: this module runs in the BROWSER. Only `import.meta.env` is
  * available here — never `process.env`.
@@ -27,8 +28,11 @@ function resolveBackendUrl(): string {
     return configured.replace(/\/+$/, "");
   }
 
-  // Dev default: the local Bun API server (`bun run serve:api`).
-  return "http://localhost:8000";
+  // Keep local development pointed at the local Bun API, while production
+  // builds remain functional even when the host omits the build variable.
+  const hostname = typeof location !== "undefined" ? location.hostname : "";
+  if (hostname === "localhost" || hostname === "127.0.0.1") return "http://localhost:8000";
+  return "https://ics-backend.aryan-main21.workers.dev";
 }
 
 export const API_BASE_URL: string = resolveBackendUrl();

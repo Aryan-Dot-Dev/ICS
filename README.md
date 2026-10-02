@@ -9,9 +9,9 @@ bun install
 ## Frontend
 
 The `frontend/` folder is a standalone Bun/React static app. Copy
-`frontend/.env.example` to `frontend/.env` and set `VITE_BACKEND_URL` when the
-API is deployed on a separate origin. Leave it empty for same-origin hosting,
-then:
+`frontend/.env.example` to `frontend/.env` and set `VITE_BACKEND_URL` when you
+need to override the production API origin. The current backend Worker URL is
+used by default, then:
 
 ```bash
 cd frontend

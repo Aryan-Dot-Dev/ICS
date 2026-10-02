@@ -6,10 +6,9 @@ const root = process.cwd();
 const outdir = path.join(root, "dist");
 await rm(outdir, { recursive: true, force: true });
 
-// An empty value means the frontend and API share an origin. This keeps static
-// hosting deployments buildable without inventing an API hostname; set the
-// variable for a separately deployed backend.
-const backendUrl = process.env.VITE_BACKEND_URL?.trim() ?? "";
+// The deployed API is the safe production default. Set VITE_BACKEND_URL to
+// override it for another environment or backend deployment.
+const backendUrl = process.env.VITE_BACKEND_URL?.trim() || "https://ics-backend.aryan-main21.workers.dev";
 if (backendUrl && !/^https?:\/\//.test(backendUrl)) {
   throw new Error("VITE_BACKEND_URL must be an absolute http(s) URL when provided (for example, https://api.example.com).");
 }
