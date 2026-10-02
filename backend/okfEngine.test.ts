@@ -4,9 +4,9 @@ import { ingestOkfBundle } from "./okfIngest";
 import { evaluateSchemeEligibility } from "./eligibilityEngine";
 import { SchemeIndex, rankSchemes, DEFAULT_RANKING_WEIGHTS } from "./retrieval";
 import { heuristicExtract } from "./requirementExtractor";
-import type { NormalizedScheme, SchemeUserProfile } from "../src/lib/schemeTypes";
+import type { NormalizedScheme, SchemeUserProfile } from "./schemeTypes";
 
-const BUNDLE_DIR = path.resolve(import.meta.dir, "..", "govt-schemes-okf");
+const BUNDLE_DIR = path.resolve(import.meta.dir, "govt-schemes-okf");
 
 type IngestResult = Awaited<ReturnType<typeof ingestOkfBundle>>;
 let cached: IngestResult | null = null;

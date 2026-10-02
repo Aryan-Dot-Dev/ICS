@@ -7,7 +7,7 @@ import {
   isGroqConfigured,
   sanitizeHistory,
 } from "./chatLlm";
-import type { SchemeRecommendation } from "../src/lib/schemeTypes";
+import type { SchemeRecommendation } from "./schemeTypes";
 
 /** Minimal valid recommendation fixture — only fields the prompt uses. */
 function makeRec(overrides: Partial<SchemeRecommendation> = {}): SchemeRecommendation {

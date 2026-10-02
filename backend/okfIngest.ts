@@ -8,7 +8,7 @@
  */
 
 import path from "node:path";
-import type { NormalizedScheme, OkfKnowledgeBase } from "../src/lib/schemeTypes";
+import type { NormalizedScheme, OkfKnowledgeBase } from "./schemeTypes";
 import {
   parseApplicationObject,
   parseBenefitsObject,

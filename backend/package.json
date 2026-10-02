@@ -1,0 +1,16 @@
+{
+  "name": "ics-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch server.ts",
+    "start": "bun server.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "ingest-schemes": "bun scripts/ingest-schemes.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

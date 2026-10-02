@@ -7,7 +7,7 @@
  * normalized to the engine's canonical vocabulary.
  */
 
-import type { SchemeUserProfile } from "../src/lib/schemeTypes";
+import type { SchemeUserProfile } from "./schemeTypes";
 
 export function sanitizeString(value: unknown, maxLen = 2000): string | undefined {
   if (typeof value !== "string") return undefined;

@@ -15,7 +15,7 @@ import type {
   NormalizedScheme,
   OkfKnowledgeBase,
   SchemeUserProfile,
-} from "../src/lib/schemeTypes";
+} from "./schemeTypes";
 
 // ---------------------------------------------------------------------------
 // Tokenization

@@ -8,8 +8,8 @@
  */
 
 import path from "node:path";
-import { ingestOkfBundle } from "../backend/okfIngest";
-import { SchemeIndex } from "../backend/retrieval";
+import { ingestOkfBundle } from "../okfIngest";
+import { SchemeIndex } from "../retrieval";
 
 async function main() {
   const bundleDir = path.resolve(import.meta.dir, "..", "govt-schemes-okf");

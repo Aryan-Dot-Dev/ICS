@@ -19,11 +19,11 @@ COPY package.json bun.lock tsconfig.json ./
 RUN bun install --frozen-lockfile
 
 # Copy application sources
-COPY src ./src
+COPY frontend ./frontend
 COPY styles ./styles
 COPY backend ./backend
-COPY govt-schemes-okf ./govt-schemes-okf
-COPY scripts ./scripts
+COPY backend/govt-schemes-okf ./govt-schemes-okf
+COPY backend/scripts ./scripts
 COPY build.ts ./build.ts
 COPY bunfig.toml ./bunfig.toml
 

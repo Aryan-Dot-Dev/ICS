@@ -8,7 +8,7 @@
  * so the product degrades gracefully instead of failing.
  */
 
-import type { SchemeUserProfile } from "../src/lib/schemeTypes";
+import type { SchemeUserProfile } from "./schemeTypes";
 
 export interface RequirementExtractor {
   extract(input: string, seed?: Partial<SchemeUserProfile>): Promise<SchemeUserProfile>;

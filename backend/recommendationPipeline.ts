@@ -15,7 +15,7 @@ import type {
   RecommendSchemesResponse,
   SchemeRecommendation,
   SchemeUserProfile,
-} from "../src/lib/schemeTypes";
+} from "./schemeTypes";
 import { evaluateSchemeEligibility } from "./eligibilityEngine";
 import {
   DEFAULT_RANKING_WEIGHTS,

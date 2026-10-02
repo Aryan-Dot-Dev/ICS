@@ -221,7 +221,7 @@ export function sheetsSafeCell(value: string): string {
 // Store
 // ---------------------------------------------------------------------------
 
-const DEFAULT_DATA_DIR = path.resolve(import.meta.dir, "..", "data", "leads");
+const DEFAULT_DATA_DIR = path.resolve(import.meta.dir, "data", "leads");
 
 function leadsFileFor(dataDir: string): string {
   return path.join(dataDir, "leads.jsonl");

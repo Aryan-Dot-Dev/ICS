@@ -1,4 +1,4 @@
-@import "../styles/globals.css";
+@import "./globals.css";
 
 @theme {
   --font-sans: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;

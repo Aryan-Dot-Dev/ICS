@@ -19,7 +19,7 @@ import type {
   OkfSource,
   RuleElement,
   RuleGroup,
-} from "../src/lib/schemeTypes";
+} from "./schemeTypes";
 
 // ---------------------------------------------------------------------------
 // Minimal helpers (deterministic frontmatter + fenced-YAML extraction)

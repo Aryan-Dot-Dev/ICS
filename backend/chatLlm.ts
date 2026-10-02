@@ -20,7 +20,7 @@
  * Aug 2026. Override with GROQ_MODEL.
  */
 
-import type { SchemeRecommendation, SchemeUserProfile } from "../src/lib/schemeTypes";
+import type { SchemeRecommendation, SchemeUserProfile } from "./schemeTypes";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const DEFAULT_MODEL = "openai/gpt-oss-120b";

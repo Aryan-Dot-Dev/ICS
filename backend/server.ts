@@ -17,7 +17,7 @@
 import path from "node:path";
 import { ingestOkfBundle } from "./okfIngest";
 import { RecommendationEngine } from "./recommendationPipeline";
-import type { RecommendSchemesResponse, SchemeUserProfile } from "../src/lib/schemeTypes";
+import type { RecommendSchemesResponse, SchemeUserProfile } from "./schemeTypes";
 import { loadEnv } from "./env";
 import { log, newRequestId } from "./logger";
 import { LeadStore, leadsToCsv, loadLeads, normalizeEmail, normalizePhone } from "./leads";
@@ -52,7 +52,7 @@ async function loadEngine(): Promise<RecommendationEngine | null> {
   if (engine) return engine;
   if (engineError) return null;
   try {
-    const bundleDir = path.resolve(import.meta.dir, "..", "govt-schemes-okf");
+    const bundleDir = path.resolve(import.meta.dir, "govt-schemes-okf");
     const result = await ingestOkfBundle(bundleDir);
     if (result.stats.schemesIngested === 0) {
       engineError = "OKF bundle contained no schemes";
@@ -80,6 +80,8 @@ async function loadEngine(): Promise<RecommendationEngine | null> {
 // Demo static serving (single-container mode) — serves dist/ when present
 // ---------------------------------------------------------------------------
 
+// Optional compatibility directory for the root single-container demo. A
+// standalone backend deployment does not need this directory to exist.
 const STATIC_DIR = path.resolve(import.meta.dir, "..", "dist");
 
 const CONTENT_TYPES: Record<string, string> = {
@@ -442,7 +444,7 @@ async function handleRequest(request: Request): Promise<Response> {
   }
 
   if (route === "POST /api/ingest-schemes") {
-    const bundleDir = path.resolve(import.meta.dir, "..", "govt-schemes-okf");
+    const bundleDir = path.resolve(import.meta.dir, "govt-schemes-okf");
     const result = await ingestOkfBundle(bundleDir);
     if (result.stats.schemesIngested > 0) {
       engine = new RecommendationEngine(result.knowledgeBase);

@@ -21,7 +21,7 @@ import type {
   RuleGroup,
   RuleOperator,
   SchemeUserProfile,
-} from "../src/lib/schemeTypes";
+} from "./schemeTypes";
 
 // ---------------------------------------------------------------------------
 // Profile -> rule field resolution
