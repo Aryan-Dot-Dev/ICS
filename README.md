@@ -34,9 +34,10 @@ bun install
 bun run dev
 ```
 
-Deploy it with `backend/Dockerfile`, or run `bun run start` on a Bun host. The
-OKF knowledge base is contained in `backend/govt-schemes-okf/` and is loaded
-relative to the backend package at runtime.
+Deploy it with `backend/Dockerfile`. For a Bun service deployment with
+`backend/` as the project root, use `bun run build` as the build command and
+`bun run start` as the start command. The OKF knowledge base is contained in
+`backend/govt-schemes-okf/` and is bundled into `backend/dist/` during build.
 
 ## Root convenience commands
 
