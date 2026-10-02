@@ -420,11 +420,23 @@ function timingSafeEqual(a: string, b: string): boolean {
 // CORS headers attached to EVERY response (not just the OPTIONS preflight —
 // the browser also requires them on the actual response, and a preflight-only
 // implementation blocks every real request cross-origin).
-const corsHeaders: Record<string, string> = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-} as const;
+const allowedCorsOrigins = new Set([
+  "https://ics-frontend.aryan-main21.workers.dev",
+  "http://localhost:3000",
+  "http://localhost:5173",
+]);
+
+function corsHeadersFor(request: Request): Record<string, string> {
+  const origin = request.headers.get("origin");
+  const allowedOrigin = origin && allowedCorsOrigins.has(origin) ? origin : "*";
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Max-Age": "86400",
+    ...(origin ? { Vary: "Origin" } : {}),
+  };
+}
 
 async function handleRequest(request: Request): Promise<Response> {
   const url = new URL(request.url);
@@ -684,11 +696,7 @@ const server = Bun.serve({
     const start = performance.now();
     try {
       const response = await handleRequest(request);
-      if (request.method === "OPTIONS") {
-        response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-      }
-      for (const [name, value] of Object.entries(corsHeaders)) {
+      for (const [name, value] of Object.entries(corsHeadersFor(request))) {
         response.headers.set(name, value);
       }
       response.headers.set("x-request-id", reqId);
@@ -706,7 +714,7 @@ const server = Bun.serve({
         error: err instanceof Error ? err.message : String(err),
       });
       const response = errResponse(500, "Internal server error.");
-      for (const [name, value] of Object.entries(corsHeaders)) {
+      for (const [name, value] of Object.entries(corsHeadersFor(request))) {
         response.headers.set(name, value);
       }
       response.headers.set("x-request-id", reqId);
