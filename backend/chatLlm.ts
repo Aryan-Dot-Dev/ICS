@@ -21,6 +21,7 @@
  */
 
 import type { SchemeRecommendation, SchemeUserProfile } from "./schemeTypes";
+import { runtimeEnv } from "./runtimeEnv";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const DEFAULT_MODEL = "openai/gpt-oss-120b";
@@ -166,12 +167,12 @@ export function buildUserPrompt(input: ChatLlmInput): string {
 
 export function groqApiUrl(): string {
   // Base-URL override exists for self-hosted proxies and hermetic tests.
-  const base = process.env.GROQ_BASE_URL?.trim().replace(/\/+$/, "");
+  const base = runtimeEnv().GROQ_BASE_URL?.trim().replace(/\/+$/, "");
   return base ? `${base}/chat/completions` : GROQ_API_URL;
 }
 
 export function isGroqConfigured(): boolean {
-  return Boolean(process.env.GROQ_API_KEY);
+  return Boolean(runtimeEnv().GROQ_API_KEY);
 }
 
 /**
@@ -184,9 +185,9 @@ export function isGroqConfigured(): boolean {
  * bad model) fail fast — they cannot fix themselves.
  */
 export async function composeChatReply(input: ChatLlmInput): Promise<string | null> {
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = runtimeEnv().GROQ_API_KEY;
   if (!apiKey) return null;
-  const model = process.env.GROQ_MODEL?.trim() || DEFAULT_MODEL;
+  const model = runtimeEnv().GROQ_MODEL?.trim() || DEFAULT_MODEL;
   const query = input.query.trim();
   if (query.length === 0) return null;
 

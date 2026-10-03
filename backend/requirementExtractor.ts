@@ -9,6 +9,7 @@
  */
 
 import type { SchemeUserProfile } from "./schemeTypes";
+import { runtimeEnv } from "./runtimeEnv";
 
 export interface RequirementExtractor {
   extract(input: string, seed?: Partial<SchemeUserProfile>): Promise<SchemeUserProfile>;
@@ -30,14 +31,15 @@ export interface LlmConfig {
 }
 
 export function getLlmConfig(): LlmConfig | null {
-  const openai = process.env.OPENAI_API_KEY;
-  const anthropic = process.env.ANTHROPIC_API_KEY;
-  const groq = process.env.GROQ_API_KEY;
+  const env = runtimeEnv();
+  const openai = env.OPENAI_API_KEY;
+  const anthropic = env.ANTHROPIC_API_KEY;
+  const groq = env.GROQ_API_KEY;
   const apiKey = openai || anthropic || groq;
   if (!apiKey) return null;
 
-  let model = process.env.SCHEME_LLM_MODEL;
-  let baseUrl = process.env.SCHEME_LLM_BASE_URL;
+  let model = env.SCHEME_LLM_MODEL;
+  let baseUrl = env.SCHEME_LLM_BASE_URL;
 
   if (anthropic && !openai) {
     model ??= "claude-sonnet-4-5";

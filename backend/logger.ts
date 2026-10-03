@@ -14,11 +14,12 @@
  */
 
 type Level = "debug" | "info" | "warn" | "error";
+import { runtimeEnv } from "./runtimeEnv";
 
 const LEVELS: Record<Level, number> = { debug: 10, info: 20, warn: 30, error: 40 };
 
 const minLevel =
-  process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"
+  runtimeEnv().NODE_ENV === "development" || runtimeEnv().NODE_ENV === "test"
     ? LEVELS.debug
     : LEVELS.info;
 

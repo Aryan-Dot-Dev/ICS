@@ -221,15 +221,19 @@ export function sheetsSafeCell(value: string): string {
 // Store
 // ---------------------------------------------------------------------------
 
-const DEFAULT_DATA_DIR = path.resolve(import.meta.dir, "data", "leads");
+// `import.meta.dir` exists in Bun but not in the Workers runtime. Workers use
+// the in-memory store (and Sheets forwarding) instead of filesystem storage.
+const DEFAULT_DATA_DIR: string | null =
+  typeof import.meta.dir === "string" ? path.resolve(import.meta.dir, "data", "leads") : null;
 
 function leadsFileFor(dataDir: string): string {
   return path.join(dataDir, "leads.jsonl");
 }
 
 /** Load all leads (call once per process; the store keeps an in-memory map). */
-export function loadLeads(dataDir: string = DEFAULT_DATA_DIR): Map<string, LeadRecord> {
+export function loadLeads(dataDir: string | null = DEFAULT_DATA_DIR): Map<string, LeadRecord> {
   const leads = new Map<string, LeadRecord>();
+  if (dataDir === null) return leads;
   try {
     const file = leadsFileFor(dataDir);
     if (!fs.existsSync(file)) return leads;
@@ -262,9 +266,9 @@ export class LeadStore {
   /** Google Apps Script intake endpoint; forwarding is off when absent. */
   private sheetsUrl?: string;
   /** Directory holding the JSONL store; injectable for tests. */
-  private dataDir: string;
+  private dataDir: string | null;
 
-  constructor(leads?: Map<string, LeadRecord>, sheetsUrl?: string, dataDir: string = DEFAULT_DATA_DIR) {
+  constructor(leads?: Map<string, LeadRecord>, sheetsUrl?: string, dataDir: string | null = DEFAULT_DATA_DIR) {
     this.leads = leads ?? new Map();
     this.sheetsUrl = sheetsUrl;
     this.dataDir = dataDir;
@@ -279,6 +283,11 @@ export class LeadStore {
 
   get size(): number {
     return this.leads.size;
+  }
+
+  /** Set the forwarding destination for runtimes whose bindings arrive per request. */
+  configureSheets(sheetsUrl?: string): void {
+    this.sheetsUrl = sheetsUrl;
   }
 
   listLeads(): LeadRecord[] {
@@ -396,6 +405,9 @@ export class LeadStore {
 
   /** JSONL persistence: one file per lead + a compacted single-file index. */
   private persist(lead: LeadRecord): void {
+    // Cloudflare Workers have no writable filesystem. The Worker entrypoint
+    // passes null here and uses the in-memory store plus Sheets forwarding.
+    if (this.dataDir === null) return;
     try {
       fs.mkdirSync(this.dataDir, { recursive: true });
       // Per-lead file keeps updates simple and recovery trivial.

@@ -36,8 +36,16 @@ bun run dev
 
 Deploy it with `backend/Dockerfile`. For a Bun service deployment with
 `backend/` as the project root, use `bun run build` as the build command and
-`bun run start` as the start command. The OKF knowledge base is contained in
-`backend/govt-schemes-okf/` and is bundled into `backend/dist/` during build.
+`bun run start` as the start command.
+
+The backend also has a Cloudflare Workers entrypoint. From `backend/`, run
+`bun run worker:generate-data` when the OKF Markdown changes, then use
+`bun run dev` for Bun or `bun run worker:dev` for Workers. Deploy the Worker
+with `bun run deploy` (equivalent to `bunx wrangler deploy`). The Worker
+bundles `worker-data.json`, a generated normalized copy of
+`backend/govt-schemes-okf/`, because Workers cannot read the filesystem at
+runtime. Set Worker secrets such as `LEAD_SHEETS_URL`, `LEADS_EXPORT_TOKEN`,
+and any optional LLM keys in the Cloudflare dashboard or with Wrangler.
 
 ## Root convenience commands
 
