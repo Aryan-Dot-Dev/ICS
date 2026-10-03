@@ -217,15 +217,15 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs transition-opacity animate-in fade-in-0 duration-200">
+    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-hidden p-4 pt-10 md:pt-14 bg-black/75 backdrop-blur-xs transition-opacity animate-in fade-in-0 duration-200">
       {/* Click outside to close (disabled for form integrity, close button is explicit) */}
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="relative w-full max-w-xl z-10 animate-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
+      <div className="relative w-full max-w-xl z-10 animate-in zoom-in-95 duration-200 max-h-[92vh] overflow-visible">
         {/* Premium white circular Close Button */}
         <button
           onClick={onClose}
-          className="absolute -top-10 right-2 sm:-top-4 sm:-right-4 z-50 w-9 h-9 rounded-full bg-white border border-zinc-200 text-zinc-500 hover:text-zinc-900 flex items-center justify-center transition-all duration-300 ease-out shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.15)] hover:scale-110 hover:rotate-90 active:scale-95 cursor-pointer"
+          className="absolute top-3 right-3 sm:-top-4 sm:-right-4 z-[250] w-9 h-9 rounded-full bg-white border border-zinc-200 text-zinc-500 hover:text-zinc-900 flex items-center justify-center transition-all duration-300 ease-out shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.15)] hover:scale-110 hover:rotate-90 active:scale-95 cursor-pointer"
           title="Close"
         >
           <X size={16} strokeWidth={2.5} />
@@ -243,6 +243,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
             <SubmitProgressDisplay progress={submitProgress} />
           </div>
         ) : (
+          <div data-modal-scroll className="max-h-[92vh] overflow-y-auto rounded-2xl" style={{ overflowAnchor: "none" }}>
           <Stepper
             initialStep={1}
             onStepChange={(step) => setCurrentStepIndex(step)}
@@ -388,10 +389,10 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h3 className="font-sans text-sm font-extrabold text-black uppercase tracking-wider mb-1">
-                      About You
+                      Optional details
                     </h3>
                     <p className="text-zinc-500 font-sans text-xs leading-relaxed">
-                      Optional — but every detail here converts "more information needed" into firm eligibility answers.
+                      Choose any details you want to share. You can also continue without adding them.
                     </p>
                   </div>
                   {countProfileValues(formData) > 0 && (
@@ -405,11 +406,11 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
                   values={formData}
                   errors={errors}
                   onFieldChange={handleFieldChange}
-                  forceOpen
                 />
               </div>
             </Step>
           </Stepper>
+          </div>
         )}
       </div>
     </div>

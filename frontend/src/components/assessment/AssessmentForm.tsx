@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ChevronDown, Sparkles } from "lucide-react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -210,7 +210,25 @@ export function ProfileFieldsSection({
   forceOpen?: boolean;
 }) {
   const [open, setOpen] = useState(forceOpen);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const restoreScrollTop = useRef<number | null>(null);
   const filled = countProfileValues(values);
+
+  const handleToggle = () => {
+    const section = sectionRef.current;
+    const scrollParent = section?.parentElement?.closest<HTMLElement>("[data-modal-scroll]");
+    restoreScrollTop.current = scrollParent?.scrollTop ?? null;
+    setOpen((current) => !current);
+  };
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    const scrollParent = section?.parentElement?.closest<HTMLElement>("[data-modal-scroll]");
+    if (scrollParent && restoreScrollTop.current !== null) {
+      scrollParent.scrollTop = restoreScrollTop.current;
+      restoreScrollTop.current = null;
+    }
+  }, [open]);
 
   const inputClass = (field: keyof AssessmentFormValues) =>
     `h-10 border-zinc-200 focus-visible:ring-black/20 focus-visible:border-black rounded-lg text-sm ${errors[field] ? "border-red-500 focus-visible:ring-red-100" : ""}`;
@@ -218,24 +236,43 @@ export function ProfileFieldsSection({
   const selectClass = (field: keyof AssessmentFormValues) =>
     `w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-black shadow-xs outline-none focus:border-zinc-400 h-10 cursor-pointer ${errors[field] ? "border-red-500" : ""}`;
 
+  const optionalSelect = (
+    id: string,
+    field: keyof AssessmentFormValues,
+    placeholder: string,
+    options: readonly { value: string; label: string }[],
+  ) => (
+    <select
+      id={id}
+      name={id}
+      value={values[field]}
+      onChange={(event) => onFieldChange(field, event.target.value)}
+      className={selectClass(field)}
+    >
+      <option value="" disabled>{placeholder}</option>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>{option.label}</option>
+      ))}
+    </select>
+  );
+
   return (
-    <div className="rounded-xl border border-zinc-200 bg-zinc-50/50 overflow-hidden">
+    <div ref={sectionRef} className="rounded-xl border border-zinc-200 bg-zinc-50/50 overflow-hidden">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={handleToggle}
         className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left cursor-pointer hover:bg-zinc-50 transition-colors"
         aria-expanded={open}
       >
         <span className="flex items-center gap-2 min-w-0">
-          <Sparkles size={14} className="text-primary shrink-0" />
           <span className="min-w-0">
             <span className="block font-sans text-xs font-extrabold text-black tracking-tight">
-              About you <span className="text-zinc-400 font-semibold normal-case">(optional — improves accuracy)</span>
+              Optional details <span className="text-zinc-400 font-semibold normal-case">(choose what to share)</span>
             </span>
             <span className="block text-[10px] text-zinc-400 font-sans mt-0.5">
               {filled > 0
-                ? `${filled} detail${filled === 1 ? "" : "s"} added — these turn "more info needed" into firm answers`
-                : "Age, state, income and category decide most scheme eligibility"}
+                ? `${filled} detail${filled === 1 ? "" : "s"} selected`
+                : "Select any details that apply, or continue without them"}
             </span>
           </span>
         </span>
@@ -271,31 +308,13 @@ export function ProfileFieldsSection({
             {/* Gender */}
             <div className="space-y-1">
               <Label className="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500">Gender</Label>
-              <Select value={values.gender} onValueChange={(v) => onFieldChange("gender", v)}>
-                <SelectTrigger id="gender" className={selectClass("gender")}>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-zinc-250 text-black">
-                  {GENDERS.map((g) => (
-                    <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {optionalSelect("gender", "gender", "Select", GENDERS)}
             </div>
 
             {/* State */}
             <div className="space-y-1">
               <Label className="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500">State</Label>
-              <Select value={values.state} onValueChange={(v) => onFieldChange("state", v)}>
-                <SelectTrigger id="state" className={selectClass("state")}>
-                  <SelectValue placeholder="Select state" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-zinc-250 text-black max-h-64">
-                  {STATES.map((s) => (
-                    <SelectItem key={s} value={s}>{s}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {optionalSelect("state", "state", "Select state", STATES.map((state) => ({ value: state, label: state })))}
             </div>
           </div>
 
@@ -303,31 +322,13 @@ export function ProfileFieldsSection({
             {/* Rural / Urban */}
             <div className="space-y-1">
               <Label className="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500">Area</Label>
-              <Select value={values.ruralUrban} onValueChange={(v) => onFieldChange("ruralUrban", v)}>
-                <SelectTrigger id="ruralUrban" className={selectClass("ruralUrban")}>
-                  <SelectValue placeholder="Rural / Urban" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-zinc-250 text-black">
-                  {RURAL_URBAN.map((r) => (
-                    <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {optionalSelect("ruralUrban", "ruralUrban", "Rural / Urban", RURAL_URBAN)}
             </div>
 
             {/* Social category */}
             <div className="space-y-1">
               <Label className="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500">Category</Label>
-              <Select value={values.socialCategory} onValueChange={(v) => onFieldChange("socialCategory", v)}>
-                <SelectTrigger id="socialCategory" className={selectClass("socialCategory")}>
-                  <SelectValue placeholder="General / OBC / SC / ST" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-zinc-250 text-black">
-                  {SOCIAL_CATEGORIES.map((c) => (
-                    <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {optionalSelect("socialCategory", "socialCategory", "General / OBC / SC / ST", SOCIAL_CATEGORIES)}
             </div>
 
             {/* Annual household income */}
@@ -350,31 +351,13 @@ export function ProfileFieldsSection({
             {/* Employment status */}
             <div className="space-y-1">
               <Label className="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500">Employment</Label>
-              <Select value={values.employmentStatus} onValueChange={(v) => onFieldChange("employmentStatus", v)}>
-                <SelectTrigger id="employmentStatus" className={selectClass("employmentStatus")}>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-zinc-250 text-black">
-                  {EMPLOYMENT_STATUSES.map((e) => (
-                    <SelectItem key={e.value} value={e.value}>{e.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {optionalSelect("employmentStatus", "employmentStatus", "Select", EMPLOYMENT_STATUSES)}
             </div>
 
             {/* Business stage */}
             <div className="space-y-1">
               <Label className="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500">Business stage</Label>
-              <Select value={values.businessStage} onValueChange={(v) => onFieldChange("businessStage", v)}>
-                <SelectTrigger id="businessStage" className={selectClass("businessStage")}>
-                  <SelectValue placeholder="New / existing" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-zinc-250 text-black">
-                  {BUSINESS_STAGES.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {optionalSelect("businessStage", "businessStage", "New / existing", BUSINESS_STAGES)}
             </div>
 
             {/* Project cost */}
@@ -397,45 +380,22 @@ export function ProfileFieldsSection({
             {/* Marital status */}
             <div className="space-y-1">
               <Label className="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500">Marital status</Label>
-              <Select value={values.maritalStatus} onValueChange={(v) => onFieldChange("maritalStatus", v)}>
-                <SelectTrigger id="maritalStatus" className={selectClass("maritalStatus")}>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-zinc-250 text-black">
-                  {MARITAL_STATUSES.map((m) => (
-                    <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {optionalSelect("maritalStatus", "maritalStatus", "Select", MARITAL_STATUSES)}
             </div>
 
             {/* Education */}
             <div className="space-y-1">
               <Label className="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500">Education</Label>
-              <Select value={values.educationLevel} onValueChange={(v) => onFieldChange("educationLevel", v)}>
-                <SelectTrigger id="educationLevel" className={selectClass("educationLevel")}>
-                  <SelectValue placeholder="Highest level" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-zinc-250 text-black max-h-64">
-                  {EDUCATION_LEVELS.map((e) => (
-                    <SelectItem key={e.value} value={e.value}>{e.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {optionalSelect("educationLevel", "educationLevel", "Highest level", EDUCATION_LEVELS)}
             </div>
 
             {/* Income tax payer */}
             <div className="space-y-1">
               <Label className="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500">Pays income tax?</Label>
-              <Select value={values.incomeTaxPayer} onValueChange={(v) => onFieldChange("incomeTaxPayer", v)}>
-                <SelectTrigger id="incomeTaxPayer" className={selectClass("incomeTaxPayer")}>
-                  <SelectValue placeholder="Yes / No" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-zinc-250 text-black">
-                  <SelectItem value="yes">Yes</SelectItem>
-                  <SelectItem value="no">No</SelectItem>
-                </SelectContent>
-              </Select>
+              {optionalSelect("incomeTaxPayer", "incomeTaxPayer", "Yes / No", [
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ])}
             </div>
           </div>
         </div>

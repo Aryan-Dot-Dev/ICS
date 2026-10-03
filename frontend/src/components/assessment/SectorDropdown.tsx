@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ChevronDown, Search, Check } from "lucide-react";
 
 /** Industry sector options for the assessment modal's searchable dropdown. */
@@ -72,17 +73,47 @@ export function SectorDropdown({
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
+
+  const updateMenuPosition = () => {
+    const trigger = triggerRef.current;
+    if (!trigger) return;
+    const rect = trigger.getBoundingClientRect();
+    setMenuPosition({
+      top: rect.bottom + 6,
+      left: rect.left,
+      width: rect.width,
+    });
+  };
 
   // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        !menuRef.current?.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useLayoutEffect(() => {
+    if (!isDropdownOpen) return;
+    updateMenuPosition();
+    const reposition = () => updateMenuPosition();
+    window.addEventListener("resize", reposition);
+    window.addEventListener("scroll", reposition, true);
+    return () => {
+      window.removeEventListener("resize", reposition);
+      window.removeEventListener("scroll", reposition, true);
+    };
+  }, [isDropdownOpen]);
 
   const select = (sector: string) => {
     onChange(sector);
@@ -91,8 +122,9 @@ export function SectorDropdown({
   };
 
   return (
-    <div className="space-y-1.5">
+    <div className="relative space-y-1.5">
       <button
+        ref={triggerRef}
         id="businessType"
         type="button"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -104,8 +136,12 @@ export function SectorDropdown({
         <ChevronDown className={`w-4 h-4 text-zinc-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
       </button>
 
-      {isDropdownOpen && (
-        <div className="absolute left-0 right-0 mt-1.5 bg-white border border-zinc-250 rounded-xl shadow-xl z-50 text-black overflow-hidden flex flex-col">
+      {isDropdownOpen && createPortal(
+        <div
+          ref={menuRef}
+          className="fixed bg-white border border-zinc-250 rounded-xl shadow-xl z-[1000] text-black overflow-hidden flex flex-col"
+          style={{ top: menuPosition.top, left: menuPosition.left, width: menuPosition.width }}
+        >
           {/* Search Bar - Fixed at the top */}
           <div className="flex items-center gap-2 px-3 py-2 border-b border-zinc-150 bg-zinc-50/50">
             <Search className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
@@ -160,9 +196,9 @@ export function SectorDropdown({
               );
             })()}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
-      {isDropdownOpen && <div className="h-[230px]" />}
     </div>
   );
 }

@@ -30,11 +30,11 @@ export function EditParametersModal({
   onSubmit: (e: React.FormEvent) => void;
 }) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs transition-opacity animate-in fade-in-0 duration-200">
+    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-hidden p-4 pt-10 md:pt-14 bg-black/75 backdrop-blur-xs transition-opacity animate-in fade-in-0 duration-200">
       {/* Close modal on click backdrop */}
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="relative w-full max-w-lg bg-white border border-zinc-200 rounded-2xl p-6 md:p-8 shadow-xl text-left z-10 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-lg bg-white border border-zinc-200 rounded-2xl shadow-xl text-left z-10 animate-in zoom-in-95 duration-200 overflow-visible">
         {/* Premium Close Button */}
         <button
           type="button"
@@ -45,10 +45,11 @@ export function EditParametersModal({
           <X size={16} strokeWidth={2.5} />
         </button>
 
-        {isSubmitting ? (
-          <SubmitProgressDisplay progress={submitProgress} />
-        ) : (
-          <form onSubmit={onSubmit} className="space-y-6" noValidate>
+        <div data-modal-scroll className="max-h-[90vh] overflow-y-auto rounded-2xl p-6 md:p-8" style={{ overflowAnchor: "none" }}>
+          {isSubmitting ? (
+            <SubmitProgressDisplay progress={submitProgress} />
+          ) : (
+            <form onSubmit={onSubmit} className="space-y-6" noValidate>
             <div>
               <h3 className="font-sans text-lg font-extrabold text-black tracking-tight">
                 Modify Parameters
@@ -103,9 +104,8 @@ export function EditParametersModal({
                 )}
               </div>
 
-              {/* Eligibility profile — same section as the main form, always
-                  visible here so the extra questions are discoverable */}
-              <ProfileFieldsSection values={values} errors={errors} onFieldChange={onFieldChange} forceOpen />
+              {/* Eligibility profile stays optional and collapsed until selected. */}
+              <ProfileFieldsSection values={values} errors={errors} onFieldChange={onFieldChange} />
             </div>
 
             {/* Actions Row */}
@@ -125,8 +125,9 @@ export function EditParametersModal({
                 SUBMIT
               </button>
             </div>
-          </form>
-        )}
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );

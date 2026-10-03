@@ -163,7 +163,9 @@ function StepContentWrapper({ isCompleted, currentStep, direction, children, cla
   return (
     <motion.div
       className={className}
-      style={{ position: 'relative', overflow: 'hidden' }}
+      // Keep the step content visible so anchored menus (for example the
+      // sector picker) can extend beyond the animated content height.
+      style={{ position: 'relative', overflow: 'visible' }}
       animate={{ height: isCompleted ? 0 : parentHeight }}
       transition={{ type: 'spring', duration: 0.4 }}
     >
@@ -188,8 +190,19 @@ function SlideTransition({ children, direction, onHeightReady }: SlideTransition
   const containerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    if (containerRef.current) onHeightReady(containerRef.current.offsetHeight);
-  }, [children, onHeightReady]);
+    const container = containerRef.current;
+    if (!container) return;
+
+    const reportHeight = () => onHeightReady(container.offsetHeight);
+    reportHeight();
+
+    // Step content can grow after the step is mounted (for example when the
+    // optional profile section is expanded). Keep the animated wrapper in
+    // sync so the modal does not become a clipped inner scroll area.
+    const resizeObserver = new ResizeObserver(reportHeight);
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, [onHeightReady]);
 
   return (
     <motion.div

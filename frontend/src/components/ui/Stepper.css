@@ -16,7 +16,7 @@
   border-radius: 1.5rem;
   background-color: #fff;
   border: 1px solid #e4e4e7;
-  overflow: hidden;
+  overflow: visible;
   box-shadow:
     0 10px 15px -3px rgba(0, 0, 0, 0.04),
     0 4px 6px -4px rgba(0, 0, 0, 0.02);
@@ -31,7 +31,7 @@
 
 .step-content-default {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
 }
 

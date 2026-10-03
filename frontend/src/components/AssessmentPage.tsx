@@ -59,6 +59,11 @@ export function AssessmentPage() {
   } = useAssessmentSubmission();
   const [submitProgress, setSubmitProgress] = useSubmitProgress(isSubmitting);
 
+  const maxRelevance = Math.max(
+    0,
+    ...(outcome?.recommendations ?? []).map((item) => item.relevance?.score ?? 0),
+  );
+
   // Prevent background body scroll when edit modal is open
   useEffect(() => {
     if (isEditModalOpen) {
@@ -295,7 +300,15 @@ export function AssessmentPage() {
               ) : outcome?.recommendations && outcome.recommendations.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                   {outcome.recommendations.map((rec, idx) => (
-                    <RecommendationCard key={rec.schemeId ?? idx} rec={rec} />
+                    <RecommendationCard
+                      key={rec.schemeId ?? idx}
+                      rec={rec}
+                      matchPercent={
+                        maxRelevance > 0
+                          ? Math.round(Math.max(0, Math.min(1, (rec.relevance?.score ?? 0) / maxRelevance)) * 100)
+                          : 0
+                      }
+                    />
                   ))}
                 </div>
               ) : (
