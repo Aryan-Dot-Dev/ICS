@@ -41,7 +41,7 @@ Deploy it with `backend/Dockerfile`. For a Bun service deployment with
 The backend also has a Cloudflare Workers entrypoint. From `backend/`, run
 `bun run worker:generate-data` when the OKF Markdown changes, then use
 `bun run dev` for Bun or `bun run worker:dev` for Workers. Deploy the Worker
-with `bun run deploy` (equivalent to `bunx wrangler deploy`). The Worker
+with `bun run deploy` (equivalent to `bunx wrangler deploy --config ./wrangler.toml`). The Worker
 bundles `worker-data.json`, a generated normalized copy of
 `backend/govt-schemes-okf/`, because Workers cannot read the filesystem at
 runtime. Set Worker secrets such as `LEAD_SHEETS_URL`, `LEADS_EXPORT_TOKEN`,

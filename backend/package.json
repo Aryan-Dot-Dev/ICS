@@ -9,7 +9,7 @@
     "start": "bun dist/server.js",
     "worker:generate-data": "bun scripts/generate-worker-data.ts",
     "worker:dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "deploy": "wrangler deploy --config ./wrangler.toml",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "ingest-schemes": "bun scripts/ingest-schemes.ts"
