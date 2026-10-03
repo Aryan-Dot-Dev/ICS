@@ -1,5 +1,4 @@
 import { Landmark, Phone, ShieldAlert } from "lucide-react";
-import { STATUS_LABELS, STATUS_STYLES } from "../../lib/schemeClient";
 import type { OkfBenefit, SchemeRecommendation } from "../../lib/schemeTypes";
 
 /** Short human string for a benefit: amount when known, name/type otherwise. */
@@ -29,7 +28,6 @@ function benefitLabel(b: OkfBenefit): string {
 export function RecommendationCard({ rec }: { rec: SchemeRecommendation }) {
   const keyBenefit =
     rec.benefits?.find((b) => (b as { amount?: unknown }).amount != null) ?? rec.benefits?.[0];
-  const showStatus = rec.eligibilityStatus !== "needs_information";
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-zinc-200 bg-white p-6 text-left shadow-[0_8px_28px_rgba(24,24,27,0.04)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_16px_36px_rgba(24,24,27,0.09)]">
@@ -74,24 +72,6 @@ export function RecommendationCard({ rec }: { rec: SchemeRecommendation }) {
           </div>
           <Landmark size={22} className="mb-1 text-primary/35" aria-hidden="true" />
         </div>
-      </div>
-
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-zinc-100 pt-4">
-        <span className="font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">
-          Eligibility status
-        </span>
-        {showStatus && (
-          <span
-            className={`inline-flex w-fit rounded-full border px-2.5 py-1 font-sans text-[9px] font-extrabold uppercase tracking-wider ${STATUS_STYLES[rec.eligibilityStatus] ?? STATUS_STYLES.unknown}`}
-          >
-            {STATUS_LABELS[rec.eligibilityStatus] ?? rec.eligibilityStatus}
-          </span>
-        )}
-        {!showStatus && (
-          <span className="font-sans text-[10px] font-semibold text-zinc-500">
-            More details may be needed
-          </span>
-        )}
       </div>
 
       {rec.eligibilityStatus === "unknown" && (
