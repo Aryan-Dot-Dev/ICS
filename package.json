@@ -12,6 +12,7 @@
     "build": "bun run build:demo",
     "build:frontend": "bun run --cwd frontend build",
     "build:demo": "bun build.ts",
+    "deploy:backend": "wrangler deploy --config wrangler.jsonc",
     "ingest-schemes": "bun run --cwd backend ingest-schemes",
     "serve:api": "bun run --cwd backend start",
     "typecheck": "bun run --cwd frontend typecheck && bun run --cwd backend typecheck",
