@@ -5,7 +5,7 @@ import { RecommendationEngine } from "./recommendationPipeline";
 import type { RecommendSchemesResponse, SchemeUserProfile } from "./schemeTypes";
 import { setRuntimeEnv } from "./runtimeEnv";
 import { LeadStore, leadsToCsv, normalizeEmail, normalizePhone } from "./leads";
-import type { LeadSource, LeadSubmission } from "./leads";
+import type { LeadRecord, LeadSource, LeadSubmission } from "./leads";
 import { matchSmallTalkReply } from "./chatReplies";
 import { composeChatReply, isGroqConfigured, sanitizeHistory } from "./chatLlm";
 import { TokenBucketLimiter, clientIpKey } from "./rateLimiter";
@@ -18,6 +18,8 @@ import {
 import { log, newRequestId } from "./logger";
 
 export interface Env {
+  /** Optional KV namespace binding for persistent lead records. */
+  LEADS_KV?: KVNamespace;
   LEAD_SHEETS_URL?: string;
   LEADS_EXPORT_TOKEN?: string;
   OPENAI_API_KEY?: string;
@@ -142,6 +144,14 @@ function leadSubmission(raw: Record<string, unknown>): LeadSubmission | null {
 async function handle(request: Request, env: Env): Promise<Response> {
   setRuntimeEnv(env as Record<string, string | undefined>);
   leadStore.configureSheets(env.LEAD_SHEETS_URL);
+  if (env.LEADS_KV) {
+    try {
+      const snapshot = await env.LEADS_KV.get("snapshot", "json") as unknown;
+      if (Array.isArray(snapshot)) leadStore.replaceLeads(snapshot as LeadRecord[]);
+    } catch (error) {
+      log.warn("failed to load lead snapshot from KV", { error: String(error) });
+    }
+  }
   const url = new URL(request.url);
   if (request.method === "OPTIONS") return new Response(null, { status: 204 });
 
@@ -190,6 +200,9 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const sub = body ? leadSubmission(body) : null;
     if (!sub) return errorResponse(400, "Provide a source and at least one valid identifier (phone or email).");
     const stored = leadStore.upsert(sub);
+    if (env.LEADS_KV) {
+      await env.LEADS_KV.put("snapshot", JSON.stringify(leadStore.listLeads()));
+    }
     return json({ ok: true, leadId: stored.leadId, merged: stored.touchpoints > 1, score: stored.score });
   }
 

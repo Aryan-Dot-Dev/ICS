@@ -46,6 +46,9 @@ bundles `worker-data.json`, a generated normalized copy of
 `backend/govt-schemes-okf/`, because Workers cannot read the filesystem at
 runtime. Set Worker secrets such as `LEAD_SHEETS_URL`, `LEADS_EXPORT_TOKEN`,
 and any optional LLM keys in the Cloudflare dashboard or with Wrangler.
+For durable lead records, create a KV namespace and bind it as `LEADS_KV` in
+`wrangler.jsonc`; without that optional binding, the Worker keeps leads in
+memory and still forwards them to `LEAD_SHEETS_URL`.
 
 ## Root convenience commands
 

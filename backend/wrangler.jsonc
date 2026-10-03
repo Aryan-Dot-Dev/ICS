@@ -8,4 +8,7 @@
   "vars": {
     "NODE_ENV": "production"
   }
+  // Add this binding after creating a KV namespace if durable lead storage is
+  // required:
+  // "kv_namespaces": [{ "binding": "LEADS_KV", "id": "<namespace-id>" }]
 }

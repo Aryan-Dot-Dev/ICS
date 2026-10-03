@@ -290,6 +290,18 @@ export class LeadStore {
     this.sheetsUrl = sheetsUrl;
   }
 
+  /** Replace the in-memory snapshot after loading it from a Worker KV store. */
+  replaceLeads(leads: LeadRecord[]): void {
+    this.leads = new Map(leads.map((lead) => [lead.leadId, lead]));
+    this.identityIndex = new Map();
+    for (const lead of this.leads.values()) {
+      const phone = lead.phone ? normalizePhone(lead.phone) : undefined;
+      if (phone) this.identityIndex.set(`p:${phone}`, lead.leadId);
+      const email = lead.email ? normalizeEmail(lead.email) : undefined;
+      if (email) this.identityIndex.set(`e:${email}`, lead.leadId);
+    }
+  }
+
   listLeads(): LeadRecord[] {
     return [...this.leads.values()].sort((a, b) => b.lastActivityAt.localeCompare(a.lastActivityAt));
   }
