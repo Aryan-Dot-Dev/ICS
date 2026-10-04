@@ -152,7 +152,7 @@ export function AssessmentModal({ isOpen, onClose, source, onSubmitSuccess }: As
         Object.keys(profile).length > 0 ? profile : undefined,
       );
 
-      const response = await fetch(apiUrl(`/api/recommend-schemes`), {
+      const response = await fetch(apiUrl(`/api/recommend-schemes/censored`), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: reqJson,

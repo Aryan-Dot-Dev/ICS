@@ -28,6 +28,18 @@ type; schemes list all applicable types.
 | `in-kind` | Physical goods / services instead of cash | pmuy (connection + stove), nsap-Annapurna (foodgrain), pm-vishwakarma toolkit e-voucher |
 | `service` | Facilitation/enablement rather than money | pmmy/stand-up-india handholding, nsp (portal aggregating schemes) |
 
+### Additions (runs batch rows 1–600, imported 2026-10-02)
+
+| Term | Definition | Examples in this bundle |
+|---|---|---|
+| `tax-exemption` | Tax holiday, deduction or rebate granted by scheme provisions | row-70 (Section 80-IAC), row-71 (Angel Tax Exemption), row-11 (NSIC Credit Support) |
+| `credit-guarantee` | Government-backed guarantee of a lender's loss on a loan | row-9 (CGTMSE), row-128 (ECLGS), row-4 (State Mini Cluster Development) |
+| `equity` | Direct fund investment / co-investment in an entity | row-15 (SIDBI Direct Credit), row-22 (DPIIT Recognition), row-36 (PM-MITRA) |
+
+Note: schemes whose source data records no benefit text emit
+`benefit_types: []` with a `not_verified` note in `benefits.md` — do not
+back-fill a type that the source does not support.
+
 Related quantifiers used inside benefit objects: `max_amount`, `min_amount`,
 `frequency` (one_time | monthly | quarterly | annual | seasonal), `duration`,
 `contribution` (beneficiary share), `delivery` (dbt | account_credit |

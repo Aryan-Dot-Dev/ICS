@@ -30,3 +30,12 @@ engine-side applicant classification. A scheme may list several.
 | `child` | Minor in whose name an account/benefit is held | ssy (girl < 10) |
 | `widow` | Widowed woman within scheme age band | nsap (IGNWPS) |
 | `pregnant-woman` | Pregnant or lactating mother | pmmvy |
+
+### Additions (runs batch rows 1–600, imported 2026-10-02)
+
+| Term | Definition | Notes |
+|---|---|---|
+| `institution` | Non-person applicant: incubator, company, cluster, university, lab, agency, ULB | row-1 (incubators), row-4 (cluster units), row-101 (atal tinkering labs) |
+| `fisher` | Fisher, aquaculturist or fish-farming household | row-126 (FIDF), row-127 (Blue Revolution), row-159 (Fishermen welfare) |
+| `weaver` | Handloom/weaving artisan and weaving unit | row-33 (TUFS), row-35 (NHDP), row-37 (Powertex) |
+| `self-help-group` | SHG or federation of SHGs as the beneficiary unit | row-45 (DAY-NULM), row-29 (SAMPADA), row-2 (PADMA) |

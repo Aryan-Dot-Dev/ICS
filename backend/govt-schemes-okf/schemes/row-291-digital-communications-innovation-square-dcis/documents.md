@@ -1,0 +1,69 @@
+---
+type: "Government Scheme Documents"
+title: "Digital Communications Innovation Square (DCIS) — Documents"
+description: "Document requirements for ROW-291."
+scheme_id: "ROW-291"
+okf_version: "0.2"
+generated:
+  by: "process:runs-okf-generator"
+  at: 2026-10-02
+verified:
+  - by: "process:runs-import-check"
+    at: 2026-10-02
+    note: "field presence and citations re-checked against the source ai_summary.json; content not re-verified against the live portal"
+status: draft
+stale_after: 2026-12-31
+sources:
+  - id: S1
+    resource: "https://dot.gov.in/dcis"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S2
+    resource: "https://dot.gov.in/offerings"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S3
+    resource: "https://dot.gov.in/documents/guidelines"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+---
+# Digital Communications Innovation Square (DCIS) — Documents
+
+```yaml
+documents:
+  - id: proposal-document-detailing-the-innovati
+    name: "Proposal document detailing the innovation"
+    required: always
+    source: S1
+    confidence: medium
+  - id: certificate-of-incorporation-or-registra
+    name: "Certificate of Incorporation or Registration"
+    required: always
+    source: S1
+    confidence: medium
+  - id: pan-of-the-entity
+    name: "PAN of the entity"
+    required: always
+    source: S1
+    confidence: medium
+  - id: technical-specifications-and-diagrams
+    name: "Technical specifications and diagrams"
+    required: always
+    source: S1
+    confidence: medium
+  - id: proof-of-concept-or-prototype-details
+    name: "Proof of concept or prototype details"
+    required: always
+    source: S1
+    confidence: medium
+  - id: team-details-and-qualifications
+    name: "Team details and qualifications"
+    required: always
+    source: S1
+    confidence: medium
+```
+
+- `required: conditional` marks documents the source phrases as "if applicable / if available / optional"; everything else is recorded as always required by the source.

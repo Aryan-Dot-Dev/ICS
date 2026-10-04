@@ -34,8 +34,12 @@ Vocabulary for `geographies` in frontmatter and for location fields in rules
 
 ## Notes
 
-- All 20 schemes here are `central` schemes implemented through States/UTs;
-  state portals implement but do not own eligibility.
+- The 20 curated schemes are all `central` schemes implemented through
+  States/UTs; state portals implement but do not own eligibility.
+- The runs batch (rows 1–600, imported 2026-10-02) adds **state-level**
+  schemes (87 objects with `government_level: state`) that use
+  `IN-<STATE-CODE>`, plus `IN-rural` / `IN-urban` scoping derived from the
+  source `geographic_scope`. Codes follow the `IN-XX` values above.
 - Rural/urban applicability is captured via `applicant.rural_urban_status`
   (values `rural` \| `urban`), not by separate scheme entries.
 - PMAY-U 2.0 covers statutory towns per Census 2011 plus towns notified

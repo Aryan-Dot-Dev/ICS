@@ -1,0 +1,73 @@
+---
+type: "Government Scheme Benefits"
+title: "India Enterprise Architecture (InEA) — Benefits"
+description: "Benefit objects for ROW-405."
+scheme_id: "ROW-405"
+okf_version: "0.2"
+generated:
+  by: "process:runs-okf-generator"
+  at: 2026-10-02
+verified:
+  - by: "process:runs-import-check"
+    at: 2026-10-02
+    note: "field presence and citations re-checked against the source ai_summary.json; content not re-verified against the live portal"
+status: draft
+stale_after: 2026-12-31
+sources:
+  - id: S1
+    resource: "https://meity.gov.in/"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S2
+    resource: "https://meity.gov.in/offerings"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S3
+    resource: "https://meity.gov.in/connect"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S4
+    resource: "https://www.meity.gov.in"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+---
+# India Enterprise Architecture (InEA) — Benefits
+
+## Benefit objects
+
+```yaml
+benefits:
+  - benefit_id: BEN-001
+    type: service
+    name: "InEA provides a structured approach to IT planning, promotes"
+    amount: not_verified
+    detail: "InEA provides a structured approach to IT planning, promotes reuse of components, ensures compliance with national standards (such as e-Gov standards), enhances system reliability and security, facilitates cloud adoption, and supports long-term maintainability and scalability of government digital systems."
+    source: S1
+    confidence: medium
+  - benefit_id: BEN-002
+    type: service
+    name: "InEA is a policy and technical framework"
+    amount: not_verified
+    detail: "InEA is a policy and technical framework"
+    source: S1
+    confidence: medium
+  - benefit_id: BEN-003
+    type: subsidy
+    name: "it does not involve direct financial support, grants, or"
+    amount: not_verified
+    detail: "it does not involve direct financial support, grants, or subsidies to entities."
+    source: S1
+    confidence: medium
+  - benefit_id: BEN-004
+    type: service
+    name: "Implementation is carried out through budgetary allocations of respective"
+    amount: not_verified
+    detail: "Implementation is carried out through budgetary allocations of respective ministries/departments for their IT projects aligned with the framework."
+    source: S1
+    confidence: medium
+```
+- Benefit figures are quoted verbatim from the source import; re-verify amounts against the official portal before quoting them to an applicant.

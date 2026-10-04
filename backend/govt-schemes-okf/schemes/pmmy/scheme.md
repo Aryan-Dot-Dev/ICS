@@ -41,7 +41,7 @@ sources:
     last_modified: not_verified
   - id: S2
     resource: https://www.pib.gov.in/PressReleasePage.aspx?PRID=2069170
-    title: PIB — Pradhan Mantri Mudra Yojana: Loan Limit Raised to ₹20 Lakh; Tarun Plus category announced (Budget 2024-25)
+    title: "PIB — Pradhan Mantri Mudra Yojana: Loan Limit Raised to ₹20 Lakh; Tarun Plus category announced (Budget 2024-25)"
     author: Press Information Bureau
     last_modified: 2024-10-29
   - id: S3

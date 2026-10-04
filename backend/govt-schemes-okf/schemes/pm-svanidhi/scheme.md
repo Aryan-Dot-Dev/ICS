@@ -45,7 +45,7 @@ sources:
     last_modified: 2025-08-27
   - id: S3
     resource: https://static.pib.gov.in/WriteReadData/specificdocs/documents/2025/dec/doc20251220739401.pdf
-    title: PIB special document — SVANidhi: Empowering Street Vendors (Dec 2025, loan structure)
+    title: "PIB special document — SVANidhi: Empowering Street Vendors (Dec 2025, loan structure)"
     author: Press Information Bureau
     last_modified: 2025-12-20
   - id: S4

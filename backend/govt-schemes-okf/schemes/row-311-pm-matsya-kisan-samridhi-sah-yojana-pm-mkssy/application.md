@@ -1,0 +1,57 @@
+---
+type: "Government Scheme Application"
+title: "PM Matsya Kisan Samridhi Sah-Yojana (PM-MKSSY) — Application"
+description: "Application channels, process and deadlines for ROW-311."
+scheme_id: "ROW-311"
+okf_version: "0.2"
+generated:
+  by: "process:runs-okf-generator"
+  at: 2026-10-02
+verified:
+  - by: "process:runs-import-check"
+    at: 2026-10-02
+    note: "field presence and citations re-checked against the source ai_summary.json; content not re-verified against the live portal"
+status: draft
+stale_after: 2026-12-31
+sources:
+  - id: S1
+    resource: "https://pmmsy.dof.gov.in/"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S2
+    resource: "https://pmmsy.dof.gov.in/assets/documents/10 Years Achievement_English.pdf"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S3
+    resource: "https://pmmsy.dof.gov.in/assets/documents/10 Years Achievement_Hindi.pdf"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S4
+    resource: "https://pmmsy.dof.gov.in"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+---
+# PM Matsya Kisan Samridhi Sah-Yojana (PM-MKSSY) — Application
+
+## Channels
+
+```yaml
+application:
+  mode:
+    - offline
+  official_portal: not_verified
+  implementing_agency: "Department of Fisheries, Ministry of Fisheries, Animal Husbandry and Dairying, Government of India"
+  deadline: "The scheme is implemented from FY 2023-24 to FY 2026-27. Application windows and specific deadlines are determined by state/UT fisheries departments as per annual action plans and notified guidelines."
+```
+
+## Process
+
+1. Stakeholders (intended beneficiaries) are required to consult the respective District Fisheries Officer of the district in the state/UT where they intend to undertake fisheries development activities. Proposals are to be submitted through the state/UT fisheries department following the guidelines issued under PMMSY and PM-MKSSY framework.
+
+## Deadlines
+
+- The scheme is implemented from FY 2023-24 to FY 2026-27. Application windows and specific deadlines are determined by state/UT fisheries departments as per annual action plans and notified guidelines.

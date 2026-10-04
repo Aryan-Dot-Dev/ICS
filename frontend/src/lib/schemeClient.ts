@@ -2,7 +2,7 @@
  * Shared client helpers for the recommendation API.
  *
  * Used by AssessmentPage, AssessmentModal and ChatbotWidget so that all three
- * surfaces call the SAME backend engine (POST /api/recommend-schemes) and share
+ * surfaces call the public censored backend view and share
  * one request/response contract.
  *
  * Lead capture has moved to lib/leadCapture.ts — this module is purely the
@@ -50,7 +50,7 @@ export async function fetchRecommendations(
   if (options.profile && Object.keys(options.profile).length > 0) payload.profile = options.profile;
   if (options.naturalLanguageInput) payload.naturalLanguageInput = options.naturalLanguageInput;
 
-  const response = await fetch(apiUrl(`/api/recommend-schemes`), {
+  const response = await fetch(apiUrl(`/api/recommend-schemes/censored`), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

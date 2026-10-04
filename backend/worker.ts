@@ -2,6 +2,7 @@
 
 import workerData from "./worker-data.json";
 import { RecommendationEngine } from "./recommendationPipeline";
+import { censoredRecommendationResponse } from "./recommendationViews";
 import type { RecommendSchemesResponse, SchemeUserProfile } from "./schemeTypes";
 import { setRuntimeEnv } from "./runtimeEnv";
 import { LeadStore, leadsToCsv, normalizeEmail, normalizePhone } from "./leads";
@@ -163,7 +164,10 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return json({ ingested: knowledgeBase.schemes.length, schemeDirs: knowledgeBase.schemes.length, warnings: [], mode: "bundled-worker-data" });
   }
 
-  if (request.method === "POST" && url.pathname === "/api/recommend-schemes") {
+  if (
+    request.method === "POST" &&
+    ["/api/recommend-schemes", "/api/recommend-schemes/censored", "/api/recommend-schemes/uncensored"].includes(url.pathname)
+  ) {
     const body = await readBody(request);
     if (!body) return errorResponse(400, "Invalid JSON body or payload too large.");
     const data = sanitizeData(body.data);
@@ -173,7 +177,11 @@ async function handle(request: Request, env: Env): Promise<Response> {
       return errorResponse(400, "Provide profile information, a natural-language requirement, or a business description.");
     }
     const result = await engine.recommend({ data, profile, naturalLanguageInput });
-    return json(result.response);
+    return json(
+      url.pathname === "/api/recommend-schemes/censored"
+        ? censoredRecommendationResponse(result.response)
+        : result.response,
+    );
   }
 
   if (request.method === "POST" && (url.pathname === "/api/chat" || url.pathname === "/api/chat-restricted")) {

@@ -17,6 +17,7 @@ import type {
   OkfDocument,
   OkfExclusion,
   OkfSource,
+  RuleCondition,
   RuleElement,
   RuleGroup,
 } from "./schemeTypes";
@@ -235,13 +236,17 @@ function parseSources(raw: string, frontmatter: Record<string, any>): OkfSource[
  */
 function toRuleGroup(node: any): RuleGroup {
   if (!node) return {};
+  const elements = (value: any): RuleElement[] =>
+    (Array.isArray(value) ? value : [value])
+      .map(toRuleElement)
+      .filter(isUsableRuleElement);
   // A bare array under "all"-semantics
-  if (Array.isArray(node)) return { all: node.map(toRuleElement) };
+  if (Array.isArray(node)) return { all: elements(node) };
 
   const group: RuleGroup = {};
-  if (node.all) group.all = (Array.isArray(node.all) ? node.all : [node.all]).map(toRuleElement);
-  if (node.any) group.any = (Array.isArray(node.any) ? node.any : [node.any]).map(toRuleElement);
-  if (node.not) group.not = (Array.isArray(node.not) ? node.not : [node.not]).map(toRuleElement);
+  if (node.all) group.all = elements(node.all);
+  if (node.any) group.any = elements(node.any);
+  if (node.not) group.not = elements(node.not);
 
   if (group.all || group.any || group.not) return group;
 
@@ -278,6 +283,17 @@ function toRuleElement(node: any): RuleElement {
     return node as RuleElement;
   }
   return node as RuleElement;
+}
+
+/** Ignore incomplete generated rules before they reach the eligibility engine. */
+function isUsableRuleElement(node: RuleElement): boolean {
+  if (!node || typeof node !== "object" || Array.isArray(node)) return false;
+  if ("all" in node || "any" in node || "not" in node) {
+    const group = node as RuleGroup;
+    return [group.all, group.any, group.not].some((items) => Array.isArray(items) && items.length > 0);
+  }
+  const condition = node as Partial<RuleCondition>;
+  return typeof condition.field === "string" && condition.field.trim().length > 0 && typeof condition.operator === "string";
 }
 
 export function parseSchemeObject(raw: string, filePath: string): ParsedObject<NormalizedScheme> {
@@ -380,6 +396,14 @@ export function parseExclusionsObject(raw: string, filePath: string): ParsedObje
   const fm = parseFrontmatter(raw);
   if (!fm) throw new Error(`Missing frontmatter in ${filePath}`);
   const block = parseFirstYamlBlock(raw, "exclusions");
-  const exclusions = Array.isArray(block?.exclusions) ? (block.exclusions as OkfExclusion[]) : [];
+  const exclusions = Array.isArray(block?.exclusions)
+    ? (block.exclusions as OkfExclusion[]).filter(
+        (exclusion) =>
+          exclusion &&
+          typeof exclusion.field === "string" &&
+          exclusion.field.trim().length > 0 &&
+          typeof exclusion.operator === "string",
+      )
+    : [];
   return { data: exclusions, sources: parseSources(raw, fm) };
 }

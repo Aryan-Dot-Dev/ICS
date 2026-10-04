@@ -17,6 +17,7 @@
 import path from "node:path";
 import { ingestOkfBundle } from "./okfIngest";
 import { RecommendationEngine } from "./recommendationPipeline";
+import { censoredRecommendationResponse } from "./recommendationViews";
 import type { RecommendSchemesResponse, SchemeUserProfile } from "./schemeTypes";
 import { loadEnv } from "./env";
 import { log, newRequestId } from "./logger";
@@ -474,7 +475,11 @@ async function handleRequest(request: Request): Promise<Response> {
     });
   }
 
-  if (route === "POST /api/recommend-schemes") {
+  if (
+    route === "POST /api/recommend-schemes" ||
+    route === "POST /api/recommend-schemes/censored" ||
+    route === "POST /api/recommend-schemes/uncensored"
+  ) {
     const e = await loadEngine();
     if (!e) {
       return errResponse(503, "Recommendation service unavailable: knowledge base could not be loaded.");
@@ -528,7 +533,11 @@ async function handleRequest(request: Request): Promise<Response> {
       log.warn("assessment lead capture failed (non-blocking)", { error: String(err) });
     }
 
-    return json(result.response);
+    return json(
+      route === "POST /api/recommend-schemes/censored"
+        ? censoredRecommendationResponse(result.response)
+        : result.response,
+    );
   }
 
   // Legacy route name kept for compatibility with the deployed API

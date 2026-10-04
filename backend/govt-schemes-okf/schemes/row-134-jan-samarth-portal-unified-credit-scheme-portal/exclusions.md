@@ -1,0 +1,84 @@
+---
+type: "Government Scheme Exclusions"
+title: "Jan Samarth Portal – Unified Credit Scheme Portal — Exclusions"
+description: "Structured disqualifiers for ROW-134."
+scheme_id: "ROW-134"
+okf_version: "0.2"
+generated:
+  by: "process:runs-okf-generator"
+  at: 2026-10-02
+verified:
+  - by: "process:runs-import-check"
+    at: 2026-10-02
+    note: "field presence and citations re-checked against the source ai_summary.json; content not re-verified against the live portal"
+status: draft
+stale_after: 2026-12-31
+sources:
+  - id: S1
+    resource: "https://www.jansamarth.in"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S2
+    resource: "https://jansamarth.in/grievances"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S3
+    resource: "https://jansamarth.in/our-partners"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S4
+    resource: "https://jansamarth.in/government-of-india-schemes"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S5
+    resource: "https://jansamarth.in/register"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S6
+    resource: "https://jansamarth.in/faq"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S7
+    resource: "https://jansamarth.in/home"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S8
+    resource: "https://jansamarth.in/checkEligibility?id=eDNJcFlWOUtWWDZJL2hFQ2pBdFBTbjg9OjowNi0wNy0yMDI2IDAxOjU3"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S9
+    resource: "https://jansamarth.in/checkEligibility?id=elZEUStyejlCbVY4Ukp6NGttd2hCbEE9OjowNi0wNy0yMDI2IDAxOjU3"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S10
+    resource: "https://jansamarth.in/checkEligibility?id=d29KVnJLNlIvUE55bzFmL2d6ajRiR2c9OjowNi0wNy0yMDI2IDAxOjU3"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S11
+    resource: "https://jansamarth.in/checkEligibility?id=d0lobmZzNUs3QXU4TG9FeWV0bE9lc3M9OjowNi0wNy0yMDI2IDAxOjU3"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+  - id: S12
+    resource: "https://jansamarth.in/checkEligibility?id=d1d4K0YvNG5aSGZiYUdwVWhpbVZjWm89OjowNi0wNy0yMDI2IDAxOjU3"
+    title: not_verified
+    author: not_verified
+    last_modified: not_verified
+---
+# Jan Samarth Portal – Unified Credit Scheme Portal — Exclusions
+
+```yaml
+exclusions: []
+```
+
+_not_verified — no explicit disqualifier sentence was found in the source data. Absence of recorded exclusions is NOT evidence that none exist; the engine must still evaluate eligibility.md and request missing information._

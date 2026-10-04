@@ -43,7 +43,7 @@ sources:
   - id: S3
     resource: https://en.vikaspedia.in/viewcontent/social-welfare/women-and-child-development/women-development-1/pradhan-mantri-matru-vandana-yojana
     title: Vikaspedia (Govt of India initiative) — PMMVY instalment structure
-    author:vikaspedia — Government of India initiative
+    author: "Vikaspedia — Government of India initiative"
     last_modified: not_verified
 ---
 
